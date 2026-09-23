@@ -58,7 +58,7 @@
     .section { display: none; }
     .section.active { display: block; }
     
-    .task-card, .withdraw-card {
+    .task-card {
       background: #1e293b;
       padding: 15px;
       border-radius: 10px;
@@ -71,12 +71,15 @@
       background: #22c55e;
       color: white;
       border: none;
-      padding: 8px 16px;
+      padding: 10px 18px;
       border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
-      text-decoration: none;
-      display: inline-block;
+      font-size: 14px;
+    }
+    .btn:disabled {
+      background: #64748b;
+      cursor: not-allowed;
     }
     input, select {
       width: 100%;
@@ -87,6 +90,11 @@
       background: #0f172a;
       color: white;
       box-sizing: border-box;
+    }
+    .timer-text {
+      color: #f59e0b;
+      font-size: 13px;
+      margin-top: 4px;
     }
   </style>
 </head>
@@ -110,14 +118,16 @@
           <h4>Daily Bonus</h4>
           <p style="margin:0; font-size:12px; color:#94a3b8;">Claim +5.00 BDT</p>
         </div>
-        <button class="btn" onclick="claimBonus()">Claim</button>
+        <button class="btn" id="bonus-btn" onclick="claimBonus()">Claim</button>
       </div>
+      
       <div class="task-card">
         <div>
           <h4>Watch Ad Task</h4>
           <p style="margin:0; font-size:12px; color:#94a3b8;">Earn +2.00 BDT</p>
+          <div id="timer-status" class="timer-text"></div>
         </div>
-        <a class="btn" href="https://omg10.com/4/11874452" target="_blank" onclick="rewardAd()">Start Ad</a>
+        <button class="btn" id="ad-btn" onclick="startAdTask()">Start Ad</button>
       </div>
     </div>
 
@@ -156,6 +166,7 @@
 
   <script>
     let currentBalance = 0.00;
+    const MONETAG_AD_URL = "https://omg10.com/4/11874452";
 
     function updateBalance() {
       document.getElementById('balance').innerText = 'BDT ' + currentBalance.toFixed(2);
@@ -171,15 +182,37 @@
     function claimBonus() {
       currentBalance += 5.00;
       updateBalance();
+      document.getElementById('bonus-btn').disabled = true;
+      document.getElementById('bonus-btn').innerText = 'Claimed';
       alert('Congratulations! You claimed BDT 5.00 Daily Bonus!');
     }
 
-    function rewardAd() {
-      setTimeout(() => {
-        currentBalance += 2.00;
-        updateBalance();
-        alert('BDT 2.00 reward added for watching ad!');
-      }, 2000);
+    function startAdTask() {
+      const adBtn = document.getElementById('ad-btn');
+      const timerStatus = document.getElementById('timer-status');
+      
+      // Open the ad in a new tab
+      window.open(MONETAG_AD_URL, '_blank');
+
+      // Start 15 second countdown
+      let timeLeft = 15;
+      adBtn.disabled = true;
+      adBtn.innerText = 'Watching...';
+
+      const countdown = setInterval(() => {
+        timerStatus.innerText = `Please wait ${timeLeft}s for reward...`;
+        timeLeft--;
+
+        if (timeLeft < 0) {
+          clearInterval(countdown);
+          currentBalance += 2.00;
+          updateBalance();
+          timerStatus.innerText = '';
+          adBtn.disabled = false;
+          adBtn.innerText = 'Start Ad';
+          alert('Great! BDT 2.00 has been added to your balance.');
+        }
+      }, 1000);
     }
 
     function copyLink() {
