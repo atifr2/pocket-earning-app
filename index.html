@@ -1,48 +1,214 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Earning App</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            background-color: #0f172a;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-        .card {
-            background: #1e293b;
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 20px;
-        }
-        .btn {
-            background: #22c55e;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pocket Earning App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0f172a;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .header {
+      padding: 20px;
+      text-align: center;
+      background: #1e293b;
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+    }
+    .balance-card {
+      background: #334155;
+      padding: 15px;
+      margin: 15px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    .balance-title { font-size: 14px; color: #94a3b8; }
+    .balance-amount { font-size: 28px; color: #22c55e; font-weight: bold; margin-top: 5px; }
+    
+    .nav-tabs {
+      display: flex;
+      justify-content: space-around;
+      background: #1e293b;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .tab-btn.active { color: #38bdf8; }
+    
+    .content { padding: 15px; margin-bottom: 60px; }
+    .section { display: none; }
+    .section.active { display: block; }
+    
+    .task-card, .withdraw-card {
+      background: #1e293b;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn {
+      background: #22c55e;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: white;
+      box-sizing: border-box;
+    }
+  </style>
 </head>
 <body>
-    <h2>Smart Earning Bot</h2>
-    <div class="card">
-        <h3>Current Balance</h3>
-        <h1 style="color: #22c55e;">BDT 0.00</h1>
-        <button class="btn" onclick="alert('Task system loading...')">Start Task</button>
+
+  <div class="header">
+    <h2 style="margin:0;">Pocket Earning App</h2>
+  </div>
+
+  <div class="balance-card">
+    <div class="balance-title">Current Balance</div>
+    <div class="balance-amount" id="balance">BDT 0.00</div>
+  </div>
+
+  <div class="content">
+    <!-- Tasks Section -->
+    <div id="tasks-sec" class="section active">
+      <h3>Daily Tasks</h3>
+      <div class="task-card">
+        <div>
+          <h4>Daily Bonus</h4>
+          <p style="margin:0; font-size:12px; color:#94a3b8;">Claim +5.00 BDT</p>
+        </div>
+        <button class="btn" onclick="claimBonus()">Claim</button>
+      </div>
+      <div class="task-card">
+        <div>
+          <h4>Watch Ad Task</h4>
+          <p style="margin:0; font-size:12px; color:#94a3b8;">Earn +2.00 BDT</p>
+        </div>
+        <button class="btn" onclick="watchAd()">Start</button>
+      </div>
     </div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-    </script>
+    <!-- Refer Section -->
+    <div id="refer-sec" class="section">
+      <h3>Invite Friends</h3>
+      <p>Invite friends and earn BDT 10.00 per referral!</p>
+      <input type="text" id="ref-link" value="https://t.me/pocketearnmoney_bot?start=user123" readonly>
+      <button class="btn" style="width:100%; margin-top:10px;" onclick="copyLink()">Copy Referral Link</button>
+    </div>
+
+    <!-- Withdraw Section -->
+    <div id="withdraw-sec" class="section">
+      <h3>Withdraw Money</h3>
+      <label>Select Method:</label>
+      <select id="method">
+        <option value="bkash">bKash</option>
+        <option value="nagad">Nagad</option>
+      </select>
+      
+      <label style="margin-top:10px; display:block;">Account Number:</label>
+      <input type="text" id="acc-num" placeholder="017xxxxxxxx">
+
+      <label style="margin-top:10px; display:block;">Amount (Min BDT 50):</label>
+      <input type="number" id="amount" placeholder="50">
+
+      <button class="btn" style="width:100%; margin-top:15px;" onclick="withdraw()">Submit Withdrawal</button>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="showTab('tasks-sec', this)">Tasks</button>
+    <button class="tab-btn" onclick="showTab('refer-sec', this)">Referral</button>
+    <button class="tab-btn" onclick="showTab('withdraw-sec', this)">Withdraw</button>
+  </div>
+
+  <script>
+    let currentBalance = 0.00;
+
+    function updateBalance() {
+      document.getElementById('balance').innerText = 'BDT ' + currentBalance.toFixed(2);
+    }
+
+    function showTab(secId, btn) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(secId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function claimBonus() {
+      currentBalance += 5.00;
+      updateBalance();
+      alert('Congratulations! You claimed BDT 5.00 Daily Bonus!');
+    }
+
+    function watchAd() {
+      alert('Ad is playing...');
+      setTimeout(() => {
+        currentBalance += 2.00;
+        updateBalance();
+        alert('Task completed! BDT 2.00 added.');
+      }, 2000);
+    }
+
+    function copyLink() {
+      let copyText = document.getElementById("ref-link");
+      copyText.select();
+      navigator.clipboard.writeText(copyText.value);
+      alert("Referral link copied!");
+    }
+
+    function withdraw() {
+      let num = document.getElementById('acc-num').value;
+      let amt = parseFloat(document.getElementById('amount').value);
+      
+      if (!num || isNaN(amt)) {
+        alert('Please fill out all fields!');
+        return;
+      }
+      if (amt < 50) {
+        alert('Minimum withdrawal amount is BDT 50');
+        return;
+      }
+      if (amt > currentBalance) {
+        alert('Insufficient balance!');
+        return;
+      }
+
+      currentBalance -= amt;
+      updateBalance();
+      alert('Withdrawal request submitted successfully!');
+    }
+  </script>
 </body>
 </html>
