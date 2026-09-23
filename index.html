@@ -154,6 +154,7 @@
 
   <script>
     let currentBalance = 0.00;
+    const MONETAG_AD_URL = "https://omg10.com/4/11874452";
 
     function updateBalance() {
       document.getElementById('balance').innerText = 'BDT ' + currentBalance.toFixed(2);
@@ -173,12 +174,19 @@
     }
 
     function watchAd() {
-      alert('Ad is playing...');
+      // Open Monetag Ad Link
+      if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.openLink(MONETAG_AD_URL);
+      } else {
+        window.open(MONETAG_AD_URL, '_blank');
+      }
+
+      // Add reward after viewing ad
       setTimeout(() => {
         currentBalance += 2.00;
         updateBalance();
-        alert('Task completed! BDT 2.00 added.');
-      }, 2000);
+        alert('Ad reward BDT 2.00 added to your balance!');
+      }, 3000);
     }
 
     function copyLink() {
