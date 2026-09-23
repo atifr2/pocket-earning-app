@@ -75,6 +75,8 @@
       border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
+      text-decoration: none;
+      display: inline-block;
     }
     input, select {
       width: 100%;
@@ -115,7 +117,7 @@
           <h4>Watch Ad Task</h4>
           <p style="margin:0; font-size:12px; color:#94a3b8;">Earn +2.00 BDT</p>
         </div>
-        <button class="btn" onclick="watchAd()">Start</button>
+        <a class="btn" href="https://omg10.com/4/11874452" target="_blank" onclick="rewardAd()">Start Ad</a>
       </div>
     </div>
 
@@ -154,7 +156,6 @@
 
   <script>
     let currentBalance = 0.00;
-    const MONETAG_AD_URL = "https://omg10.com/4/11874452";
 
     function updateBalance() {
       document.getElementById('balance').innerText = 'BDT ' + currentBalance.toFixed(2);
@@ -173,20 +174,12 @@
       alert('Congratulations! You claimed BDT 5.00 Daily Bonus!');
     }
 
-    function watchAd() {
-      // Open Monetag Ad Link
-      if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.openLink(MONETAG_AD_URL);
-      } else {
-        window.open(MONETAG_AD_URL, '_blank');
-      }
-
-      // Add reward after viewing ad
+    function rewardAd() {
       setTimeout(() => {
         currentBalance += 2.00;
         updateBalance();
-        alert('Ad reward BDT 2.00 added to your balance!');
-      }, 3000);
+        alert('BDT 2.00 reward added for watching ad!');
+      }, 2000);
     }
 
     function copyLink() {
