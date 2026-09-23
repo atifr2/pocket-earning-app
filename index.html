@@ -1,256 +1,586 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pocket Earning App</title>
+  <title>Smart Earning App</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body {
+    :root {
+      --bg-color: #f4f7f6;
+      --card-bg: #ffffff;
+      --primary-green: #059669;
+      --dark-green: #022c22;
+      --text-dark: #1e293b;
+      --text-gray: #64748b;
+      --accent-yellow: #eab308;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
-      background-color: #0f172a;
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
-    .header {
-      padding: 20px;
-      text-align: center;
-      background: #1e293b;
-      border-bottom-left-radius: 16px;
-      border-bottom-right-radius: 16px;
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-dark);
+      padding-bottom: 80px;
     }
-    .balance-card {
-      background: #334155;
-      padding: 15px;
-      margin: 15px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    }
-    .balance-title { font-size: 14px; color: #94a3b8; }
-    .balance-amount { font-size: 28px; color: #22c55e; font-weight: bold; margin-top: 5px; }
-    
-    .nav-tabs {
-      display: flex;
-      justify-content: space-around;
-      background: #1e293b;
-      padding: 10px;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .tab-btn {
-      background: none;
-      border: none;
-      color: #94a3b8;
-      font-size: 14px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .tab-btn.active { color: #38bdf8; }
-    
-    .content { padding: 15px; margin-bottom: 60px; }
-    .section { display: none; }
-    .section.active { display: block; }
-    
-    .task-card {
-      background: #1e293b;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 12px;
+
+    /* Top User Bar */
+    .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 12px 16px;
+      background: var(--card-bg);
+      border-bottom: 1px solid #e2e8f0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-    .btn {
-      background: #22c55e;
+
+    .user-info-short {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar-sm {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      border: 2px solid var(--primary-green);
+    }
+
+    .status-badge {
+      background: #e6f4ea;
+      color: var(--primary-green);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--primary-green);
+      border-radius: 50%;
+    }
+
+    /* Green Hero Card */
+    .hero-card {
+      margin: 16px;
+      background: linear-gradient(135deg, #022c22 0%, #059669 100%);
+      border-radius: 20px;
+      padding: 24px;
+      color: white;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(5, 150, 105, 0.2);
+    }
+
+    .hero-card .avatar-lg {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #818cf8, #c084fc);
+      margin: 0 auto 12px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      border: 3px solid white;
+    }
+
+    .profit-title {
+      font-size: 11px;
+      letter-spacing: 1px;
+      opacity: 0.8;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .profit-amount {
+      font-size: 32px;
+      font-weight: 800;
+      color: #facc15;
+      margin-bottom: 16px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .hero-stat-box {
+      background: rgba(255, 255, 255, 0.12);
+      padding: 8px 16px;
+      border-radius: 10px;
+      backdrop-filter: blur(5px);
+      flex: 1;
+    }
+
+    /* Grid Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 0 16px 16px 16px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      padding: 16px;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      position: relative;
+      border-bottom: 3px solid transparent;
+    }
+
+    .stat-card.green-border { border-color: var(--primary-green); }
+    .stat-card.black-border { border-color: #0f172a; }
+    .stat-card.yellow-border { border-color: var(--accent-yellow); }
+
+    .stat-card-title {
+      font-size: 11px;
+      font-weight: bold;
+      color: var(--text-gray);
+      text-transform: uppercase;
+    }
+
+    .stat-card-value {
+      font-size: 20px;
+      font-weight: 800;
+      margin-top: 6px;
+    }
+
+    /* Action Grid Icons */
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 16px;
+    }
+
+    .action-item {
+      background: var(--card-bg);
+      padding: 18px 10px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .action-item:active { transform: scale(0.96); }
+
+    .action-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px auto;
+      font-size: 18px;
+    }
+
+    .action-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dark);
+      text-transform: uppercase;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 1px solid #e2e8f0;
+      z-index: 1000;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--text-gray);
+      text-decoration: none;
+      font-size: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      gap: 4px;
+    }
+
+    .nav-item i { font-size: 18px; }
+
+    .nav-item.active {
+      color: var(--primary-green);
+    }
+
+    /* Tab Sections */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Task Card Design */
+    .task-container {
+      margin: 16px;
+      background: white;
+      padding: 16px;
+      border-radius: 16px;
+    }
+
+    .btn-action {
+      background: var(--primary-green);
       color: white;
       border: none;
-      padding: 10px 18px;
-      border-radius: 6px;
-      cursor: pointer;
+      padding: 12px 20px;
+      border-radius: 8px;
       font-weight: bold;
-      font-size: 14px;
+      width: 100%;
+      cursor: pointer;
+      margin-top: 10px;
     }
-    .btn:disabled {
-      background: #64748b;
-      cursor: not-allowed;
-    }
+
+    .btn-action:disabled { background: #94a3b8; }
+    
     input, select {
       width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 6px;
-      border: 1px solid #475569;
-      background: #0f172a;
-      color: white;
-      box-sizing: border-box;
-    }
-    .timer-text {
-      color: #f59e0b;
-      font-size: 13px;
-      margin-top: 4px;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      margin-top: 8px;
+      margin-bottom: 12px;
     }
   </style>
 </head>
 <body>
 
-  <div class="header">
-    <h2 style="margin:0;">Pocket Earning App</h2>
+  <!-- Top Header Bar -->
+  <div class="top-bar">
+    <div class="user-info-short">
+      <div class="avatar-sm" id="user-avatar-sm">AH</div>
+      <div>
+        <div style="font-weight:bold; font-size:14px;" id="user-name-top">User</div>
+        <div style="color:var(--primary-green); font-size:12px; font-weight:bold;" id="user-bal-top">BDT: 0.00</div>
+      </div>
+    </div>
+    <div class="status-badge">
+      <span class="status-dot"></span> ACTIVE
+    </div>
   </div>
 
-  <div class="balance-card">
-    <div class="balance-title">Current Balance</div>
-    <div class="balance-amount" id="balance">BDT 0.00</div>
+  <!-- HOME TAB -->
+  <div id="tab-home" class="tab-content active">
+    <div class="hero-card">
+      <div class="profit-title">Current Profit Wallet</div>
+      <div class="profit-amount" id="main-balance-hero">BDT: 0.00</div>
+      <div class="hero-stats">
+        <div class="hero-stat-box">
+          <div style="font-size:9px; opacity:0.8;">TOTAL EARNED</div>
+          <div style="font-weight:bold; font-size:13px;" id="hero-total-earned">BDT: 0.00</div>
+        </div>
+        <div class="hero-stat-box">
+          <div style="font-size:9px; opacity:0.8;">MY NETWORK</div>
+          <div style="font-weight:bold; font-size:13px;" id="hero-network">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions Grid -->
+    <div class="action-grid">
+      <div class="action-item" onclick="switchTab('tab-earn')">
+        <div class="action-icon" style="background:#e6f4ea; color:#059669;"><i class="fa-solid fa-play"></i></div>
+        <div class="action-label">Earn Ad</div>
+      </div>
+      <div class="action-item" onclick="switchTab('tab-tasks')">
+        <div class="action-icon" style="background:#e0f2fe; color:#0284c7;"><i class="fa-solid fa-link"></i></div>
+        <div class="action-label">Web Task</div>
+      </div>
+      <div class="action-item" onclick="switchTab('tab-tasks')">
+        <div class="action-icon" style="background:#ee2a7b15; color:#ee2a7b;"><i class="fa-paper-plane"></i></div>
+        <div class="action-label">Tasks</div>
+      </div>
+      <div class="action-item" onclick="switchTab('tab-wallet')">
+        <div class="action-icon" style="background:#fef3c7; color:#d97706;"><i class="fa-solid fa-wallet"></i></div>
+        <div class="action-label">Withdraw</div>
+      </div>
+      <div class="action-item" onclick="switchTab('tab-refer')">
+        <div class="action-icon" style="background:#fce7f3; color:#db2777;"><i class="fa-solid fa-gift"></i></div>
+        <div class="action-label">Referral</div>
+      </div>
+      <div class="action-item" onclick="switchTab('tab-profile')">
+        <div class="action-icon" style="background:#f3e8ff; color:#9333ea;"><i class="fa-solid fa-user-gear"></i></div>
+        <div class="action-label">Profile</div>
+      </div>
+    </div>
   </div>
 
-  <div class="content">
-    <!-- Tasks Section -->
-    <div id="tasks-sec" class="section active">
+  <!-- EARN TAB -->
+  <div id="tab-earn" class="tab-content">
+    <div class="task-container">
+      <h3>Watch Video Ad</h3>
+      <p style="color:var(--text-gray); font-size:13px; margin-top:4px;">Earn BDT 2.00 per ad watch</p>
+      <div id="ad-timer" style="color:var(--accent-yellow); font-weight:bold; margin-top:10px;"></div>
+      <button class="btn-action" id="watch-ad-btn" onclick="startWatchAd()">Watch Ad (+2.00 BDT)</button>
+    </div>
+  </div>
+
+  <!-- TASKS TAB -->
+  <div id="tab-tasks" class="tab-content">
+    <div class="task-container">
       <h3>Daily Tasks</h3>
-      <div class="task-card">
-        <div>
-          <h4>Daily Bonus</h4>
-          <p style="margin:0; font-size:12px; color:#94a3b8;">Claim +5.00 BDT</p>
-        </div>
-        <button class="btn" id="bonus-btn" onclick="claimBonus()">Claim</button>
-      </div>
-      
-      <div class="task-card">
-        <div>
-          <h4>Watch Ad Task</h4>
-          <p style="margin:0; font-size:12px; color:#94a3b8;">Earn +2.00 BDT</p>
-          <div id="timer-status" class="timer-text"></div>
-        </div>
-        <button class="btn" id="ad-btn" onclick="startAdTask()">Start Ad</button>
-      </div>
-    </div>
-
-    <!-- Refer Section -->
-    <div id="refer-sec" class="section">
-      <h3>Invite Friends</h3>
-      <p>Invite friends and earn BDT 10.00 per referral!</p>
-      <input type="text" id="ref-link" value="https://t.me/pocketearnmoney_bot?start=user123" readonly>
-      <button class="btn" style="width:100%; margin-top:10px;" onclick="copyLink()">Copy Referral Link</button>
-    </div>
-
-    <!-- Withdraw Section -->
-    <div id="withdraw-sec" class="section">
-      <h3>Withdraw Money</h3>
-      <label>Select Method:</label>
-      <select id="method">
-        <option value="bkash">bKash</option>
-        <option value="nagad">Nagad</option>
-      </select>
-      
-      <label style="margin-top:10px; display:block;">Account Number:</label>
-      <input type="text" id="acc-num" placeholder="017xxxxxxxx">
-
-      <label style="margin-top:10px; display:block;">Amount (Min BDT 50):</label>
-      <input type="number" id="amount" placeholder="50">
-
-      <button class="btn" style="width:100%; margin-top:15px;" onclick="withdraw()">Submit Withdrawal</button>
+      <p style="color:var(--text-gray); font-size:13px;">Complete daily tasks to claim rewards.</p>
+      <button class="btn-action" id="bonus-claim-btn" onclick="claimDailyBonus()" style="margin-top:15px;">Claim Daily Bonus (+5.00 BDT)</button>
     </div>
   </div>
 
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="showTab('tasks-sec', this)">Tasks</button>
-    <button class="tab-btn" onclick="showTab('refer-sec', this)">Referral</button>
-    <button class="tab-btn" onclick="showTab('withdraw-sec', this)">Withdraw</button>
+  <!-- REFER TAB -->
+  <div id="tab-refer" class="tab-content">
+    <div class="task-container">
+      <h3>Referral Network</h3>
+      <p style="color:var(--text-gray); font-size:13px; margin-bottom:10px;">Invite friends to earn BDT 10.00 per referral!</p>
+      <input type="text" id="ref-url" value="https://t.me/pocketearnmoney_bot?start=user" readonly>
+      <button class="btn-action" onclick="copyRefLink()">Copy Referral Link</button>
+    </div>
+  </div>
+
+  <!-- WALLET TAB -->
+  <div id="tab-wallet" class="tab-content">
+    <div class="task-container">
+      <h3>Withdraw Funds</h3>
+      <label style="font-size:12px; font-weight:bold;">Select Method</label>
+      <select id="w-method">
+        <option value="bKash">bKash</option>
+        <option value="Nagad">Nagad</option>
+      </select>
+
+      <label style="font-size:12px; font-weight:bold;">Account Number</label>
+      <input type="text" id="w-number" placeholder="017xxxxxxxx">
+
+      <label style="font-size:12px; font-weight:bold;">Amount (Min BDT 50)</label>
+      <input type="number" id="w-amount" placeholder="50">
+
+      <button class="btn-action" onclick="submitWithdrawal()">Submit Request</button>
+    </div>
+  </div>
+
+  <!-- PROFILE TAB -->
+  <div id="tab-profile" class="tab-content">
+    <div class="hero-card">
+      <div class="avatar-lg" id="profile-avatar-lg">AH</div>
+      <h2 id="profile-name" style="font-size:20px;">User</h2>
+      <div style="font-size:12px; opacity:0.8; margin-top:2px;">User Account</div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card green-border">
+        <div class="stat-card-title">Main Balance</div>
+        <div class="stat-card-value" style="color:var(--primary-green);" id="prof-main-bal">BDT: 0.00</div>
+      </div>
+      <div class="stat-card black-border">
+        <div class="stat-card-title">Lifetime Earn</div>
+        <div class="stat-card-value" id="prof-lifetime-bal">BDT: 0.00</div>
+      </div>
+      <div class="stat-card yellow-border">
+        <div class="stat-card-title">Earn Today</div>
+        <div class="stat-card-value" id="prof-today-bal">BDT: 0.00</div>
+      </div>
+      <div class="stat-card green-border">
+        <div class="stat-card-title">Ads Viewed</div>
+        <div class="stat-card-value" id="prof-ads-count">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <div class="bottom-nav">
+    <div class="nav-item active" id="nav-home" onclick="switchTab('tab-home')">
+      <i class="fa-solid fa-house"></i>
+      <span>HOME</span>
+    </div>
+    <div class="nav-item" id="nav-earn" onclick="switchTab('tab-earn')">
+      <i class="fa-solid fa-circle-play"></i>
+      <span>EARN</span>
+    </div>
+    <div class="nav-item" id="nav-tasks" onclick="switchTab('tab-tasks')">
+      <i class="fa-solid fa-list-check"></i>
+      <span>TASKS</span>
+    </div>
+    <div class="nav-item" id="nav-refer" onclick="switchTab('tab-refer')">
+      <i class="fa-solid fa-user-plus"></i>
+      <span>REFER</span>
+    </div>
+    <div class="nav-item" id="nav-wallet" onclick="switchTab('tab-wallet')">
+      <i class="fa-solid fa-wallet"></i>
+      <span>WALLET</span>
+    </div>
+    <div class="nav-item" id="nav-profile" onclick="switchTab('tab-profile')">
+      <i class="fa-solid fa-user"></i>
+      <span>PROFILE</span>
+    </div>
   </div>
 
   <script>
-    let currentBalance = 0.00;
-    const MONETAG_AD_URL = "https://omg10.com/4/11874452";
+    // App State Management
+    let balance = 0.00;
+    let lifetimeEarn = 0.00;
+    let todayEarn = 0.00;
+    let adsViewed = 0;
+    const MONETAG_URL = "https://omg10.com/4/11874452";
 
-    if (window.Telegram && window.Telegram.WebApp) {
-      window.Telegram.WebApp.ready();
-      window.Telegram.WebApp.expand();
+    // Initialize Telegram User Profile
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+
+        const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
+        if (tgUser) {
+          const fullName = `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() || "User";
+          const initials = (tgUser.first_name ? tgUser.first_name[0] : 'U') + (tgUser.last_name ? tgUser.last_name[0] : '');
+          
+          document.getElementById('user-name-top').innerText = fullName;
+          document.getElementById('profile-name').innerText = fullName;
+          document.getElementById('user-avatar-sm').innerText = initials.toUpperCase();
+          document.getElementById('profile-avatar-lg').innerText = initials.toUpperCase();
+          document.getElementById('ref-url').value = `https://t.me/pocketearnmoney_bot?start=${tgUser.id}`;
+        }
+      }
+      updateUI();
+    });
+
+    function updateUI() {
+      const formattedBal = `BDT:${balance.toFixed(2)}`;
+      const formattedLife = `BDT:${lifetimeEarn.toFixed(2)}`;
+      const formattedToday = `BDT:${todayEarn.toFixed(2)}`;
+
+      document.getElementById('user-bal-top').innerText = formattedBal;
+      document.getElementById('main-balance-hero').innerText = formattedBal;
+      document.getElementById('hero-total-earned').innerText = formattedLife;
+      
+      document.getElementById('prof-main-bal').innerText = formattedBal;
+      document.getElementById('prof-lifetime-bal').innerText = formattedLife;
+      document.getElementById('prof-today-bal').innerText = formattedToday;
+      document.getElementById('prof-ads-count').innerText = adsViewed;
     }
 
-    function updateBalance() {
-      document.getElementById('balance').innerText = 'BDT ' + currentBalance.toFixed(2);
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+      document.getElementById(tabId).classList.add('active');
+      
+      // Update nav highlights
+      const navMap = {
+        'tab-home': 'nav-home',
+        'tab-earn': 'nav-earn',
+        'tab-tasks': 'nav-tasks',
+        'tab-refer': 'nav-refer',
+        'tab-wallet': 'nav-wallet',
+        'tab-profile': 'nav-profile'
+      };
+      if (navMap[tabId]) {
+        document.getElementById(navMap[tabId]).classList.add('active');
+      }
     }
 
-    function showTab(secId, btn) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById(secId).classList.add('active');
-      btn.classList.add('active');
-    }
+    function startWatchAd() {
+      const btn = document.getElementById('watch-ad-btn');
+      const timerDisplay = document.getElementById('ad-timer');
 
-    function claimBonus() {
-      currentBalance += 5.00;
-      updateBalance();
-      document.getElementById('bonus-btn').disabled = true;
-      document.getElementById('bonus-btn').innerText = 'Claimed';
-      alert('Congratulations! You claimed BDT 5.00 Daily Bonus!');
-    }
-
-    function startAdTask() {
-      const adBtn = document.getElementById('ad-btn');
-      const timerStatus = document.getElementById('timer-status');
-
-      // Open link using Telegram WebApp external browser handler
       if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
-        window.Telegram.WebApp.openLink(MONETAG_AD_URL, { try_instant_view: false });
+        window.Telegram.WebApp.openLink(MONETAG_URL, { try_instant_view: false });
       } else {
-        window.open(MONETAG_AD_URL, '_blank');
+        window.open(MONETAG_URL, '_blank');
       }
 
-      // Start 15 second countdown
-      let timeLeft = 15;
-      adBtn.disabled = true;
-      adBtn.innerText = 'Watching...';
+      let sec = 15;
+      btn.disabled = true;
 
-      const countdown = setInterval(() => {
-        timerStatus.innerText = `Please wait ${timeLeft}s for reward...`;
-        timeLeft--;
+      const interval = setInterval(() => {
+        timerDisplay.innerText = `Please wait ${sec} seconds...`;
+        sec--;
 
-        if (timeLeft < 0) {
-          clearInterval(countdown);
-          currentBalance += 2.00;
-          updateBalance();
-          timerStatus.innerText = '';
-          adBtn.disabled = false;
-          adBtn.innerText = 'Start Ad';
-          alert('Great! BDT 2.00 has been added to your balance.');
+        if (sec < 0) {
+          clearInterval(interval);
+          timerDisplay.innerText = '';
+          btn.disabled = false;
+          
+          balance += 2.00;
+          lifetimeEarn += 2.00;
+          todayEarn += 2.00;
+          adsViewed += 1;
+
+          updateUI();
+          alert('Reward Claimed! BDT 2.00 added.');
         }
       }, 1000);
     }
 
-    function copyLink() {
-      let copyText = document.getElementById("ref-link");
-      copyText.select();
-      navigator.clipboard.writeText(copyText.value);
-      alert("Referral link copied!");
+    function claimDailyBonus() {
+      balance += 5.00;
+      lifetimeEarn += 5.00;
+      todayEarn += 5.00;
+      updateUI();
+      
+      const btn = document.getElementById('bonus-claim-btn');
+      btn.disabled = true;
+      btn.innerText = 'Bonus Claimed Today';
+      alert('Bonus Claimed! BDT 5.00 added.');
     }
 
-    function withdraw() {
-      let num = document.getElementById('acc-num').value;
-      let amt = parseFloat(document.getElementById('amount').value);
-      
+    function copyRefLink() {
+      const refInput = document.getElementById('ref-url');
+      refInput.select();
+      navigator.clipboard.writeText(refInput.value);
+      alert('Referral link copied!');
+    }
+
+    function submitWithdrawal() {
+      const num = document.getElementById('w-number').value;
+      const amt = parseFloat(document.getElementById('w-amount').value);
+
       if (!num || isNaN(amt)) {
-        alert('Please fill out all fields!');
+        alert('Please enter valid account and amount.');
         return;
       }
       if (amt < 50) {
-        alert('Minimum withdrawal amount is BDT 50');
+        alert('Minimum withdrawal is BDT 50.');
         return;
       }
-      if (amt > currentBalance) {
-        alert('Insufficient balance!');
+      if (amt > balance) {
+        alert('Insufficient balance.');
         return;
       }
 
-      currentBalance -= amt;
-      updateBalance();
-      alert('Withdrawal request submitted successfully!');
+      balance -= amt;
+      updateUI();
+      alert('Withdrawal request submitted!');
     }
   </script>
 </body>
