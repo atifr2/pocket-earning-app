@@ -168,6 +168,11 @@
     let currentBalance = 0.00;
     const MONETAG_AD_URL = "https://omg10.com/4/11874452";
 
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
+    }
+
     function updateBalance() {
       document.getElementById('balance').innerText = 'BDT ' + currentBalance.toFixed(2);
     }
@@ -190,9 +195,13 @@
     function startAdTask() {
       const adBtn = document.getElementById('ad-btn');
       const timerStatus = document.getElementById('timer-status');
-      
-      // Open the ad in a new tab
-      window.open(MONETAG_AD_URL, '_blank');
+
+      // Open link using Telegram WebApp external browser handler
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+        window.Telegram.WebApp.openLink(MONETAG_AD_URL, { try_instant_view: false });
+      } else {
+        window.open(MONETAG_AD_URL, '_blank');
+      }
 
       // Start 15 second countdown
       let timeLeft = 15;
