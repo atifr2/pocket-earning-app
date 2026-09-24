@@ -1,332 +1,239 @@
+</body>
+</html>
 <!DOCTYPE html>
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pocket Power - Real App</title>
+  <title>Pocket Earn - Watch & Earn</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
   <style>
     :root {
       --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-bg: rgba(255, 255, 255, 0.07);
       --card-border: rgba(255, 255, 255, 0.12);
       --accent-purple: #8b5cf6;
       --accent-green: #10b981;
-      --accent-gold: #fbbf24;
-      --accent-pink: #ec4899;
+      --accent-gold: #f59e0b;
       --text-white: #ffffff;
       --text-dim: #94a3b8;
-      --radius: 18px;
+      --radius: 20px;
     }
 
-    * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 0; }
-    body { background: var(--bg-gradient); color: var(--text-white); min-height: 100vh; padding-bottom: 90px; user-select: none; }
+    * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+    body { background: var(--bg-gradient); color: var(--text-white); min-height: 100vh; padding-bottom: 90px; }
 
-    /* Auth Screens */
-    .auth-screen { position: fixed; inset: 0; background: #0f172a; z-index: 200; padding: 25px; display: flex; flex-direction: column; justify-content: center; }
-    .auth-title { font-size: 24px; font-weight: 800; color: var(--accent-pink); margin-bottom: 20px; text-align: center; }
+    .auth-card {
+      max-width: 400px; margin: 40px auto; padding: 25px; background: var(--card-bg);
+      border: 1px solid var(--card-border); border-radius: var(--radius); backdrop-filter: blur(15px);
+    }
+    .auth-title { text-align: center; color: var(--accent-purple); margin-bottom: 20px; font-size: 22px; }
+    .input-group { margin-bottom: 15px; }
+    .input-group label { display: block; font-size: 13px; color: var(--text-dim); margin-bottom: 5px; }
+    .input-group input {
+      width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border);
+      border-radius: 10px; color: white; outline: none; font-size: 14px;
+    }
+    .btn-submit {
+      width: 100%; padding: 14px; background: linear-gradient(90deg, #8b5cf6, #10b981); border: none;
+      border-radius: 12px; color: white; font-weight: bold; cursor: pointer; margin-top: 10px;
+    }
 
-    /* Main UI Header */
     .app-header {
-      background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(15px);
-      padding: 15px 20px; border-bottom: 1px solid var(--card-border);
+      background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(15px); padding: 15px 20px;
       position: sticky; top: 0; z-index: 90; display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
     }
-    .user-profile { display: flex; align-items: center; gap: 12px; }
-    .avatar-inner {
-      width: 40px; height: 40px; border-radius: 50%; background: var(--accent-purple);
-      display: flex; align-items: center; justify-content: center; font-weight: bold;
-    }
-    .balance-badge {
-      background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4);
-      padding: 6px 14px; border-radius: 30px; font-weight: 800; color: var(--accent-green); font-size: 14px;
-    }
-
-    .container { padding: 15px; }
-
+    .container { padding: 15px; max-width: 500px; margin: auto; }
     .glass-card {
-      background: var(--card-bg); backdrop-filter: blur(10px);
-      border: 1px solid var(--card-border); border-radius: var(--radius);
-      padding: 18px; margin-bottom: 15px;
+      background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 20px; margin-bottom: 15px;
     }
-
-    .btn-action {
-      width: 100%; padding: 12px; border: none; border-radius: 12px;
-      background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink)); color: #fff;
-      font-weight: 800; font-size: 13px; cursor: pointer; transition: 0.3s; margin-top: 5px;
-    }
-    .btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .custom-input, .custom-select {
-      width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border); border-radius: 10px; color: #fff;
-      margin-bottom: 10px; font-size: 13px; outline: none;
-    }
-    .custom-select option { background: #0f172a; color: #fff; }
-
-    .bottom-nav {
-      position: fixed; bottom: 0; left: 0; width: 100%;
-      background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(15px);
-      display: flex; justify-content: space-around; padding: 10px 0;
-      border-top: 1px solid var(--card-border); z-index: 100;
-    }
-    .nav-link {
-      background: none; border: none; color: var(--text-dim);
-      display: flex; flex-direction: column; align-items: center; font-size: 9px;
-      font-weight: 700; cursor: pointer;
-    }
-    .nav-link i { font-size: 16px; margin-bottom: 3px; }
-    .nav-link.active { color: var(--accent-pink); }
-
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    .hidden { display: none !important; }
   </style>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-  <!-- LOGIN / SIGNUP SCREEN -->
-  <div id="auth-screen" class="auth-screen">
-    <div class="auth-title">LOGIN / REGISTER</div>
-    <input type="text" id="auth-phone" class="custom-input" placeholder="Phone Number (017XXXXXXXX)">
-    <input type="password" id="auth-pass" class="custom-input" placeholder="Password">
-    <button class="btn-action" onclick="loginUser()">LOGIN / REGISTER NOW</button>
+  <!-- AUTH SECTION -->
+  <div id="auth-section" class="auth-card">
+    <h2 class="auth-title"><i class="fas fa-user-plus"></i> SIGN UP / LOGIN</h2>
+    
+    <!-- Step 1: Info Form -->
+    <div id="info-form">
+      <div class="input-group">
+        <label>Full Name</label>
+        <input type="text" id="reg-name" placeholder="Enter Full Name">
+      </div>
+      <div class="input-group">
+        <label>Phone Number (with +880)</label>
+        <input type="text" id="reg-phone" placeholder="+8801700000000">
+      </div>
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="reg-pass" placeholder="Create Password">
+      </div>
+      <div id="recaptcha-container"></div>
+      <button class="btn-submit" onclick="sendOTP()">Send OTP</button>
+    </div>
+
+    <!-- Step 2: OTP Form -->
+    <div id="otp-form" class="hidden">
+      <div class="input-group">
+        <label>Enter 6-digit OTP Code</label>
+        <input type="text" id="otp-code" placeholder="123456">
+      </div>
+      <button class="btn-submit" onclick="verifyOTP()">Verify OTP & Complete Registration</button>
+    </div>
   </div>
 
-  <!-- MAIN APP -->
-  <div class="app-header">
-    <div class="user-profile">
-      <div class="avatar-inner" id="user-avatar">U</div>
+  <!-- MAIN DASHBOARD (HIDDEN UNTIL LOGIN) -->
+  <div id="dashboard-section" class="hidden">
+    <div class="app-header">
       <div>
-        <div style="font-size: 13px; font-weight: 800;" id="user-phone-display">017XXXXXXXX</div>
-        <div style="font-size: 10px; color: var(--text-dim);">Tasks: <span id="task-completed">0</span>/50</div>
+        <h4 id="user-display-name">User</h4>
+        <small id="user-display-phone" style="color:var(--text-dim)"></small>
+      </div>
+      <div style="color:var(--accent-green); font-weight:bold;">
+        Balance: ৳<span id="user-balance">0</span>
       </div>
     </div>
-    <div class="balance-badge">BDT <span id="balance">0.00</span></div>
-  </div>
 
-  <div class="container">
-
-    <!-- TAB 1: AD TASKS -->
-    <div id="tab-tasks" class="tab-content active">
+    <div class="container">
       <div class="glass-card" style="text-align: center;">
-        <h3 style="color: var(--accent-gold); font-size: 16px;">DAILY AD TASKS (50 ADS)</h3>
-        <p style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">প্রতিটি ৩০ সেকেন্ড অ্যাড দেখলে BDT 7.00 জমা হবে</p>
-        <div style="font-size: 24px; font-weight: 900; color: var(--accent-gold); margin: 10px 0;"><span id="ad-count">0</span> / 50</div>
-        
-        <button class="btn-action" id="watch-ad-btn" onclick="startAdTask()">
-          <i class="fa-solid fa-play"></i> WATCH AD (30 SEC)
-        </button>
+        <h3>Watch & Earn</h3>
+        <p style="color: var(--text-dim); margin: 10px 0;">Complete tasks to earn real money</p>
+        <button class="btn-submit" onclick="doTask()">Watch Ad (+৳5)</button>
       </div>
-    </div>
 
-    <!-- TAB 2: DEPOSIT -->
-    <div id="tab-deposit" class="tab-content">
       <div class="glass-card">
-        <h3 style="font-size: 15px; margin-bottom: 10px;">Deposit / Add Money</h3>
-        <select class="custom-select" id="dep-method">
-          <option value="bKash">bKash Personal (01700000000)</option>
-          <option value="Nagad">Nagad Personal (01800000000)</option>
-        </select>
-        <input type="number" class="custom-input" placeholder="Amount (Min ৳200)" id="dep-amount">
-        <input type="text" class="custom-input" placeholder="TrxID" id="dep-trx">
-        <button class="btn-action" onclick="submitDeposit()">SUBMIT DEPOSIT</button>
+        <h3>Withdraw Money</h3>
+        <div class="input-group" style="margin-top:10px;">
+          <input type="number" id="wit-amt" placeholder="Amount (Min ৳200)">
+        </div>
+        <div class="input-group">
+          <input type="text" id="wit-num" placeholder="bKash/Nagad Number">
+        </div>
+        <button class="btn-submit" onclick="requestWithdraw()">Withdraw</button>
       </div>
     </div>
-
-    <!-- TAB 3: WITHDRAW -->
-    <div id="tab-withdraw" class="tab-content">
-      <div class="glass-card">
-        <h3 style="font-size: 15px; margin-bottom: 8px;">Easy Withdraw</h3>
-        <select class="custom-select" id="wit-method">
-          <option>bKash Personal</option>
-          <option>Nagad Personal</option>
-        </select>
-        <input type="text" class="custom-input" placeholder="Account Number" id="wit-num">
-        <input type="number" class="custom-input" placeholder="Amount (Min ৳200)" id="wit-amt">
-        <button class="btn-action" style="background: linear-gradient(90deg, #10b981, #059669);" onclick="submitWithdraw()">WITHDRAW NOW</button>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Bottom Navigation -->
-  <div class="bottom-nav">
-    <button class="nav-link active" onclick="switchTab('tab-tasks', this)"><i class="fa-solid fa-list-check"></i>Tasks</button>
-    <button class="nav-link" onclick="switchTab('tab-deposit', this)"><i class="fa-solid fa-wallet"></i>Deposit</button>
-    <button class="nav-link" onclick="switchTab('tab-withdraw', this)"><i class="fa-solid fa-money-bill-transfer"></i>Withdraw</button>
   </div>
 
   <script>
-    // ----------------------------------------------------
-    // REPLACE THIS WITH YOUR FIREBASE CONFIG
-    // ----------------------------------------------------
+    // YOUR FIREBASE CONFIG HERE
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT.app照.com",
-      messagingSenderId: "123456789",
-      appId: "1:123456789:web:abcdef"
+      apiKey: "AIzaSyCKcMDcypXPxyXXtpdbLj9CKB9H0hPdtTc",
+      authDomain: "pocketearnmoney-b1ae4.firebaseapp.com",
+      projectId: "pocketearnmoney-b1ae4",
+      storageBucket: "pocketearnmoney-b1ae4.firebasestorage.app",
+      messagingSenderId: "407102622154",
+      appId: "1:407102622154:web:ca2e8e32ce663a48362733",
+      measurementId: "G-D0R98BBN0E"
     };
 
     firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
     const db = firebase.firestore();
 
-    let currentUser = null;
+    let confirmationResultGlobal = null;
+    let tempUserData = {};
 
-    function switchTab(tabId, elem) {
-      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      elem.classList.add('active');
-    }
-
-    /* Auth System */
-    async function loginUser() {
-      const phone = document.getElementById('auth-phone').value.trim();
-      const pass = document.getElementById('auth-pass').value.trim();
-
-      if(phone.length < 11 || !pass) {
-        alert('সঠিক ১১ ডিজিটের ফোন নম্বর এবং পাসওয়ার্ড দিন!');
-        return;
-      }
-
-      const userRef = db.collection('users').doc(phone);
-      const doc = await userRef.get();
-
-      if (doc.exists) {
-        if(doc.data().password === pass) {
-          currentUser = doc.data();
-        } else {
-          alert('ভুল পাসওয়ার্ড!');
-          return;
-        }
-      } else {
-        // Register New User
-        currentUser = {
-          phone: phone,
-          password: pass,
-          balance: 0.00,
-          tasksCompleted: 0
-        };
-        await userRef.set(currentUser);
-      }
-
-      document.getElementById('auth-screen').style.display = 'none';
-      loadUserData();
-    }
-
-    function loadUserData() {
-      db.collection('users').doc(currentUser.phone).onSnapshot(doc => {
-        if(doc.exists) {
-          const data = doc.data();
-          document.getElementById('balance').innerText = data.balance.toFixed(2);
-          document.getElementById('ad-count').innerText = data.tasksCompleted;
-          document.getElementById('task-completed').innerText = data.tasksCompleted;
-          document.getElementById('user-phone-display').innerText = data.phone;
-        }
+    window.onload = function() {
+      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        'size': 'invisible'
       });
-    }
+    };
 
-    /* Ad Task Real Update */
-    async function startAdTask() {
-      if(!currentUser) return;
-      const userRef = db.collection('users').doc(currentUser.phone);
-      const doc = await userRef.get();
-      const data = doc.data();
+    function sendOTP() {
+      const name = document.getElementById('reg-name').value;
+      const phone = document.getElementById('reg-phone').value;
+      const pass = document.getElementById('reg-pass').value;
 
-      if(data.tasksCompleted >= 50) {
-        alert('আজকের ৫০টি টাস্ক শেষ!');
+      if(!name || !phone || !pass) {
+        alert('Sob ghor puron korun!');
         return;
       }
 
-      // Adsterra / Monetag Link Open
-      window.open('https://your-adsterra-link.com', '_blank');
+      tempUserData = { name, phone, pass };
 
-      const btn = document.getElementById('watch-ad-btn');
-      btn.disabled = true;
-
-      setTimeout(async () => {
-        await userRef.update({
-          balance: firebase.firestore.FieldValue.increment(7.00),
-          tasksCompleted: firebase.firestore.FieldValue.increment(1)
+      const appVerifier = window.recaptchaVerifier;
+      auth.signInWithPhoneNumber(phone, appVerifier)
+        .then((confirmationResult) => {
+          confirmationResultGlobal = confirmationResult;
+          document.getElementById('info-form').classList.add('hidden');
+          document.getElementById('otp-form').classList.remove('hidden');
+          alert('Apnar mobile-e OTP pathano hoyeche!');
+        }).catch((error) => {
+          alert('OTP pathate somosya: ' + error.message);
         });
-        alert('BDT 7.00 আপনার অ্যাকাউন্টে রিয়েল-টাইম যোগ হয়েছে!');
-        btn.disabled = false;
-      }, 5000);
     }
 
-    /* Deposit Request */
-    async function submitDeposit() {
-      const amt = parseFloat(document.getElementById('dep-amount').value);
-      const trx = document.getElementById('dep-trx').value;
-      const method = document.getElementById('dep-method').value;
+    function verifyOTP() {
+      const code = document.getElementById('otp-code').value;
+      if(!code) return alert('OTP code din!');
 
-      if(!amt || !trx) { alert('সব তথ্য পূরণ করুন!'); return; }
+      confirmationResultGlobal.confirm(code).then((result) => {
+        const user = result.user;
+        
+        // Save user data to Firestore
+        db.collection('users').doc(user.uid).set({
+          name: tempUserData.name,
+          phone: tempUserData.phone,
+          balance: 0,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+          loadDashboard(tempUserData.name, tempUserData.phone, 0);
+        });
 
-      await db.collection('deposits').add({
-        phone: currentUser.phone,
-        amount: amt,
-        trx: trx,
-        method: method,
-        status: 'pending',
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).catch((error) => {
+        alert('Khabar OTP vul ba expired!');
       });
-
-      alert('ডিপোজিট রিকুয়েস্ট এডমিন প্যানেলে জমা হয়েছে!');
-      document.getElementById('dep-amount').value = '';
-      document.getElementById('dep-trx').value = '';
     }
 
-    /* Withdraw Request */
-    async function submitWithdraw() {
-      const amt = parseFloat(document.getElementById('wit-amt').value);
+    function loadDashboard(name, phone, balance) {
+      document.getElementById('auth-section').classList.add('hidden');
+      document.getElementById('dashboard-section').classList.remove('hidden');
+      document.getElementById('user-display-name').innerText = name;
+      document.getElementById('user-display-phone').innerText = phone;
+      document.getElementById('user-balance').innerText = balance;
+    }
+
+    function doTask() {
+      alert('Ad dekhano hochhe...');
+      setTimeout(() => {
+        const user = auth.currentUser;
+        if(user) {
+          db.collection('users').doc(user.uid).update({
+            balance: firebase.firestore.FieldValue.increment(5)
+          }).then(() => {
+            let curr = parseInt(document.getElementById('user-balance').innerText);
+            document.getElementById('user-balance').innerText = curr + 5;
+            alert('Apnar ৳5 joma hoyeche!');
+          });
+        }
+      }, 2000);
+    }
+
+    function requestWithdraw() {
+      const amt = parseInt(document.getElementById('wit-amt').value);
       const num = document.getElementById('wit-num').value;
+      const user = auth.currentUser;
 
-      if(!amt || !num || amt < 200) { alert('কমপক্ষে ২০০ টাকা উইথড্র করতে হবে!'); return; }
+      if(amt < 200 || !num) return alert('Min ৳200 ebong Number din!');
 
-      const userRef = db.collection('users').doc(currentUser.phone);
-      const doc = await userRef.get();
-
-      if(doc.data().balance < amt) {
-        alert('পর্যাপ্ত ব্যালেন্স নেই!');
-        return;
-      }
-
-      // Cut balance instantly
-      await userRef.update({
-        balance: firebase.firestore.FieldValue.increment(-amt)
-      });
-
-      await db.collection('withdraws').add({
-        phone: currentUser.phone,
+      db.collection('withdraws').add({
+        uid: user.uid,
         amount: amt,
         number: num,
-        status: 'pending',
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        status: 'pending'
+      }).then(() => {
+        alert('Withdraw Request Pathano Hoyeche!');
       });
-
-      alert('উইথড্র রিকুয়েস্ট জমা হয়েছে! এডমিন এপ্রুভ করলে পেমেন্ট পেয়ে যাবেন।');
-      document.getElementById('wit-amt').value = '';
-      document.getElementById('wit-num').value = '';
-    
-  const firebaseConfig = {
-    apiKey: "AIzaSyCKcM0cypXPxyXXtpdbLj9CKB9H0hPdtTc",
-    authDomain: "pocketearnmoney-b1ae4.firebaseapp.com",
-    projectId: "pocketearnmoney-b1ae4",
-    storageBucket: "pocketearnmoney-b1ae4.firebasestorage.app",
-    messagingSenderId: "407102622154",
-    appId: "1:407102622154:web:ca2e8e32ce663a48362733",
-    measurementId: "G-DDR98BBNDE"
-  };
-      firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    }
   </script>
-
 </body>
 </html>
