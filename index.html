@@ -1,447 +1,319 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pocket Earning Bot</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <title>Pocket Earning Pro</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #0f172a; color: #f8fafc; padding-bottom: 70px; }
+    :root {
+      --bg-dark: #0b0f19;
+      --card-bg: #151c2c;
+      --primary: #38bdf8;
+      --accent: #22c55e;
+      --vip-color: #f59e0b;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+    }
+
+    * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; }
+    body { background-color: var(--bg-dark); color: var(--text-main); padding-bottom: 75px; user-select: none; }
+
+    /* Header Profile */
+    .header-bar {
+      background: linear-gradient(180deg, #1e293b 0%, var(--bg-dark) 100%);
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1e293b;
+    }
+    .user-info { display: flex; align-items: center; gap: 12px; }
+    .avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: linear-gradient(135deg, #38bdf8, #0284c7);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 18px; color: #fff;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    }
+    .user-badge {
+      background: rgba(245, 158, 11, 0.15); color: var(--vip-color);
+      font-size: 10px; padding: 3px 8px; border-radius: 20px;
+      border: 1px solid rgba(245, 158, 11, 0.3); font-weight: bold;
+    }
+
+    /* Balance Hero Dashboard */
+    .dashboard-card {
+      margin: 15px; padding: 20px;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .dashboard-card::before {
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .bal-label { font-size: 12px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 1px; }
+    .bal-value { font-size: 32px; font-weight: 800; color: #fff; margin: 6px 0; }
+    .bal-value span { color: var(--primary); font-size: 20px; }
     
-    .ticker { background: #064e3b; color: #6ee7b7; padding: 8px 15px; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 500; }
-    .ticker-dot { width: 8px; height: 8px; background: #34d399; border-radius: 50%; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+    .stats-row {
+      display: flex; justify-content: space-between; margin-top: 15px;
+      padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 12px;
+    }
 
-    .header { padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-    .user-profile { display: flex; align-items: center; gap: 10px; }
-    .avatar { width: 42px; height: 42px; border-radius: 12px; background: #10b981; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; color: #fff; }
-    .user-info h3 { font-size: 15px; }
-    .user-info p { font-size: 11px; color: #94a3b8; }
-    .badge { background: #f59e0b; color: #000; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; }
+    /* Notice Banner */
+    .notice-box {
+      margin: 0 15px 15px 15px; padding: 12px 15px; background: rgba(56, 189, 248, 0.08);
+      border-left: 4px solid var(--primary); border-radius: 8px; font-size: 12px;
+      display: flex; align-items: center; gap: 10px; color: #e2e8f0;
+    }
 
+    /* Grid Sections */
     .container { padding: 0 15px; }
-    .balance-card { background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid #334155; border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
-    .bal-title { font-size: 11px; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; }
-    .bal-amount { font-size: 32px; font-weight: bold; color: #38bdf8; margin: 5px 0 15px 0; }
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: rgba(15, 23, 42, 0.6); padding: 10px; border-radius: 12px; }
-    .stat-box { font-size: 12px; }
-    .stat-box span { display: block; color: #94a3b8; font-size: 10px; }
-    .stat-box strong { color: #10b981; }
+    .sec-title { font-size: 13px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; margin: 15px 0 10px 0; letter-spacing: 0.5px; }
+    
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    
+    .action-card {
+      background: var(--card-bg); padding: 16px; border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.05); text-align: center;
+      cursor: pointer; transition: all 0.2s ease;
+    }
+    .action-card:active { transform: scale(0.96); }
+    .card-ic { font-size: 26px; margin-bottom: 8px; display: inline-block; }
+    .card-t { font-size: 14px; font-weight: bold; color: #fff; }
+    .card-d { font-size: 11px; color: var(--text-sub); margin-top: 3px; }
+    .pill { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; background: var(--accent); color: #000; margin-left: 4px; }
 
-    .section-title { font-size: 14px; text-transform: uppercase; color: #94a3b8; margin-bottom: 12px; letter-spacing: 0.5px; }
-    .grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .menu-card { background: #1e293b; border: 1px solid #334155; border-radius: 14px; padding: 15px; cursor: pointer; transition: 0.2s; }
-    .menu-card:active { transform: scale(0.98); }
-    .icon-box { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 10px; }
-    .icon-blue { background: rgba(56, 189, 248, 0.1); color: #38bdf8; }
-    .icon-yellow { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-    .icon-purple { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
-    .icon-green { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-    .menu-card h4 { font-size: 14px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
-    .menu-card p { font-size: 11px; color: #94a3b8; line-height: 1.3; }
-    .tag { font-size: 9px; background: #10b981; color: #000; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+    /* Forms & Buttons */
+    .input-field {
+      width: 100%; padding: 12px; margin: 8px 0 14px 0; border-radius: 8px;
+      background: #0f172a; color: #fff; border: 1px solid #334155; outline: none; font-size: 14px;
+    }
+    .btn-submit {
+      width: 100%; padding: 14px; background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white; font-weight: bold; border: none; border-radius: 8px;
+      cursor: pointer; font-size: 14px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
 
-    .page-tab { display: none; }
-    .page-tab.active { display: block; }
+    /* Navigation Bar */
+    .nav-bar {
+      position: fixed; bottom: 0; left: 0; width: 100%; background: #151c2c;
+      display: flex; justify-content: space-around; padding: 10px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 99;
+    }
+    .nav-item {
+      background: none; border: none; color: var(--text-sub);
+      display: flex; flex-direction: column; align-items: center;
+      font-size: 10px; cursor: pointer; transition: 0.2s;
+    }
+    .nav-item i { font-size: 18px; margin-bottom: 4px; }
+    .nav-item.active { color: var(--primary); font-weight: bold; }
 
-    .task-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 12px 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-    .task-info h5 { font-size: 13px; margin-bottom: 2px; }
-    .task-info p { font-size: 11px; color: #10b981; font-weight: bold; }
-    .btn-action { background: #10b981; color: #000; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; }
-
-    .input-field { width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px; color: #fff; margin-bottom: 10px; font-size: 13px; outline: none; }
-
-    .bottom-navbar { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; border-top: 1px solid #334155; display: flex; justify-content: space-around; padding: 8px 0; }
-    .nav-btn { background: none; border: none; color: #94a3b8; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; cursor: pointer; width: 20%; }
-    .nav-btn i { font-size: 16px; }
-    .nav-btn.active { color: #10b981; }
+    /* Pages */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
 
-  <!-- Live Activity Ticker -->
-  <div class="ticker">
-    <div class="ticker-dot"></div>
-    <span id="ticker-text">Loading live activities...</span>
-  </div>
-
   <!-- Header Section -->
-  <div class="header">
-    <div class="user-profile">
-      <div class="avatar" id="user-avatar">U</div>
-      <div class="user-info">
-        <h3 id="user-name">Loading...</h3>
-        <p id="user-id">ID: ------</p>
+  <div class="header-bar">
+    <div class="user-info">
+      <div class="avatar" id="u-avatar">P</div>
+      <div>
+        <div style="font-weight: bold; font-size: 14px;" id="u-name">Pocket User</div>
+        <span class="user-badge" id="u-status">Standard Active</span>
       </div>
     </div>
-    <div class="badge">Standard</div>
+    <a href="https://t.me/your_payment_channel_link" target="_blank" style="color: var(--primary); font-size: 20px; text-decoration: none;">
+      <i class="fa-brands fa-telegram"></i>
+    </a>
   </div>
 
+  <!-- Dashboard Overview -->
+  <div class="dashboard-card">
+    <div class="bal-label">মোট ব্যালেন্স</div>
+    <div class="bal-value">৳ <span id="user-bal">0.00</span></div>
+    <div class="stats-row">
+      <div>আজকের আয়: <b style="color:var(--accent)">৳<span id="today-earn">0.00</span></b></div>
+      <div>দেখা অ্যাড: <b><span id="ad-count">0</span>/30</b></div>
+    </div>
+  </div>
+
+  <!-- Notice -->
+  <div class="notice-box">
+    <i class="fa-solid fa-bullhorn" style="color: var(--primary); font-size: 16px;"></i>
+    <div><b>নিয়মাবলি:</b> সঠিক নিয়মে অ্যাড দেখুন ও টাস্ক সম্পন্ন করুন। ২৪ ঘণ্টার মধ্যে পেমেন্ট কমপ্লিট করা হয়!</div>
+  </div>
+
+  <!-- Main Pages Container -->
   <div class="container">
-    
-    <!-- Balance Card -->
-    <div class="balance-card">
-      <div class="bal-title">Main Account Balance</div>
-      <div class="bal-amount" id="main-bal">BDT 0.00</div>
-      <div class="stats-grid">
-        <div class="stat-box">
-          <span>Today's Earning</span>
-          <strong id="today-bal">BDT 0.00</strong>
-        </div>
-        <div class="stat-box">
-          <span>Completed Ads</span>
-          <strong id="ads-count">0 / 40</strong>
-        </div>
-      </div>
-    </div>
 
-    <!-- TAB 1: HOME TAB -->
-    <div id="page-home" class="page-tab active">
-      <div class="section-title">Income Hub</div>
-      <div class="grid-menu">
-        <div class="menu-card" onclick="openTab('page-earn')">
-          <div class="icon-box icon-blue"><i class="fa-solid fa-play"></i></div>
-          <h4>Watch Ads <span class="tag">BDT 0.50</span></h4>
-          <p>Earn per sponsored ad view</p>
+    <!-- PAGE 1: HOME -->
+    <div id="tab-home" class="tab-content active">
+      <div class="sec-title">আর্নিং সেন্টার (Income Hub)</div>
+      <div class="grid-2">
+        <div class="action-card" onclick="switchPage('tab-earn')">
+          <i class="fa-solid fa-play card-ic" style="color: var(--primary);"></i>
+          <div class="card-t">অ্যাড দেখুন <span class="pill">৳১-৳২</span></div>
+          <div class="card-d">ভিডিও ও ব্যানার অ্যাড</div>
         </div>
-        <div class="menu-card" onclick="openTab('page-tasks')">
-          <div class="icon-box icon-yellow"><i class="fa-solid fa-list-check"></i></div>
-          <h4>Micro Tasks <span class="tag">HIGH PAY</span></h4>
-          <p>Complete offers & tasks</p>
+        <div class="action-card" onclick="switchPage('tab-tasks')">
+          <i class="fa-solid fa-list-check card-ic" style="color: var(--vip-color);"></i>
+          <div class="card-t">মাইক্রো টাস্ক <span class="pill" style="background:var(--vip-color); color:#000;">HOT</span></div>
+          <div class="card-d">সহজ কাজ করে আয়</div>
         </div>
-        <div class="menu-card" onclick="openTab('page-refer')">
-          <div class="icon-box icon-purple"><i class="fa-solid fa-user-plus"></i></div>
-          <h4>Refer Program <span class="tag">BDT 20</span></h4>
-          <p>Invite active friends</p>
+        <div class="action-card" onclick="switchPage('tab-vip')">
+          <i class="fa-solid fa-crown card-ic" style="color: #a855f7;"></i>
+          <div class="card-t">VIP প্ল্যান <span class="pill" style="background:#a855f7; color:#fff;">500 BDT</span></div>
+          <div class="card-d">৪ গুণ বেশি ইনকাম</div>
         </div>
-        <div class="menu-card" onclick="openTab('page-wallet')">
-          <div class="icon-box icon-green"><i class="fa-solid fa-wallet"></i></div>
-          <h4>Instant Payout</h4>
-          <p>Withdraw via bKash & Nagad</p>
+        <div class="action-card" onclick="switchPage('tab-wallet')">
+          <i class="fa-solid fa-wallet card-ic" style="color: var(--accent);"></i>
+          <div class="card-t">উইথড্র</div>
+          <div class="card-d">বিকাশ / নগদ নগদ পেমেন্ট</div>
         </div>
       </div>
     </div>
-<!-- Deposit Section UI -->
-<!-- VIP & Deposit Hub -->
-<div id="deposit-section" class="card-box" style="margin: 15px 0; padding: 15px; background: #1e293b; border-radius: 12px; color: #fff;">
-  <h3 style="text-align: center; margin-bottom: 10px; color: #38bdf8;">Deposit & VIP Plans 💳</h3>
 
-  <!-- VIP Benefits Card -->
-  <div style="background: #0f172a; padding: 12px; border-radius: 8px; font-size: 13px; color: #cbd5e1; margin-bottom: 15px; border: 1px solid #334155;">
-    <h4 style="color: #f59e0b; margin-top: 0; margin-bottom: 8px;">🌟 BDT 500 VIP Benefits:</h4>
-    <ul style="padding-left: 18px; margin: 0; line-height: 1.6;">
-      <li><b>4X Ad Rewards:</b> প্রতি বিজ্ঞাপনে পাবেন ৳২.০০ করে!</li>
-      <li><b>Daily Return:</b> প্রতিদিন ফ্রি ৳২৫ লগইন রিওয়ার্ড (৩০ দিনে ৳৭৫০)।</li>
-      <li><b>Ad Campaign:</b> ৫০০ টাকা দিয়ে নিজের ভিডিও/লিংক প্রমোটের সুযোগ।</li>
-      <li><b>10% Refer Bonus:</b> রেফারি ডিপোজিট করলেই পাবেন ৳৫০ বোনাস!</li>
-      <li><b>Fast Payout:</b> ইনস্ট্যান্ট বিকাশ/নগদ উইথড্র সুবিধা।</li>
-    </ul>
-  </div>
-
-  <div style="background: #0f172a; padding: 10px; border-radius: 8px; font-size: 12px; color: #94a3b8; margin-bottom: 12px;">
-    📌 <b>নিয়ম:</b> নিচের নম্বরে Send Money করে TrxID ও Amount সাবমিট করুন। অ্যাডমিন চেক করে ৫-৩০ মিনিটে ব্যালেন্স অ্যাক্টিভ করবে।
-  </div>
-
-  <!-- Method Selection -->
-  <label style="font-size: 13px; font-weight: bold;">Select Payment Method:</label>
-  <select id="deposit-method" onchange="updateNumberInfo()" style="width: 100%; padding: 10px; margin: 5px 0 12px 0; border-radius: 6px; background: #0f172a; color: #fff; border: 1px solid #334155;">
-    <option value="bKash">bKash (Personal)</option>
-    <option value="Nagad">Nagad (Personal)</option>
-    <option value="Rocket">Rocket (Personal)</option>
-  </select>
-
-  <!-- Number Display -->
-  <div style="background: #0f172a; border-left: 3px solid #38bdf8; padding: 10px; margin-bottom: 12px; font-size: 13px;">
-    <span id="method-name" style="color: #38bdf8; font-weight: bold;">bKash</span> Number: 
-    <b id="method-number" style="color: #f43f5e; font-size: 14px;">01914589576</b>
-  </div>
-
-  <!-- Inputs -->
-  <label style="font-size: 13px; font-weight: bold;">Amount (Min BDT 500):</label>
-  <input type="number" id="deposit-amount" placeholder="Enter Amount (Min BDT 500)" style="width: 100%; padding: 10px; margin: 5px 0 10px 0; border-radius: 6px; background: #0f172a; color: #fff; border: 1px solid #334155;">
-  
-  <label style="font-size: 13px; font-weight: bold;">Transaction ID (TrxID):</label>
-  <input type="text" id="deposit-trxid" placeholder="Ex: 9J38XKL21" style="width: 100%; padding: 10px; margin: 5px 0 15px 0; border-radius: 6px; background: #0f172a; color: #fff; border: 1px solid #334155;">
-
-  <button onclick="handleDepositSubmit()" style="width: 100%; padding: 12px; background: #22c55e; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">
-    Submit BDT 500 Deposit Request 🚀
-  </button>
-</div>
-
-    <!-- TAB 2: EARN / ADS TAB -->
-    <div id="page-earn" class="page-tab">
-      <div class="section-title">Sponsored Ad Rewards</div>
-      <div class="balance-card">
-        <h3>Watch & Earn (15 Seconds View)</h3>
-        <p style="font-size: 12px; color: #94a3b8; margin: 8px 0 15px 0;">Stay 15 seconds on the ad page to receive BDT 0.50 credit!</p>
-        <button class="btn-action" id="watch-btn" style="width: 100%; padding: 12px;" onclick="executeAdTask()">WATCH SPONSORED AD</button>
+    <!-- PAGE 2: EARN / ADS -->
+    <div id="tab-earn" class="tab-content">
+      <div class="sec-title">বিজ্ঞাপন দেখে আয় করুন</div>
+      <div class="action-card" style="text-align: left; margin-bottom: 12px;">
+        <h4 style="color:#fff; margin-bottom:4px;">স্পনসরড অ্যাড (১৫ সেকেন্ড)</h4>
+        <p class="card-d">অ্যাড অপশনে ক্লিক করে ১৫ সেকেন্ড অপেক্ষা করুন এবং পয়েন্ট পয়েন্ট বোনাস সংগ্রহ করুন।</p>
+        <button class="btn-submit" onclick="watchAdProcess()" style="margin-top: 12px;">অ্যাড দেখা শুরু করুন 🎬</button>
       </div>
     </div>
 
-    <!-- TAB 3: TASKS TAB -->
-    <div id="page-tasks" class="page-tab">
-      <div class="section-title">High Paying Tasks</div>
-      <div class="task-card">
-        <div class="task-info">
-          <h5>Claim Daily Login Bonus</h5>
-          <p>+ BDT 10.00</p>
-        </div>
-        <button class="btn-action" id="daily-btn" onclick="claimDailyBonus()">Claim</button>
-      </div>
-      <div class="task-card">
-        <div class="task-info">
-          <h5>Join Sponsor Telegram Channel</h5>
-          <p>+ BDT 15.00</p>
-        </div>
-        <button class="btn-action" onclick="completeMicroTask(this, 15.00, 'https://t.me/telegram')">Complete</button>
-      </div>
-      <div class="task-card">
-        <div class="task-info">
-          <h5>Subscribe YouTube Channel</h5>
-          <p>+ BDT 20.00</p>
-        </div>
-        <button class="btn-action" onclick="completeMicroTask(this, 20.00, 'https://youtube.com')">Complete</button>
+    <!-- PAGE 3: TASKS -->
+    <div id="tab-tasks" class="tab-content">
+      <div class="sec-title">দৈনিক মাইক্রো টাস্ক</div>
+      <div class="action-card" style="text-align: left; margin-bottom: 10px;">
+        <b>১. অফিশিয়াল টেলিগ্রাম চ্যানেলে জয়েন করুন</b>
+        <p class="card-d">চ্যানেলে জয়েন করে একটি স্ক্রিনশট সাবমিট করুন।</p>
+        <button class="btn-submit" style="padding: 8px; font-size: 12px; margin-top: 8px;" onclick="alert('প্রুফ সাবমিট করা হয়েছে!')">প্রুফ জমা দিন (৳৫.০০)</button>
       </div>
     </div>
 
-    <!-- TAB 4: REFER TAB -->
-    <div id="page-refer" class="page-tab">
-      <div class="section-title">Referral Program</div>
-      <div class="balance-card">
-        <h3>Invite Friends & Earn</h3>
-        <p style="font-size: 12px; color: #94a3b8; margin: 8px 0;">Get BDT 20.00 instantly for every valid friend you invite!</p>
-        <input type="text" class="input-field" id="ref-link-input" value="https://t.me/your_bot?start=ref" readonly>
-        <button class="btn-action" style="width: 100%; padding: 10px;" onclick="copyRef()">COPY REFER LINK</button>
+    <!-- PAGE 4: VIP DEPOSIT -->
+    <div id="tab-vip" class="tab-content">
+      <div class="sec-title">VIP মেম্বারশিপ এবং ডিপোজিট 💎</div>
+      <div style="background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(245,158,11,0.3);">
+        <h4 style="color: var(--vip-color); margin-bottom: 8px;">👑 ৳৫০০ VIP প্ল্যানের সুবিধাসমূহ:</h4>
+        <ul style="font-size: 12px; color: var(--text-sub); padding-left: 18px; line-height: 1.7;">
+          <li>প্রতি বিজ্ঞাপনে পাবেন <b>৳২.০০</b> টাকা করে!</li>
+          <li>প্রতিদিন ফ্রি <b>৳২৫ টাকা</b> ডেইলি বোনাস!</li>
+          <li>রেফারেল ডিপোজিটে <b>১০% (৳৫০)</b> সরাসরি ক্যাশব্যাক!</li>
+        </ul>
+      </div>
+
+      <label style="font-size: 12px; color: var(--text-sub);">পেমেন্ট মেথড নির্বাচন করুন:</label>
+      <select id="dep-method" class="input-field" onchange="changePayNumber()">
+        <option value="bKash">bKash Personal</option>
+        <option value="Nagad">Nagad Personal</option>
+      </select>
+
+      <div style="background: #0f172a; padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; border-left: 3px solid var(--primary);">
+        <span id="pay-name" style="color: var(--primary); font-weight: bold;">bKash</span> নম্বর: 
+        <b id="pay-num" style="color: #f43f5e; font-size: 15px;">01914589576</b>
+      </div>
+
+      <input type="number" id="dep-amount" class="input-field" placeholder="টাকার পরিমাণ (সর্বনিম্ন ৳৫০০)">
+      <input type="text" id="dep-trxid" class="input-field" placeholder="Transaction ID (TrxID) প্রবেশ করুন">
+      <button class="btn-submit" onclick="submitDeposit()">ডিপোজিট রিকোয়েস্ট পাঠান 🚀</button>
+    </div>
+
+    <!-- PAGE 5: REFER -->
+    <div id="tab-refer" class="tab-content">
+      <div class="sec-title">বন্ধুদের ইনভাইট করুন</div>
+      <div class="action-card" style="text-align: left;">
+        <h4>রেফার করে আয় করুন ৳২০.০০</h4>
+        <p class="card-d">আপনার লিংকে কেউ জয়েন করলে পাবেন ৳২০ টাকা এবং সে ডিপোজিট করলে ১০% ইন্সট্যান্ট কমিশন!</p>
+        <input type="text" id="ref-link" class="input-field" value="https://t.me/Pocket_earning_bot?startapp=atifr2" readonly>
+        <button class="btn-submit" onclick="copyRefer()">লিঙ্ক কপি করুন</button>
       </div>
     </div>
 
-    <!-- TAB 5: WALLET TAB -->
-    <div id="page-wallet" class="page-tab">
-      <div class="section-title">Withdraw Balance</div>
-      <div class="balance-card">
-        <input type="text" class="input-field" id="w-num" placeholder="Enter bKash / Nagad Number">
-        <input type="number" class="input-field" id="w-amt" placeholder="Enter Amount (Min BDT 200)">
-        <button class="btn-action" style="width: 100%; padding: 12px;" onclick="processWithdraw()">SUBMIT WITHDRAWAL</button>
+    <!-- PAGE 6: WALLET / WITHDRAW -->
+    <div id="tab-wallet" class="tab-content">
+      <div class="sec-title">টাকা উইথড্র করুন 💳</div>
+      <div class="action-card" style="text-align: left;">
+        <label style="font-size: 12px; color: var(--text-sub);">পেমেন্ট নেওয়ার মাধ্যম:</label>
+        <select class="input-field">
+          <option>bKash Personal</option>
+          <option>Nagad Personal</option>
+        </select>
+        <input type="text" class="input-field" placeholder="আপনার বিকাশ/নগদ নম্বর">
+        <input type="number" class="input-field" placeholder="টাকার পরিমাণ (সর্বনিম্ন ৳২০০)">
+        <button class="btn-submit" onclick="alert('উইথড্র রিকোয়েস্ট সফল হয়েছে!')">উইথড্র জমা দিন</button>
       </div>
     </div>
 
   </div>
 
-  <!-- Bottom Navigation Bar -->
-  <div class="bottom-navbar">
-    <button class="nav-btn active" id="btn-home" onclick="openTab('page-home')">
-      <i class="fa-solid fa-house"></i>
-      <span>Home</span>
-    </button>
-    <button class="nav-btn" id="btn-earn" onclick="openTab('page-earn')">
-      <i class="fa-solid fa-play"></i>
-      <span>Ads</span>
-    </button>
-    <button class="nav-btn" id="btn-tasks" onclick="openTab('page-tasks')">
-      <i class="fa-solid fa-list-check"></i>
-      <span>Tasks</span>
-    </button>
-    <button class="nav-btn" id="btn-refer" onclick="openTab('page-refer')">
-      <i class="fa-solid fa-users"></i>
-      <span>Refer</span>
-    </button>
-    <button class="nav-btn" id="btn-wallet" onclick="openTab('page-wallet')">
-      <i class="fa-solid fa-wallet"></i>
-      <span>Wallet</span>
-    </button>
+  <!-- Footer Navigation -->
+  <div class="nav-bar">
+    <button class="nav-item active" id="btn-home" onclick="switchPage('tab-home')"><i class="fa-solid fa-house"></i>হোম</button>
+    <button class="nav-item" id="btn-earn" onclick="switchPage('tab-earn')"><i class="fa-solid fa-play"></i>অ্যাড</button>
+    <button class="nav-item" id="btn-tasks" onclick="switchPage('tab-tasks')"><i class="fa-solid fa-list-check"></i>টাস্ক</button>
+    <button class="nav-item" id="btn-vip" onclick="switchPage('tab-vip')"><i class="fa-solid fa-crown"></i>VIP</button>
+    <button class="nav-item" id="btn-refer" onclick="switchPage('tab-refer')"><i class="fa-solid fa-users"></i>রেফার</button>
+    <button class="nav-item" id="btn-wallet" onclick="switchPage('tab-wallet')"><i class="fa-solid fa-wallet"></i>ওয়ালেট</button>
   </div>
 
-    <script>
-// 
-// আপনার বিকাশ, নগদ ও রকেট নম্বর:
-const PAYMENT_NUMBERS = {
-    bKash: "01914589576",
-    Nagad: "01996710797",
-    Rocket: "01996710797"
-};
+  <script>
+    const NUMBERS = { bKash: "01914589576", Nagad: "01996710797" };
 
-function updateNumberInfo() {
-    const selectedMethod = document.getElementById("deposit-method").value;
-    document.getElementById("method-name").innerText = selectedMethod;
-    document.getElementById("method-number").innerText = PAYMENT_NUMBERS[selectedMethod];
-}
-
-function handleDepositSubmit() {
-    const method = document.getElementById("deposit-method").value;
-    const amount = document.getElementById("deposit-amount").value;
-    const trxid = document.getElementById("deposit-trxid").value.trim();
-
-    if (!amount || amount < 500) {
-        alert("⚠️ Minimum deposit amount BDT 500 required for VIP Plans!");
-        return;
-    }
-    if (!trxid) {
-        alert("⚠️ Please enter a valid Transaction ID (TrxID)!");
-        return;
-    }
-
-    alert(`✅ Deposit Request Sent!\n\nMethod: ${method}\nAmount: BDT ${amount}\nTrxID: ${trxid}\n\nAdmin review করে ৫-৩০ মিনিটের ভেতর আপনার VIP Plan অ্যাক্টিভ করে দেবে।`);
-    
-    document.getElementById("deposit-amount").value = "";
-    document.getElementById("deposit-trxid").value = "";
-}
-
-    let balance = 0.00;
-    let todayEarning = 0.00;
-    let totalAds = 0;
-    const maxDailyAds = 40;
-    let dailyClaimed = false;
-
-    // Direct Monetag Link Update
-    const AD_DIRECT_LINK = "https://omg10.com/4/11877899";
-
-    const REAL_AD_REWARD = 0.50;
-
-    window.onload = function() {
-      if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.ready();
-        window.Telegram.WebApp.expand();
-        
-        const user = window.Telegram.WebApp.initDataUnsafe?.user;
-        if (user) {
-          document.getElementById('user-name').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-          document.getElementById('user-id').innerText = 'ID: ' + user.id;
-          document.getElementById('user-avatar').innerText = user.first_name ? user.first_name[0].toUpperCase() : 'U';
-          document.getElementById('ref-link-input').value = "https://t.me/pocketearnmoney_bot?start=" + user.id;
-        }
-      }
-
-      const mockActivities = [
-        "Rakib earned BDT 150.00 today",
-        "Tanvir withdrew BDT 300 via bKash",
-        "Sumi completed 40 Ad Tasks",
-        "Arif withdrew BDT 500 via Nagad",
-        "Sabbir invited 10 new friends"
-      ];
-      let tickerIndex = 0;
-      setInterval(() => {
-        document.getElementById('ticker-text').innerText = mockActivities[tickerIndex];
-        tickerIndex = (tickerIndex + 1) % mockActivities.length;
-      }, 4000);
-
-      updateState();
-    };
-
-    function updateState() {
-      document.getElementById('main-bal').innerText = 'BDT ' + balance.toFixed(2);
-      document.getElementById('today-bal').innerText = 'BDT ' + todayEarning.toFixed(2);
-      document.getElementById('ads-count').innerText = totalAds + ' / ' + maxDailyAds;
-    }
-
-    function openTab(pageId) {
-      document.querySelectorAll('.page-tab').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    function switchPage(pageId) {
+      document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
 
       document.getElementById(pageId).classList.add('active');
 
       const btnMap = {
-        'page-home': 'btn-home',
-        'page-earn': 'btn-earn',
-        'page-tasks': 'btn-tasks',
-        'page-refer': 'btn-refer',
-        'page-wallet': 'btn-wallet'
+        'tab-home': 'btn-home',
+        'tab-earn': 'btn-earn',
+        'tab-tasks': 'btn-tasks',
+        'tab-vip': 'btn-vip',
+        'tab-refer': 'btn-refer',
+        'tab-wallet': 'btn-wallet'
       };
-      if (btnMap[pageId]) {
-        document.getElementById(btnMap[pageId]).classList.add('active');
-      }
+      if(btnMap[pageId]) document.getElementById(btnMap[pageId]).classList.add('active');
     }
 
-    function executeAdTask() {
-      if(totalAds >= maxDailyAds) {
-        alert('Daily ad limit reached!');
-        return;
-      }
-
-      const mainBtn = document.getElementById('watch-btn');
-      if(mainBtn) mainBtn.disabled = true;
-
-      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
-        window.Telegram.WebApp.openLink(AD_DIRECT_LINK, { try_instant_view: false });
-      } else {
-        window.open(AD_DIRECT_LINK, '_blank');
-      }
-
-      alert('Ad link opened! Stay 15 seconds on the ad page for verification.');
-
-      setTimeout(function() {
-        balance += REAL_AD_REWARD;
-        todayEarning += REAL_AD_REWARD;
-        totalAds += 1;
-
-        updateState();
-        if(mainBtn) mainBtn.disabled = false;
-        alert('Verified! BDT ' + REAL_AD_REWARD.toFixed(2) + ' added.');
-      }, 15000);
+    function changePayNumber() {
+      const selected = document.getElementById('dep-method').value;
+      document.getElementById('pay-name').innerText = selected;
+      document.getElementById('pay-num').innerText = NUMBERS[selected];
     }
 
-    function claimDailyBonus() {
-      if (dailyClaimed) {
-        alert('You have already claimed today\'s bonus!');
-        return;
-      }
-      balance += 10.00;
-      todayEarning += 10.00;
-      dailyClaimed = true;
-      updateState();
-      
-      const btn = document.getElementById('daily-btn');
-      btn.disabled = true;
-      btn.innerText = "Claimed";
-      btn.style.background = "#334155";
-      alert('Success! BDT 10.00 Daily Bonus Added!');
+    function submitDeposit() {
+      const amt = document.getElementById('dep-amount').value;
+      const trx = document.getElementById('dep-trxid').value.trim();
+
+      if(!amt || amt < 500) { alert('⚠️ সর্বনিম্ন ৳৫০০ ডিপোজিট করতে হবে!'); return; }
+      if(!trx) { alert('⚠️ সঠিক Transaction ID দিন!'); return; }
+
+      alert(`✅ ডিপোজিট রিকোয়েস্ট গৃহীত হয়েছে!\n\nপরিমাণ: ৳${amt}\nTrxID: ${trx}\n অ্যাডমিন চেক করে শীঘ্রই VIP চালু করবে।`);
+      document.getElementById('dep-amount').value = '';
+      document.getElementById('dep-trxid').value = '';
     }
 
-    function completeMicroTask(btnElem, rewardAmount, targetUrl) {
-      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
-        window.Telegram.WebApp.openLink(targetUrl, { try_instant_view: false });
-      } else {
-        window.open(targetUrl, '_blank');
-      }
-
-      balance += rewardAmount;
-      todayEarning += rewardAmount;
-      updateState();
-
-      btnElem.disabled = true;
-      btnElem.innerText = "Done";
-      btnElem.style.background = "#334155";
-      alert('Task Completed! BDT ' + rewardAmount.toFixed(2) + ' added.');
+    function watchAdProcess() {
+      alert('বিজ্ঞাপনটি লোড হচ্ছে... ১৫ সেকেন্ড পর আপনার অ্যাকাউন্টে টাকা যোগ হবে!');
     }
 
-    function copyRef() {
-      const input = document.getElementById('ref-link-input');
-      input.select();
-      navigator.clipboard.writeText(input.value);
-      alert('Referral link copied!');
-    }
-
-    function processWithdraw() {
-      const num = document.getElementById('w-num').value;
-      const amt = parseFloat(document.getElementById('w-amt').value);
-
-      if (!num || isNaN(amt)) {
-        alert('Please fill out all details correctly.');
-        return;
-      }
-      if (amt < 200) {
-        alert('Minimum withdrawal threshold is BDT 200.');
-        return;
-      }
-      if (amt > balance) {
-        alert('Insufficient account balance.');
-        return;
-      }
-
-      balance -= amt;
-      updateState();
-      alert('Withdrawal request submitted successfully!');
+    function copyRefer() {
+      const copyText = document.getElementById("ref-link");
+      copyText.select();
+      document.execCommand("copy");
+      alert("রেফারেল লিঙ্ক কপি করা হয়েছে!");
     }
   </script>
 </body>
