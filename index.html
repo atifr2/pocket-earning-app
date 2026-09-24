@@ -527,10 +527,9 @@
       }
     }
 
-             const videoAdList = [
-      "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1",
-      "https://www.youtube.com/embed/3JZ_D3ELwOQ?autoplay=1"
-    ];
+                 // Monetag Direct Link Setup
+    const AD_DIRECT_LINK = "https://omg10.com/4/11874452";
+    const REAL_AD_REWARD = 0.20;
 
     function executeAdTask() {
       if(totalAds >= maxDailyAds) {
@@ -538,40 +537,28 @@
         return;
       }
 
-      const modal = document.getElementById('videoModal');
-      const iframe = document.getElementById('adVideoIframe');
-      const timerDisp = document.getElementById('modalTimer');
       const mainBtn = document.getElementById('watch-btn');
-
-      const randomVideo = videoAdList[Math.floor(Math.random() * videoAdList.length)];
-      iframe.src = randomVideo;
-      
-      modal.style.display = 'flex';
       if(mainBtn) mainBtn.disabled = true;
 
-      let count = 15;
-      timerDisp.innerText = count + 's';
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+        window.Telegram.WebApp.openLink(AD_DIRECT_LINK, { try_instant_view: false });
+      } else {
+        window.open(AD_DIRECT_LINK, '_blank');
+      }
 
-      const countdown = setInterval(function() {
-        count--;
-        timerDisp.innerText = count + 's';
+      alert('Ad opened! Please stay on the ad page for 10 seconds to receive your reward.');
 
-        if (count <= 0) {
-          clearInterval(countdown);
-          iframe.src = "";
-          modal.style.display = 'none';
-          if(mainBtn) mainBtn.disabled = false;
+      setTimeout(function() {
+        balance += REAL_AD_REWARD;
+        todayEarning += REAL_AD_REWARD;
+        totalAds += 1;
 
-          balance += adReward;
-          todayEarning += adReward;
-          totalAds += 1;
-
-          updateState();
-          alert('Congratulations! BDT ' + adReward.toFixed(2) + ' credited to your wallet.');
-        }
-      }, 1000);
+        updateState();
+        if(mainBtn) mainBtn.disabled = false;
+        alert('Task Verified! BDT ' + REAL_AD_REWARD.toFixed(2) + ' added to your balance.');
+      }, 10000);
     }
- 
+
 
     function copyRef() {
       const input = document.getElementById('ref-link-input');
