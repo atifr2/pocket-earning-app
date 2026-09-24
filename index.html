@@ -49,7 +49,7 @@
     .task-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 12px 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
     .task-info h5 { font-size: 13px; margin-bottom: 2px; }
     .task-info p { font-size: 11px; color: #10b981; font-weight: bold; }
-    .btn-action { background: #10b981; color: #000; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; }
+    .btn-action { background: #10b981; color: #000; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; }
 
     .input-field { width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px; color: #fff; margin-bottom: 10px; font-size: 13px; outline: none; }
 
@@ -108,7 +108,7 @@
         </div>
         <div class="menu-card" onclick="openTab('page-tasks')">
           <div class="icon-box icon-yellow"><i class="fa-solid fa-list-check"></i></div>
-          <h4>CPA & Micro Tasks <span class="tag">HIGH PAY</span></h4>
+          <h4>Micro Tasks <span class="tag">HIGH PAY</span></h4>
           <p>Complete offers & tasks</p>
         </div>
         <div class="menu-card" onclick="openTab('page-refer')">
@@ -136,20 +136,13 @@
 
     <!-- TAB 3: TASKS TAB -->
     <div id="page-tasks" class="page-tab">
-      <div class="section-title">High Paying CPA & Micro Tasks</div>
+      <div class="section-title">High Paying Tasks</div>
       <div class="task-card">
         <div class="task-info">
           <h5>Claim Daily Login Bonus</h5>
           <p>+ BDT 10.00</p>
         </div>
         <button class="btn-action" id="daily-btn" onclick="claimDailyBonus()">Claim</button>
-      </div>
-      <div class="task-card">
-        <div class="task-info">
-          <h5>Install App & Sign Up (CPA Offer)</h5>
-          <p>+ BDT 50.00</p>
-        </div>
-        <button class="btn-action" onclick="completeMicroTask(this, 50.00, 'https://google.com')">Complete</button>
       </div>
       <div class="task-card">
         <div class="task-info">
@@ -221,6 +214,7 @@
     const maxDailyAds = 40;
     let dailyClaimed = false;
 
+    // Direct Monetag Link
     const AD_DIRECT_LINK = "https://omg10.com/4/11874452";
     const REAL_AD_REWARD = 0.50;
 
@@ -280,20 +274,21 @@
 
     function executeAdTask() {
       if(totalAds >= maxDailyAds) {
-        alert('Daily ad limit reached! Please complete Micro Tasks or Refer friends.');
+        alert('Daily ad limit reached!');
         return;
       }
 
       const mainBtn = document.getElementById('watch-btn');
       if(mainBtn) mainBtn.disabled = true;
 
+      // Force open in external default browser (Chrome/Edge/Safari)
       if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
         window.Telegram.WebApp.openLink(AD_DIRECT_LINK, { try_instant_view: false });
       } else {
-        window.open(AD_DIRECT_LINK, '_blank');
+        window.open(AD_DIRECT_LINK, '_system');
       }
 
-      alert('Ad opened! Please view for 15 seconds to receive your BDT 0.50 reward.');
+      alert('Ad link opened! Stay 15 seconds on the ad page for verification.');
 
       setTimeout(function() {
         balance += REAL_AD_REWARD;
