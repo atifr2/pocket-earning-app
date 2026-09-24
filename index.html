@@ -214,8 +214,8 @@
     const maxDailyAds = 40;
     let dailyClaimed = false;
 
-    // Direct Monetag Link
-    const AD_DIRECT_LINK = "https://omg10.com/4/11874452";
+    // Direct Monetag Link Update
+    const AD_DIRECT_LINK = "https://ishers.monetag.com/4/11877814";
     const REAL_AD_REWARD = 0.50;
 
     window.onload = function() {
@@ -281,11 +281,10 @@
       const mainBtn = document.getElementById('watch-btn');
       if(mainBtn) mainBtn.disabled = true;
 
-      // Force open in external default browser (Chrome/Edge/Safari)
       if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
         window.Telegram.WebApp.openLink(AD_DIRECT_LINK, { try_instant_view: false });
       } else {
-        window.open(AD_DIRECT_LINK, '_system');
+        window.open(AD_DIRECT_LINK, '_blank');
       }
 
       alert('Ad link opened! Stay 15 seconds on the ad page for verification.');
