@@ -3,381 +3,308 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Multi-Earning Platform</title>
+  <title>Pocket Power - Premium Earning App</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --bg-color: #f4f7f6;
-      --card-bg: #ffffff;
-      --primary: #056839;
-      --primary-light: #e6f4ed;
-      --text-dark: #1f2937;
-      --text-gray: #6b7280;
-      --accent-yellow: #f59e0b;
-      --accent-red: #ef4444;
-      --border-radius: 16px;
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      --card-bg: rgba(255, 255, 255, 0.07);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --accent-purple: #8b5cf6;
+      --accent-green: #10b981;
+      --accent-gold: #fbbf24;
+      --text-white: #ffffff;
+      --text-dim: #94a3b8;
+      --radius: 20px;
     }
 
-    * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; }
-    body { background-color: var(--bg-color); color: var(--text-dark); padding-bottom: 80px; user-select: none; }
+    * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
+    body { background: var(--bg-gradient); color: var(--text-white); min-height: 100vh; padding-bottom: 90px; user-select: none; }
 
-    /* Top User Profile Bar */
-    .top-profile-card {
-      background: var(--card-bg); margin: 12px 15px; padding: 10px 15px;
-      border-radius: 50px; display: flex; align-items: center; justify-content: space-between;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e5e7eb;
+    /* Glassmorphism Header */
+    .app-header {
+      background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(15px);
+      padding: 15px 20px; border-bottom: 1px solid var(--card-border);
+      position: sticky; top: 0; z-index: 90; display: flex; align-items: center; justify-content: space-between;
     }
-    .user-details { display: flex; align-items: center; gap: 10px; }
-    .avatar {
-      width: 42px; height: 42px; border-radius: 50%;
-      background: linear-gradient(135deg, #056839, #10b981);
-      display: flex; align-items: center; justify-content: center;
-      color: #fff; font-weight: bold; font-size: 16px;
+    .user-profile { display: flex; align-items: center; gap: 12px; }
+    .avatar-ring {
+      width: 45px; height: 45px; border-radius: 50%; padding: 2px;
+      background: linear-gradient(45deg, #8b5cf6, #10b981);
     }
-    .user-name { font-size: 14px; font-weight: bold; color: var(--text-dark); display: flex; align-items: center; gap: 4px; }
-    .user-balance { font-size: 13px; color: var(--primary); font-weight: bold; }
-    .status-badge {
-      background: var(--primary-light); color: var(--primary);
-      font-size: 10px; font-weight: bold; padding: 4px 10px; border-radius: 20px;
+    .avatar-inner {
+      width: 100%; height: 100%; border-radius: 50%; background: #0f172a;
+      display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px;
     }
-
-    /* Container & Banner */
-    .container { padding: 0 15px; }
-    .page-banner {
-      background: linear-gradient(135deg, #034826, #056839);
-      color: #fff; text-align: center; padding: 18px;
-      border-radius: var(--border-radius); margin-bottom: 15px;
-    }
-    .page-banner h3 { font-size: 18px; text-transform: uppercase; color: #facc15; }
-    .page-banner p { font-size: 11px; opacity: 0.9; margin-top: 4px; }
-
-    /* Dashboard Grid */
-    .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 15px; }
-    .menu-card {
-      background: var(--card-bg); padding: 15px 8px; border-radius: var(--border-radius);
-      text-align: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid #f0f0f0;
-    }
-    .icon-box {
-      width: 42px; height: 42px; border-radius: 12px; margin: 0 auto 6px auto;
-      display: flex; align-items: center; justify-content: center; font-size: 18px;
-    }
-    .card-label { font-size: 10px; font-weight: bold; color: var(--text-dark); text-transform: uppercase; }
-
-    /* Multiple Ad Networks Section */
-    .ad-server-card {
-      background: #fff; border-radius: var(--border-radius); padding: 15px;
-      margin-bottom: 12px; border: 1px solid #e2e8f0; display: flex;
-      align-items: center; justify-content: space-between;
-    }
-    .ad-server-info { display: flex; align-items: center; gap: 12px; }
-    .ad-server-icon {
-      width: 40px; height: 40px; border-radius: 10px; background: var(--primary-light);
-      color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 18px;
-    }
-    .btn-ad {
-      background: var(--primary); color: #fff; border: none; padding: 8px 14px;
-      border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer;
+    .balance-badge {
+      background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4);
+      padding: 6px 14px; border-radius: 30px; font-weight: 800; color: var(--accent-green); font-size: 14px;
     }
 
-    /* Support Section Styles */
-    .support-card {
-      background: #fff; border-radius: var(--border-radius); padding: 18px;
-      margin-bottom: 12px; border: 1px solid #e2e8f0; text-align: center;
+    .container { padding: 15px; }
+
+    /* Navigation Tabs */
+    .tab-bar {
+      display: flex; background: rgba(255, 255, 255, 0.05); border-radius: 30px;
+      padding: 5px; margin-bottom: 20px; border: 1px solid var(--card-border);
     }
-    .support-icon {
-      width: 50px; height: 50px; border-radius: 50%; background: #e0f2fe; color: #0284c7;
-      display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 10px auto;
+    .tab-btn {
+      flex: 1; padding: 10px 0; border: none; border-radius: 25px; background: transparent;
+      color: var(--text-dim); font-weight: 700; font-size: 12px; cursor: pointer; transition: 0.3s;
     }
-    .btn-support {
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      width: 100%; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: bold;
-      color: #fff; text-decoration: none; border: none; cursor: pointer; margin-top: 10px;
+    .tab-btn.active { background: linear-gradient(90deg, #8b5cf6, #6366f1); color: #fff; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
+
+    /* Cards Setup */
+    .glass-card {
+      background: var(--card-bg); backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border); border-radius: var(--radius);
+      padding: 20px; margin-bottom: 15px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
     }
 
-    /* Action Buttons */
-    .btn-main {
-      width: 100%; padding: 15px; background: linear-gradient(135deg, #034826, #056839);
-      color: #fff; font-weight: bold; border: none; border-radius: 50px;
-      font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+    /* Ad Task Box */
+    .ad-box {
+      text-align: center; border: 1px dashed rgba(139, 92, 246, 0.5);
+      background: rgba(139, 92, 246, 0.05);
     }
+    .timer-display { font-size: 32px; font-weight: 900; color: var(--accent-gold); margin: 10px 0; }
 
-    /* Bottom Navigation Bar */
+    /* Buttons */
+    .btn-action {
+      width: 100%; padding: 14px; border: none; border-radius: 12px;
+      background: linear-gradient(90deg, #8b5cf6, #10b981); color: #fff;
+      font-weight: 800; font-size: 14px; cursor: pointer; transition: 0.3s;
+      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3); display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Inputs & Selects */
+    .custom-input, .custom-select {
+      width: 100%; padding: 12px 15px; background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border); border-radius: 10px; color: #fff;
+      margin-bottom: 12px; font-size: 13px; outline: none;
+    }
+    .custom-select option { background: #0f172a; color: #fff; }
+
+    /* Bottom Nav Bar */
     .bottom-nav {
-      position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card-bg);
-      display: flex; justify-content: space-around; padding: 10px 0;
-      border-top: 1px solid #e5e7eb; box-shadow: 0 -4px 10px rgba(0,0,0,0.03); z-index: 100;
+      position: fixed; bottom: 0; left: 0; width: 100%;
+      background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(15px);
+      display: flex; justify-content: space-around; padding: 12px 0;
+      border-top: 1px solid var(--card-border); z-index: 100;
     }
-    .nav-btn {
-      background: none; border: none; color: var(--text-gray);
-      display: flex; flex-direction: column; align-items: center; font-size: 9px;
-      font-weight: bold; cursor: pointer;
+    .nav-link {
+      background: none; border: none; color: var(--text-dim);
+      display: flex; flex-direction: column; align-items: center; font-size: 10px;
+      font-weight: 700; cursor: pointer; transition: 0.3s;
     }
-    .nav-btn i { font-size: 18px; margin-bottom: 3px; }
-    .nav-btn.active { color: var(--primary); }
+    .nav-link i { font-size: 18px; margin-bottom: 4px; }
+    .nav-link.active { color: var(--accent-purple); }
 
-    /* Tab Page Visibility */
-    .tab-page { display: none; }
-    .tab-page.active { display: block; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
   </style>
 </head>
 <body>
 
-  <!-- Top User Profile Bar -->
-  <div class="top-profile-card">
-    <div class="user-details">
-      <div class="avatar">AH</div>
+  <!-- App Header -->
+  <div class="app-header">
+    <div class="user-profile">
+      <div class="avatar-ring">
+        <div class="avatar-inner">AH</div>
+      </div>
       <div>
-        <div class="user-name">Atif Hosen <i class="fa-solid fa-circle-check" style="color: var(--primary); font-size: 11px;"></i></div>
-        <div class="user-balance">BDT: <span id="balance">1470.00</span></div>
+        <div style="font-size: 14px; font-weight: 800;">Atif Hosen <i class="fa-solid fa-crown" style="color: var(--accent-gold); font-size: 11px;"></i></div>
+        <div style="font-size: 10px; color: var(--text-dim);">Daily Target: BDT 200 - 300</div>
       </div>
     </div>
-    <div class="status-badge">ACTIVE</div>
+    <div class="balance-badge">BDT <span id="balance">0.00</span></div>
   </div>
 
   <div class="container">
 
-    <!-- HOME TAB -->
-    <div id="tab-home" class="tab-page active">
-      <div class="page-banner">
-        <h3>HIGH EARNING CENTER</h3>
-        <p>Ekadhik network theke ad dekhe protidin 200-500 taka income korun</p>
+    <!-- TAB 1: DAILY ADS (200-300 TAKA TARGET) -->
+    <div id="tab-ads" class="tab-content active">
+      <div class="glass-card ad-box">
+        <h3 style="color: var(--accent-gold); font-size: 18px;">30-SECOND PREMIUM AD</h3>
+        <p style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">Ad purnangobhabe dekhle BDT 15.00 joma hobe</p>
+        <div class="timer-display" id="ad-timer">30s</div>
+        <button class="btn-action" id="start-ad-btn" onclick="start30SecAd()">
+          <i class="fa-solid fa-play"></i> WATCH AD (BDT 15.00)
+        </button>
       </div>
 
-      <div class="menu-grid">
-        <div class="menu-card" onclick="switchTab('tab-earn')">
-          <div class="icon-box" style="background:#e0f2fe; color:#0284c7;"><i class="fa-solid fa-play"></i></div>
-          <div class="card-label">AUTO ADS</div>
-        </div>
-        <div class="menu-card" onclick="switchTab('tab-servers')">
-          <div class="icon-box" style="background:#dcfce7; color:#15803d;"><i class="fa-solid fa-layer-group"></i></div>
-          <div class="card-label">AD NETWORKS</div>
-        </div>
-        <div class="menu-card" onclick="switchTab('tab-web')">
-          <div class="icon-box" style="background:#e0e7ff; color:#4f46e5;"><i class="fa-solid fa-globe"></i></div>
-          <div class="card-label">WEB VISIT</div>
-        </div>
-        <div class="menu-card" onclick="switchTab('tab-wallet')">
-          <div class="icon-box" style="background:#fef3c7; color:#d97706;"><i class="fa-solid fa-wallet"></i></div>
-          <div class="card-label">WITHDRAW</div>
-        </div>
-        <div class="menu-card" onclick="switchTab('tab-refer')">
-          <div class="icon-box" style="background:#fce7f3; color:#db2777;"><i class="fa-solid fa-users"></i></div>
-          <div class="card-label">REFERRAL</div>
-        </div>
-        <div class="menu-card" onclick="switchTab('tab-support')">
-          <div class="icon-box" style="background:#fee2e2; color:#dc2626;"><i class="fa-solid fa-headset"></i></div>
-          <div class="card-label">SUPPORT</div>
+      <div class="glass-card">
+        <h4 style="font-size: 14px; margin-bottom: 10px;"><i class="fa-solid fa-layer-group" style="color: var(--accent-purple);"></i> Direct Ad Networks</h4>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <!-- Adsterra Direct -->
+          <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 10px 15px; border-radius: 12px;">
+            <div>
+              <div style="font-size: 12px; font-weight: bold;">Adsterra Fast Ad</div>
+              <div style="font-size: 10px; color: var(--accent-green);">BDT 10.00 / 30 Sec</div>
+            </div>
+            <!-- Apnar Adsterra Direct Link boshabe -->
+            <button class="btn-action" style="width: auto; padding: 6px 14px; font-size: 11px;" onclick="watchNetworkAd('https://your-adsterra-link.com', 10.00)">Watch</button>
+          </div>
+
+          <!-- Monetag Direct -->
+          <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 10px 15px; border-radius: 12px;">
+            <div>
+              <div style="font-size: 12px; font-weight: bold;">Monetag Server</div>
+              <div style="font-size: 10px; color: var(--accent-green);">BDT 10.00 / 30 Sec</div>
+            </div>
+            <!-- Apnar Monetag Direct Link boshabe -->
+            <button class="btn-action" style="width: auto; padding: 6px 14px; font-size: 11px;" onclick="watchNetworkAd('https://your-monetag-link.com', 10.00)">Watch</button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- AUTO ADS TAB -->
-    <div id="tab-earn" class="tab-page">
-      <div class="page-banner">
-        <h3>UNLIMITED AUTO ADS</h3>
-        <p>Timer shesh holei account-e taka jama hobe</p>
-      </div>
-      <div style="background:#fff; padding:20px; border-radius:var(--border-radius); text-align:center; margin-bottom:15px;">
-        <h2 style="color:var(--primary); font-size:28px;" id="timer">15s</h2>
-        <p style="font-size:12px; color:var(--text-gray); margin-top:5px;">Ad dekha shesh hawa porjonto apekkha korun</p>
-      </div>
-      <button class="btn-main" onclick="startAdTimer()">WATCH AD (BDT 5.00) <i class="fa-solid fa-circle-play"></i></button>
-    </div>
-
-    <!-- MULTIPLE AD NETWORKS TAB -->
-    <div id="tab-servers" class="tab-page">
-      <div class="page-banner">
-        <h3>MULTI-NETWORK ADS</h3>
-        <p>Jekono network beche nin ebong unlimited income korun</p>
-      </div>
-
-      <!-- Server 1: Monetag Direct -->
-      <div class="ad-server-card">
-        <div class="ad-server-info">
-          <div class="ad-server-icon"><i class="fa-solid fa-bolt"></i></div>
-          <div>
-            <div style="font-weight:bold; font-size:13px;">Monetag Server</div>
-            <div style="font-size:10px; color:var(--primary); font-weight:bold;">BDT: 3.50 / Ad</div>
-          </div>
-        </div>
-        <button class="btn-ad" onclick="openAdLink('https://your-monetag-link.com')">Watch</button>
-      </div>
-
-      <!-- Server 2: Adsterra Fast -->
-      <div class="ad-server-card">
-        <div class="ad-server-info">
-          <div class="ad-server-icon"><i class="fa-solid fa-fire"></i></div>
-          <div>
-            <div style="font-weight:bold; font-size:13px;">Adsterra Direct</div>
-            <div style="font-size:10px; color:var(--primary); font-weight:bold;">BDT: 4.00 / Ad</div>
-          </div>
-        </div>
-        <button class="btn-ad" onclick="openAdLink('https://your-adsterra-link.com')">Watch</button>
-      </div>
-
-      <!-- Server 3: PropellerAds -->
-      <div class="ad-server-card">
-        <div class="ad-server-info">
-          <div class="ad-server-icon"><i class="fa-solid fa-chart-line"></i></div>
-          <div>
-            <div style="font-weight:bold; font-size:13px;">Propeller Network</div>
-            <div style="font-size:10px; color:var(--primary); font-weight:bold;">BDT: 2.50 / Ad</div>
-          </div>
-        </div>
-        <button class="btn-ad" onclick="openAdLink('https://your-propeller-link.com')">Watch</button>
-      </div>
-    </div>
-
-    <!-- WEB TASK TAB -->
-    <div id="tab-web" class="tab-page">
-      <div class="page-banner">
-        <h3>WEBSITE VISIT TASKS</h3>
-        <p>Website visit korun ebong 15 second obosthan korun</p>
-      </div>
-      <div class="ad-server-card">
-        <div class="ad-server-info">
-          <div class="ad-server-icon"><i class="fa-solid fa-globe"></i></div>
-          <div>
-            <div style="font-weight:bold; font-size:13px;">Visit Tech Blog</div>
-            <div style="font-size:10px; color:var(--primary); font-weight:bold;">BDT: 10.00 | Time: 15s</div>
-          </div>
-        </div>
-        <button class="btn-ad" onclick="startWebTask('https://google.com', 10)">Start</button>
-      </div>
-    </div>
-
-    <!-- WALLET TAB -->
-    <div id="tab-wallet" class="tab-page">
-      <div class="page-banner">
-        <h3>WITHDRAW EARNINGS</h3>
-        <p>bKash ba Nagad-e taka uttolar jonno request din</p>
-      </div>
-      <div style="background:#fff; padding:15px; border-radius:var(--border-radius);">
-        <label style="font-size:11px; font-weight:bold;">Payment Method:</label>
-        <select style="width:100%; padding:10px; margin:5px 0 10px 0; border-radius:8px; border:1px solid #ccc;">
-          <option>bKash Personal</option>
-          <option>Nagad Personal</option>
+    <!-- TAB 2: DEPOSIT & INVESTMENT -->
+    <div id="tab-deposit" class="tab-content">
+      <div class="glass-card">
+        <h3 style="font-size: 16px; margin-bottom: 12px;"><i class="fa-solid fa-wallet" style="color: var(--accent-purple);"></i> Add Money / Deposit</h3>
+        <p style="font-size: 11px; color: var(--text-dim); margin-bottom: 12px;">Nicher number-e Send Money kore Transaction ID din:</p>
+        
+        <select class="custom-select" id="dep-method">
+          <option value="bKash">bKash Personal (01700000000)</option>
+          <option value="Nagad">Nagad Personal (01800000000)</option>
+          <option value="Rocket">Rocket Personal (01900000000)</option>
         </select>
-        <label style="font-size:11px; font-weight:bold;">Account Number:</label>
-        <input type="text" style="width:100%; padding:10px; margin:5px 0 10px 0; border-radius:8px; border:1px solid #ccc;" placeholder="017XXXXXXXX">
-        <label style="font-size:11px; font-weight:bold;">Amount (Min BDT 200):</label>
-        <input type="number" style="width:100%; padding:10px; margin:5px 0 10px 0; border-radius:8px; border:1px solid #ccc;" placeholder="200">
-        <button class="btn-main" style="border-radius:10px; margin-top:5px;" onclick="alert('Withdraw request successful!')">WITHDRAW NOW</button>
+        <input type="number" class="custom-input" placeholder="Deposit Amount (Min BDT 200)" id="dep-amount">
+        <input type="text" class="custom-input" placeholder="Transaction ID (TrxID)" id="dep-trx">
+        <button class="btn-action" onclick="submitDeposit()">SUBMIT DEPOSIT</button>
       </div>
     </div>
 
-    <!-- REFERRAL TAB -->
-    <div id="tab-refer" class="tab-page">
-      <div class="page-banner">
-        <h3>REFERRAL PROGRAM</h3>
-        <p>Bondhuder invite kore ay baran</p>
-      </div>
-      <div style="background:#fff; padding:15px; border-radius:var(--border-radius); text-align:center;">
-        <p style="font-size:12px; color:var(--text-gray); margin-bottom:10px;">Apnar referral link:</p>
-        <input type="text" id="ref-link" value="https://t.me/YourBotName?start=12345" readonly style="width:100%; padding:10px; text-align:center; border-radius:8px; border:1px solid #ccc; margin-bottom:10px;">
-        <button class="btn-main" style="border-radius:10px;" onclick="copyRefLink()">COPY LINK</button>
+    <!-- TAB 3: FAST WITHDRAW (30 MIN GUARANTEE) -->
+    <div id="tab-withdraw" class="tab-content">
+      <div class="glass-card">
+        <h3 style="font-size: 16px; margin-bottom: 8px;"><i class="fa-solid fa-bolt" style="color: var(--accent-gold);"></i> Instant Withdraw</h3>
+        <p style="font-size: 11px; color: var(--accent-green); margin-bottom: 12px;"><i class="fa-solid fa-clock"></i> 30 Min-er moddhe payment complete hobe!</p>
+
+        <select class="custom-select" id="wit-method">
+          <option value="bKash">bKash Personal</option>
+          <option value="Nagad">Nagad Personal</option>
+          <option value="Rocket">Rocket Personal</option>
+        </select>
+        <input type="text" class="custom-input" placeholder="Account Number (017XXXXXXXX)" id="wit-num">
+        <input type="number" class="custom-input" placeholder="Amount (Min BDT 200)" id="wit-amount">
+        <button class="btn-action" style="background: linear-gradient(90deg, #10b981, #059669);" onclick="submitWithdraw()">WITHDRAW NOW</button>
       </div>
     </div>
 
-    <!-- ADMIN SUPPORT TAB -->
-    <div id="tab-support" class="tab-page">
-      <div class="page-banner">
-        <h3>HELP & SUPPORT CENTER</h3>
-        <p>Kono somossha hole amader admin support-e jogajog korun</p>
-      </div>
-
-      <div class="support-card">
-        <div class="support-icon"><i class="fa-brands fa-telegram"></i></div>
-        <h4 style="font-size:15px; font-weight:bold;">Official Telegram Group</h4>
-        <p style="font-size:11px; color:var(--text-gray); margin-top:4px;">Payment proof ebong shob update pete amader group-e join korun.</p>
-        <a href="https://t.me/your_telegram_group" target="_blank" class="btn-support" style="background:#0284c7;">
-          <i class="fa-brands fa-telegram"></i> JOIN TELEGRAM GROUP
-        </a>
-      </div>
-
-      <div class="support-card">
-        <div class="support-icon" style="background:#dcfce7; color:#15803d;"><i class="fa-solid fa-user-shield"></i></div>
-        <h4 style="font-size:15px; font-weight:bold;">Direct Admin Contact</h4>
-        <p style="font-size:11px; color:var(--text-gray); margin-top:4px;">Withdrawal ba Deposit problem hole Admin-ke direct message din.</p>
-        <a href="https://t.me/your_admin_username" target="_blank" class="btn-support" style="background:var(--primary);">
-          <i class="fa-solid fa-paper-plane"></i> MESSAGE ADMIN
-        </a>
+    <!-- TAB 4: ADMIN & SUPPORT -->
+    <div id="tab-support" class="tab-content">
+      <div class="glass-card" style="text-align: center;">
+        <i class="fa-headset fa-solid" style="font-size: 40px; color: var(--accent-purple); margin-bottom: 10px;"></i>
+        <h3 style="font-size: 18px;">24/7 ADMIN SUPPORT</h3>
+        <p style="font-size: 11px; color: var(--text-dim); margin-top: 5px;">Withdrawal, Deposit ba kono somossha hole admin-er sathe direct kotha bolun.</p>
+        
+        <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+          <!-- Telegram Group Link -->
+          <a href="https://t.me/your_telegram_group" target="_blank" style="text-decoration: none;">
+            <button class="btn-action" style="background: #0284c7;"><i class="fa-brands fa-telegram"></i> JOIN TELEGRAM GROUP</button>
+          </a>
+          <!-- Direct Admin Contact -->
+          <a href="https://t.me/your_admin_username" target="_blank" style="text-decoration: none;">
+            <button class="btn-action"><i class="fa-paper-plane fa-solid"></i> DIRECT MESSAGE ADMIN</button>
+          </a>
+        </div>
       </div>
     </div>
 
   </div>
 
-  <!-- Bottom Navigation Bar -->
+  <!-- Bottom Nav -->
   <div class="bottom-nav">
-    <button class="nav-btn active" id="btn-home" onclick="switchTab('tab-home')"><i class="fa-solid fa-house"></i>HOME</button>
-    <button class="nav-btn" id="btn-web" onclick="switchTab('tab-web')"><i class="fa-solid fa-globe"></i>WEB</button>
-    <button class="nav-btn" id="btn-earn" onclick="switchTab('tab-earn')"><i class="fa-solid fa-circle-play"></i>EARN</button>
-    <button class="nav-btn" id="btn-servers" onclick="switchTab('tab-servers')"><i class="fa-solid fa-layer-group"></i>ADS</button>
-    <button class="nav-btn" id="btn-wallet" onclick="switchTab('tab-wallet')"><i class="fa-solid fa-wallet"></i>WALLET</button>
-    <button class="nav-btn" id="btn-support" onclick="switchTab('tab-support')"><i class="fa-solid fa-headset"></i>SUPPORT</button>
+    <button class="nav-link active" onclick="switchTab('tab-ads', this)"><i class="fa-solid fa-play"></i>Watch Ads</button>
+    <button class="nav-link" onclick="switchTab('tab-deposit', this)"><i class="fa-solid fa-wallet"></i>Deposit</button>
+    <button class="nav-link" onclick="switchTab('tab-withdraw', this)"><i class="fa-solid fa-money-bill-transfer"></i>Withdraw</button>
+    <button class="nav-link" onclick="switchTab('tab-support', this)"><i class="fa-solid fa-headset"></i>Support</button>
   </div>
 
   <script>
-    let currentBalance = 1470.00;
+    let balance = 0.00;
 
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      
+    function switchTab(tabId, elem) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
-
-      const btnMap = {
-        'tab-home': 'btn-home',
-        'tab-web': 'btn-web',
-        'tab-earn': 'btn-earn',
-        'tab-servers': 'btn-servers',
-        'tab-wallet': 'btn-wallet',
-        'tab-support': 'btn-support'
-      };
-      if(btnMap[tabId]) document.getElementById(btnMap[tabId]).classList.add('active');
+      elem.classList.add('active');
     }
 
-    function addBalance(amount) {
-      currentBalance += amount;
-      document.getElementById('balance').innerText = currentBalance.toFixed(2);
+    function addMoney(amt) {
+      balance += amt;
+      document.getElementById('balance').innerText = balance.toFixed(2);
     }
 
-    function startAdTimer() {
-      let count = 15;
-      document.getElementById('timer').innerText = count + 's';
-      let timerFunc = setInterval(() => {
-        count--;
-        document.getElementById('timer').innerText = count + 's';
-        if(count <= 0) {
-          clearInterval(timerFunc);
-          addBalance(5.00);
-          alert('Abhinandan! Apni BDT 5.00 reward peyechen!');
-          document.getElementById('timer').innerText = '15s';
+    /* 30-Second Ad Logic */
+    function start30SecAd() {
+      const btn = document.getElementById('start-ad-btn');
+      btn.disabled = true;
+
+      // Real Ad link open kora (Monetag/Adsterra Link)
+      window.open('https://your-adsterra-link.com', '_blank');
+
+      let timer = 30;
+      document.getElementById('ad-timer').innerText = timer + 's';
+
+      let count = setInterval(() => {
+        timer--;
+        document.getElementById('ad-timer').innerText = timer + 's';
+        if (timer <= 0) {
+          clearInterval(count);
+          addMoney(15.00);
+          alert('Abhinandan! 30 second ad dekhar jonno BDT 15.00 peyechen!');
+          document.getElementById('ad-timer').innerText = '30s';
+          btn.disabled = false;
         }
       }, 1000);
     }
 
-    function openAdLink(url) {
+    /* Direct Network Ad */
+    function watchNetworkAd(url, reward) {
       window.open(url, '_blank');
+      let timer = 30;
+      alert('Ad-ti 30 second dekhar por reward jog hobe!');
       setTimeout(() => {
-        addBalance(3.50);
-        alert('Ad dekhar jonno BDT 3.50 jog hoyeche!');
-      }, 3000);
+        addMoney(reward);
+        alert('Abhinandan! BDT ' + reward.toFixed(2) + ' apnar account-e jog hoyeche!');
+      }, 30000);
     }
 
-    function startWebTask(url, reward) {
-      window.open(url, '_blank');
-      setTimeout(() => {
-        addBalance(reward);
-        alert('Website task somponno hoyeche! BDT ' + reward + ' jog hoyeche!');
-      }, 15000);
+    /* Deposit Logic */
+    function submitDeposit() {
+      let amt = document.getElementById('dep-amount').value;
+      let trx = document.getElementById('dep-trx').value;
+      if (amt < 200 || !trx) {
+        alert('Sothik amount (Min 200) ebong TrxID din!');
+        return;
+      }
+      alert('Deposit request safal hoyeche! Admin verify kore 5-10 minute-er moddhe balance add kore dibe.');
+      document.getElementById('dep-amount').value = '';
+      document.getElementById('dep-trx').value = '';
     }
 
-    function copyRefLink() {
-      const link = document.getElementById('ref-link');
-      link.select();
-      document.execCommand('copy');
-      alert('Referral link copy hoyeche!');
+    /* Withdraw Logic */
+    function submitWithdraw() {
+      let num = document.getElementById('wit-num').value;
+      let amt = parseFloat(document.getElementById('wit-amount').value);
+
+      if (!num || amt < 200) {
+        alert('Sothik number ebong minimum 200 taka withdraw request din!');
+        return;
+      }
+      if (amt > balance) {
+        alert('Apnar account-e porjapto balance nei!');
+        return;
+      }
+
+      balance -= amt;
+      document.getElementById('balance').innerText = balance.toFixed(2);
+      alert('Withdrawal Request Submitted! 30 Minute-er moddhe apnar ' + document.getElementById('wit-method').value + ' account-e taka peye jaben.');
+      document.getElementById('wit-num').value = '';
+      document.getElementById('wit-amount').value = '';
     }
   </script>
 </body>
