@@ -92,29 +92,29 @@
         </div>
         <div class="stat-box">
           <span>Completed Ads</span>
-          <strong id="ads-count">0 / 15</strong>
+          <strong id="ads-count">0 / 40</strong>
         </div>
       </div>
     </div>
 
     <!-- TAB 1: HOME TAB -->
     <div id="page-home" class="page-tab active">
-      <div class="section-title">High Income Modules</div>
+      <div class="section-title">Income Hub</div>
       <div class="grid-menu">
         <div class="menu-card" onclick="openTab('page-earn')">
           <div class="icon-box icon-blue"><i class="fa-solid fa-play"></i></div>
-          <h4>Watch Ads <span class="tag">BDT 0.20/AD</span></h4>
+          <h4>Watch Ads <span class="tag">BDT 0.50</span></h4>
           <p>Earn per sponsored ad view</p>
         </div>
         <div class="menu-card" onclick="openTab('page-tasks')">
           <div class="icon-box icon-yellow"><i class="fa-solid fa-list-check"></i></div>
-          <h4>Special Tasks</h4>
-          <p>Earn up to BDT 20 per task</p>
+          <h4>CPA & Micro Tasks <span class="tag">HIGH PAY</span></h4>
+          <p>Complete offers & tasks</p>
         </div>
         <div class="menu-card" onclick="openTab('page-refer')">
           <div class="icon-box icon-purple"><i class="fa-solid fa-user-plus"></i></div>
-          <h4>Refer Program</h4>
-          <p>Earn BDT 15.00 per friend</p>
+          <h4>Refer Program <span class="tag">BDT 20</span></h4>
+          <p>Invite active friends</p>
         </div>
         <div class="menu-card" onclick="openTab('page-wallet')">
           <div class="icon-box icon-green"><i class="fa-solid fa-wallet"></i></div>
@@ -126,20 +126,34 @@
 
     <!-- TAB 2: EARN / ADS TAB -->
     <div id="page-earn" class="page-tab">
-      <div class="section-title">Daily Ad Rewards</div>
+      <div class="section-title">Sponsored Ad Rewards</div>
       <div class="balance-card">
-        <h3>Watch & Earn</h3>
-        <p style="font-size: 12px; color: #94a3b8; margin: 8px 0 15px 0;">Click below to watch direct ad and complete 10 seconds verification.</p>
+        <h3>Watch & Earn (15 Seconds View)</h3>
+        <p style="font-size: 12px; color: #94a3b8; margin: 8px 0 15px 0;">Stay 15 seconds on the ad page to receive BDT 0.50 credit!</p>
         <button class="btn-action" id="watch-btn" style="width: 100%; padding: 12px;" onclick="executeAdTask()">WATCH SPONSORED AD</button>
       </div>
     </div>
 
     <!-- TAB 3: TASKS TAB -->
     <div id="page-tasks" class="page-tab">
-      <div class="section-title">Daily Premium Tasks</div>
+      <div class="section-title">High Paying CPA & Micro Tasks</div>
       <div class="task-card">
         <div class="task-info">
-          <h5>Join Telegram Channel</h5>
+          <h5>Claim Daily Login Bonus</h5>
+          <p>+ BDT 10.00</p>
+        </div>
+        <button class="btn-action" id="daily-btn" onclick="claimDailyBonus()">Claim</button>
+      </div>
+      <div class="task-card">
+        <div class="task-info">
+          <h5>Install App & Sign Up (CPA Offer)</h5>
+          <p>+ BDT 50.00</p>
+        </div>
+        <button class="btn-action" onclick="completeMicroTask(this, 50.00, 'https://google.com')">Complete</button>
+      </div>
+      <div class="task-card">
+        <div class="task-info">
+          <h5>Join Sponsor Telegram Channel</h5>
           <p>+ BDT 15.00</p>
         </div>
         <button class="btn-action" onclick="completeMicroTask(this, 15.00, 'https://t.me/telegram')">Complete</button>
@@ -155,10 +169,10 @@
 
     <!-- TAB 4: REFER TAB -->
     <div id="page-refer" class="page-tab">
-      <div class="section-title">Invite & Earn</div>
+      <div class="section-title">Referral Program</div>
       <div class="balance-card">
-        <h3>Invite Friends</h3>
-        <p style="font-size: 12px; color: #94a3b8; margin: 8px 0;">Get BDT 15.00 instantly when a friend joins!</p>
+        <h3>Invite Friends & Earn</h3>
+        <p style="font-size: 12px; color: #94a3b8; margin: 8px 0;">Get BDT 20.00 instantly for every valid friend you invite!</p>
         <input type="text" class="input-field" id="ref-link-input" value="https://t.me/your_bot?start=ref" readonly>
         <button class="btn-action" style="width: 100%; padding: 10px;" onclick="copyRef()">COPY REFER LINK</button>
       </div>
@@ -166,10 +180,10 @@
 
     <!-- TAB 5: WALLET TAB -->
     <div id="page-wallet" class="page-tab">
-      <div class="section-title">Withdraw Funds</div>
+      <div class="section-title">Withdraw Balance</div>
       <div class="balance-card">
         <input type="text" class="input-field" id="w-num" placeholder="Enter bKash / Nagad Number">
-        <input type="number" class="input-field" id="w-amt" placeholder="Enter Amount (Min BDT 100)">
+        <input type="number" class="input-field" id="w-amt" placeholder="Enter Amount (Min BDT 200)">
         <button class="btn-action" style="width: 100%; padding: 12px;" onclick="processWithdraw()">SUBMIT WITHDRAWAL</button>
       </div>
     </div>
@@ -200,19 +214,16 @@
     </button>
   </div>
 
-  <!-- App Main Logic Script -->
   <script>
-    // Global Variables
     let balance = 0.00;
     let todayEarning = 0.00;
     let totalAds = 0;
-    const maxDailyAds = 15;
+    const maxDailyAds = 40;
+    let dailyClaimed = false;
 
-    // Monetag Direct Link Setup
     const AD_DIRECT_LINK = "https://omg10.com/4/11874452";
-    const REAL_AD_REWARD = 0.20;
+    const REAL_AD_REWARD = 0.50;
 
-    // App Initialization
     window.onload = function() {
       if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.ready();
@@ -227,13 +238,12 @@
         }
       }
 
-      // Live activities simulation
       const mockActivities = [
-        "Rakib earned BDT 20.00 from Special task",
-        "Tanvir withdrew BDT 200 via bKash",
-        "Sumi completed 15 Ad Tasks",
-        "Arif withdrew BDT 300 via Nagad",
-        "Sabbir invited 5 new friends"
+        "Rakib earned BDT 150.00 today",
+        "Tanvir withdrew BDT 300 via bKash",
+        "Sumi completed 40 Ad Tasks",
+        "Arif withdrew BDT 500 via Nagad",
+        "Sabbir invited 10 new friends"
       ];
       let tickerIndex = 0;
       setInterval(() => {
@@ -270,7 +280,7 @@
 
     function executeAdTask() {
       if(totalAds >= maxDailyAds) {
-        alert('Daily limit reached! Please come back tomorrow.');
+        alert('Daily ad limit reached! Please complete Micro Tasks or Refer friends.');
         return;
       }
 
@@ -283,7 +293,7 @@
         window.open(AD_DIRECT_LINK, '_blank');
       }
 
-      alert('Ad opened! Please stay on the ad page for 10 seconds to receive your reward.');
+      alert('Ad opened! Please view for 15 seconds to receive your BDT 0.50 reward.');
 
       setTimeout(function() {
         balance += REAL_AD_REWARD;
@@ -292,8 +302,25 @@
 
         updateState();
         if(mainBtn) mainBtn.disabled = false;
-        alert('Task Verified! BDT ' + REAL_AD_REWARD.toFixed(2) + ' added to your balance.');
-      }, 10000);
+        alert('Verified! BDT ' + REAL_AD_REWARD.toFixed(2) + ' added.');
+      }, 15000);
+    }
+
+    function claimDailyBonus() {
+      if (dailyClaimed) {
+        alert('You have already claimed today\'s bonus!');
+        return;
+      }
+      balance += 10.00;
+      todayEarning += 10.00;
+      dailyClaimed = true;
+      updateState();
+      
+      const btn = document.getElementById('daily-btn');
+      btn.disabled = true;
+      btn.innerText = "Claimed";
+      btn.style.background = "#334155";
+      alert('Success! BDT 10.00 Daily Bonus Added!');
     }
 
     function completeMicroTask(btnElem, rewardAmount, targetUrl) {
@@ -310,7 +337,7 @@
       btnElem.disabled = true;
       btnElem.innerText = "Done";
       btnElem.style.background = "#334155";
-      alert('Task Completed! BDT ' + rewardAmount.toFixed(2) + ' added to balance.');
+      alert('Task Completed! BDT ' + rewardAmount.toFixed(2) + ' added.');
     }
 
     function copyRef() {
@@ -328,8 +355,8 @@
         alert('Please fill out all details correctly.');
         return;
       }
-      if (amt < 100) {
-        alert('Minimum withdrawal threshold is BDT 100.');
+      if (amt < 200) {
+        alert('Minimum withdrawal threshold is BDT 200.');
         return;
       }
       if (amt > balance) {
