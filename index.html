@@ -527,7 +527,7 @@
       }
     }
 
-          const videoAdList = [
+             const videoAdList = [
       "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1",
       "https://www.youtube.com/embed/3JZ_D3ELwOQ?autoplay=1"
     ];
@@ -547,42 +547,31 @@
       iframe.src = randomVideo;
       
       modal.style.display = 'flex';
-      mainBtn.disabled = true;
+      if(mainBtn) mainBtn.disabled = true;
 
       let count = 15;
-      timerDisp.innerText = `${count}s`;
+      timerDisp.innerText = count + 's';
 
-      const countdown = setInterval(() => {
+      const countdown = setInterval(function() {
         count--;
-        timerDisp.innerText = `${count}s`;
+        timerDisp.innerText = count + 's';
 
         if (count <= 0) {
           clearInterval(countdown);
           iframe.src = "";
           modal.style.display = 'none';
-          mainBtn.disabled = false;
+          if(mainBtn) mainBtn.disabled = false;
 
           balance += adReward;
           todayEarning += adReward;
           totalAds += 1;
 
           updateState();
-          alert(`Congratulations! BDT ${adReward.toFixed(2)} credited to your wallet.`);
+          alert('Congratulations! BDT ' + adReward.toFixed(2) + ' credited to your wallet.');
         }
       }, 1000);
     }
-
-    }
-
-    function completeMicroTask(btnElem, rewardAmount) {
-      balance += rewardAmount;
-      todayEarning += rewardAmount;
-      updateState();
-
-      btnElem.disabled = true;
-      btnElem.innerText = "Done";
-      alert(`Task Completed! BDT ${rewardAmount.toFixed(2)} added to balance.`);
-    }
+ 
 
     function copyRef() {
       const input = document.getElementById('ref-link-input');
@@ -629,9 +618,6 @@
       <p style="font-size:11px; color:#94a3b8; margin-top:10px;">Watch full video ad to earn BDT 10.00 reward automatically.</p>
     </div>
   </div>
-
-</body>
-</html>
 
 </body>
 </html>
