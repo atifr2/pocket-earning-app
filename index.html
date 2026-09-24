@@ -124,30 +124,49 @@
       </div>
     </div>
 <!-- Deposit Section UI -->
+<!-- VIP & Deposit Hub -->
 <div id="deposit-section" class="card-box" style="margin: 15px 0; padding: 15px; background: #1e293b; border-radius: 12px; color: #fff;">
-  <h3 style="text-align: center; margin-bottom: 10px; color: #38bdf8;">Deposit / Add Fund 💳</h3>
-  
-  <div style="background: #0f172a; padding: 10px; border-radius: 8px; font-size: 12px; color: #cbd5e1; margin-bottom: 12px;">
-    📌 <b>নিয়ম:</b> নিচের নম্বরে Send Money করে TrxID ও Amount সাবমিট করুন। Admin চেক করে ৫-৩০ মিনিটে ব্যালেন্স যোগ করে দেবে।
+  <h3 style="text-align: center; margin-bottom: 10px; color: #38bdf8;">Deposit & VIP Plans 💳</h3>
+
+  <!-- VIP Benefits Card -->
+  <div style="background: #0f172a; padding: 12px; border-radius: 8px; font-size: 13px; color: #cbd5e1; margin-bottom: 15px; border: 1px solid #334155;">
+    <h4 style="color: #f59e0b; margin-top: 0; margin-bottom: 8px;">🌟 BDT 500 VIP Benefits:</h4>
+    <ul style="padding-left: 18px; margin: 0; line-height: 1.6;">
+      <li><b>4X Ad Rewards:</b> প্রতি বিজ্ঞাপনে পাবেন ৳২.০০ করে!</li>
+      <li><b>Daily Return:</b> প্রতিদিন ফ্রি ৳২৫ লগইন রিওয়ার্ড (৩০ দিনে ৳৭৫০)।</li>
+      <li><b>Ad Campaign:</b> ৫০০ টাকা দিয়ে নিজের ভিডিও/লিংক প্রমোটের সুযোগ।</li>
+      <li><b>10% Refer Bonus:</b> রেফারি ডিপোজিট করলেই পাবেন ৳৫০ বোনাস!</li>
+      <li><b>Fast Payout:</b> ইনস্ট্যান্ট বিকাশ/নগদ উইথড্র সুবিধা।</li>
+    </ul>
   </div>
 
-  <label style="font-size: 13px;">Select Method:</label>
-  <select id="deposit-method" onchange="updateNumberInfo()" style="width: 100%; padding: 8px; margin: 5px 0 12px 0; border-radius: 6px; background: #0f172a; color: #fff; border: 1px solid #334155;">
+  <div style="background: #0f172a; padding: 10px; border-radius: 8px; font-size: 12px; color: #94a3b8; margin-bottom: 12px;">
+    📌 <b>নিয়ম:</b> নিচের নম্বরে Send Money করে TrxID ও Amount সাবমিট করুন। অ্যাডমিন চেক করে ৫-৩০ মিনিটে ব্যালেন্স অ্যাক্টিভ করবে।
+  </div>
+
+  <!-- Method Selection -->
+  <label style="font-size: 13px; font-weight: bold;">Select Payment Method:</label>
+  <select id="deposit-method" onchange="updateNumberInfo()" style="width: 100%; padding: 10px; margin: 5px 0 12px 0; border-radius: 6px; background: #0f172a; color: #fff; border: 1px solid #334155;">
     <option value="bKash">bKash (Personal)</option>
     <option value="Nagad">Nagad (Personal)</option>
     <option value="Rocket">Rocket (Personal)</option>
   </select>
 
-  <div style="background: #0f172a; border-left: 3px solid #38bdf8; padding: 8px; margin-bottom: 12px; font-size: 13px;">
+  <!-- Number Display -->
+  <div style="background: #0f172a; border-left: 3px solid #38bdf8; padding: 10px; margin-bottom: 12px; font-size: 13px;">
     <span id="method-name" style="color: #38bdf8; font-weight: bold;">bKash</span> Number: 
-    <b id="method-number" style="color: #f43f5e;">017XXXXXXXX</b>
+    <b id="method-number" style="color: #f43f5e; font-size: 14px;">01914589576</b>
   </div>
 
-  <input type="number" id="deposit-amount" placeholder="Enter Amount (Min 100)" style="width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 6px; background: #0f172a; color: #fff; border: 1px solid #334155;">
-  <input type="text" id="deposit-trxid" placeholder="Transaction ID (TrxID)" style="width: 100%; padding: 8px; margin-bottom: 12px; border-radius: 6px; background: #0f172a; color: #fff; border: 1px solid #334155;">
+  <!-- Inputs -->
+  <label style="font-size: 13px; font-weight: bold;">Amount (Min BDT 500):</label>
+  <input type="number" id="deposit-amount" placeholder="Enter Amount (Min BDT 500)" style="width: 100%; padding: 10px; margin: 5px 0 10px 0; border-radius: 6px; background: #0f172a; color: #fff; border: 1px solid #334155;">
+  
+  <label style="font-size: 13px; font-weight: bold;">Transaction ID (TrxID):</label>
+  <input type="text" id="deposit-trxid" placeholder="Ex: 9J38XKL21" style="width: 100%; padding: 10px; margin: 5px 0 15px 0; border-radius: 6px; background: #0f172a; color: #fff; border: 1px solid #334155;">
 
-  <button onclick="handleDepositSubmit()" style="width: 100%; padding: 10px; background: #22c55e; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer;">
-    Submit Deposit
+  <button onclick="handleDepositSubmit()" style="width: 100%; padding: 12px; background: #22c55e; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">
+    Submit BDT 500 Deposit Request 🚀
   </button>
 </div>
 
@@ -235,12 +254,12 @@
   </div>
 
     <script>
-// আপনার বিকাশ, নগদ ও রকেট নম্বর এখানে বসান:
-
+// 
+// আপনার বিকাশ, নগদ ও রকেট নম্বর:
 const PAYMENT_NUMBERS = {
-    bKash: "01914589576",  // এখানে বিকাশ নাম্বার দিন
-    Nagad: "01996710797",  // এখানে নগদ নাম্বার দিন
-    Rocket: "019996710797"  // এখানে রকেট নাম্বার দিন
+    bKash: "01914589576",
+    Nagad: "01996710797",
+    Rocket: "01996710797"
 };
 
 function updateNumberInfo() {
@@ -254,16 +273,17 @@ function handleDepositSubmit() {
     const amount = document.getElementById("deposit-amount").value;
     const trxid = document.getElementById("deposit-trxid").value.trim();
 
-    if (!amount || amount < 100) {
-        alert("Minimum deposit BDT 100!");
+    if (!amount || amount < 500) {
+        alert("⚠️ Minimum deposit amount BDT 500 required for VIP Plans!");
         return;
     }
     if (!trxid) {
-        alert("Valid TrxID প্রদান করুন!");
+        alert("⚠️ Please enter a valid Transaction ID (TrxID)!");
         return;
     }
 
-    alert(`Deposit Request Sent!\n\nMethod: ${method}\nAmount: BDT ${amount}\nTrxID: ${trxid}`);
+    alert(`✅ Deposit Request Sent!\n\nMethod: ${method}\nAmount: BDT ${amount}\nTrxID: ${trxid}\n\nAdmin review করে ৫-৩০ মিনিটের ভেতর আপনার VIP Plan অ্যাক্টিভ করে দেবে।`);
+    
     document.getElementById("deposit-amount").value = "";
     document.getElementById("deposit-trxid").value = "";
 }
