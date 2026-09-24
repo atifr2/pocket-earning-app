@@ -3,38 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pocket Power - Premium Earning App</title>
+  <title>Pocket Power - Real App</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
   <style>
     :root {
       --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-      --card-bg: rgba(255, 255, 255, 0.07);
+      --card-bg: rgba(255, 255, 255, 0.08);
       --card-border: rgba(255, 255, 255, 0.12);
       --accent-purple: #8b5cf6;
       --accent-green: #10b981;
       --accent-gold: #fbbf24;
+      --accent-pink: #ec4899;
       --text-white: #ffffff;
       --text-dim: #94a3b8;
-      --radius: 20px;
+      --radius: 18px;
     }
 
-    * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
+    * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 0; }
     body { background: var(--bg-gradient); color: var(--text-white); min-height: 100vh; padding-bottom: 90px; user-select: none; }
 
-    /* Glassmorphism Header */
+    /* Auth Screens */
+    .auth-screen { position: fixed; inset: 0; background: #0f172a; z-index: 200; padding: 25px; display: flex; flex-direction: column; justify-content: center; }
+    .auth-title { font-size: 24px; font-weight: 800; color: var(--accent-pink); margin-bottom: 20px; text-align: center; }
+
+    /* Main UI Header */
     .app-header {
-      background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(15px);
+      background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(15px);
       padding: 15px 20px; border-bottom: 1px solid var(--card-border);
       position: sticky; top: 0; z-index: 90; display: flex; align-items: center; justify-content: space-between;
     }
     .user-profile { display: flex; align-items: center; gap: 12px; }
-    .avatar-ring {
-      width: 45px; height: 45px; border-radius: 50%; padding: 2px;
-      background: linear-gradient(45deg, #8b5cf6, #10b981);
-    }
     .avatar-inner {
-      width: 100%; height: 100%; border-radius: 50%; background: #0f172a;
-      display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px;
+      width: 40px; height: 40px; border-radius: 50%; background: var(--accent-purple);
+      display: flex; align-items: center; justify-content: center; font-weight: bold;
     }
     .balance-badge {
       background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4);
@@ -43,62 +49,39 @@
 
     .container { padding: 15px; }
 
-    /* Navigation Tabs */
-    .tab-bar {
-      display: flex; background: rgba(255, 255, 255, 0.05); border-radius: 30px;
-      padding: 5px; margin-bottom: 20px; border: 1px solid var(--card-border);
-    }
-    .tab-btn {
-      flex: 1; padding: 10px 0; border: none; border-radius: 25px; background: transparent;
-      color: var(--text-dim); font-weight: 700; font-size: 12px; cursor: pointer; transition: 0.3s;
-    }
-    .tab-btn.active { background: linear-gradient(90deg, #8b5cf6, #6366f1); color: #fff; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
-
-    /* Cards Setup */
     .glass-card {
       background: var(--card-bg); backdrop-filter: blur(10px);
       border: 1px solid var(--card-border); border-radius: var(--radius);
-      padding: 20px; margin-bottom: 15px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+      padding: 18px; margin-bottom: 15px;
     }
 
-    /* Ad Task Box */
-    .ad-box {
-      text-align: center; border: 1px dashed rgba(139, 92, 246, 0.5);
-      background: rgba(139, 92, 246, 0.05);
-    }
-    .timer-display { font-size: 32px; font-weight: 900; color: var(--accent-gold); margin: 10px 0; }
-
-    /* Buttons */
     .btn-action {
-      width: 100%; padding: 14px; border: none; border-radius: 12px;
-      background: linear-gradient(90deg, #8b5cf6, #10b981); color: #fff;
-      font-weight: 800; font-size: 14px; cursor: pointer; transition: 0.3s;
-      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3); display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 12px; border: none; border-radius: 12px;
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink)); color: #fff;
+      font-weight: 800; font-size: 13px; cursor: pointer; transition: 0.3s; margin-top: 5px;
     }
     .btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* Inputs & Selects */
     .custom-input, .custom-select {
-      width: 100%; padding: 12px 15px; background: rgba(255, 255, 255, 0.05);
+      width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--card-border); border-radius: 10px; color: #fff;
-      margin-bottom: 12px; font-size: 13px; outline: none;
+      margin-bottom: 10px; font-size: 13px; outline: none;
     }
     .custom-select option { background: #0f172a; color: #fff; }
 
-    /* Bottom Nav Bar */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; width: 100%;
-      background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(15px);
-      display: flex; justify-content: space-around; padding: 12px 0;
+      background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(15px);
+      display: flex; justify-content: space-around; padding: 10px 0;
       border-top: 1px solid var(--card-border); z-index: 100;
     }
     .nav-link {
       background: none; border: none; color: var(--text-dim);
-      display: flex; flex-direction: column; align-items: center; font-size: 10px;
-      font-weight: 700; cursor: pointer; transition: 0.3s;
+      display: flex; flex-direction: column; align-items: center; font-size: 9px;
+      font-weight: 700; cursor: pointer;
     }
-    .nav-link i { font-size: 18px; margin-bottom: 4px; }
-    .nav-link.active { color: var(--accent-purple); }
+    .nav-link i { font-size: 16px; margin-bottom: 3px; }
+    .nav-link.active { color: var(--accent-pink); }
 
     .tab-content { display: none; }
     .tab-content.active { display: block; }
@@ -106,15 +89,21 @@
 </head>
 <body>
 
-  <!-- App Header -->
+  <!-- LOGIN / SIGNUP SCREEN -->
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-title">LOGIN / REGISTER</div>
+    <input type="text" id="auth-phone" class="custom-input" placeholder="Phone Number (017XXXXXXXX)">
+    <input type="password" id="auth-pass" class="custom-input" placeholder="Password">
+    <button class="btn-action" onclick="loginUser()">LOGIN / REGISTER NOW</button>
+  </div>
+
+  <!-- MAIN APP -->
   <div class="app-header">
     <div class="user-profile">
-      <div class="avatar-ring">
-        <div class="avatar-inner">AH</div>
-      </div>
+      <div class="avatar-inner" id="user-avatar">U</div>
       <div>
-        <div style="font-size: 14px; font-weight: 800;">Atif Hosen <i class="fa-solid fa-crown" style="color: var(--accent-gold); font-size: 11px;"></i></div>
-        <div style="font-size: 10px; color: var(--text-dim);">Daily Target: BDT 200 - 300</div>
+        <div style="font-size: 13px; font-weight: 800;" id="user-phone-display">017XXXXXXXX</div>
+        <div style="font-size: 10px; color: var(--text-dim);">Tasks: <span id="task-completed">0</span>/50</div>
       </div>
     </div>
     <div class="balance-badge">BDT <span id="balance">0.00</span></div>
@@ -122,109 +111,73 @@
 
   <div class="container">
 
-    <!-- TAB 1: DAILY ADS (200-300 TAKA TARGET) -->
-    <div id="tab-ads" class="tab-content active">
-      <div class="glass-card ad-box">
-        <h3 style="color: var(--accent-gold); font-size: 18px;">30-SECOND PREMIUM AD</h3>
-        <p style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">Ad purnangobhabe dekhle BDT 15.00 joma hobe</p>
-        <div class="timer-display" id="ad-timer">30s</div>
-        <button class="btn-action" id="start-ad-btn" onclick="start30SecAd()">
-          <i class="fa-solid fa-play"></i> WATCH AD (BDT 15.00)
+    <!-- TAB 1: AD TASKS -->
+    <div id="tab-tasks" class="tab-content active">
+      <div class="glass-card" style="text-align: center;">
+        <h3 style="color: var(--accent-gold); font-size: 16px;">DAILY AD TASKS (50 ADS)</h3>
+        <p style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">প্রতিটি ৩০ সেকেন্ড অ্যাড দেখলে BDT 7.00 জমা হবে</p>
+        <div style="font-size: 24px; font-weight: 900; color: var(--accent-gold); margin: 10px 0;"><span id="ad-count">0</span> / 50</div>
+        
+        <button class="btn-action" id="watch-ad-btn" onclick="startAdTask()">
+          <i class="fa-solid fa-play"></i> WATCH AD (30 SEC)
         </button>
-      </div>
-
-      <div class="glass-card">
-        <h4 style="font-size: 14px; margin-bottom: 10px;"><i class="fa-solid fa-layer-group" style="color: var(--accent-purple);"></i> Direct Ad Networks</h4>
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-          <!-- Adsterra Direct -->
-          <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 10px 15px; border-radius: 12px;">
-            <div>
-              <div style="font-size: 12px; font-weight: bold;">Adsterra Fast Ad</div>
-              <div style="font-size: 10px; color: var(--accent-green);">BDT 10.00 / 30 Sec</div>
-            </div>
-            <!-- Apnar Adsterra Direct Link boshabe -->
-            <button class="btn-action" style="width: auto; padding: 6px 14px; font-size: 11px;" onclick="watchNetworkAd('https://your-adsterra-link.com', 10.00)">Watch</button>
-          </div>
-
-          <!-- Monetag Direct -->
-          <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 10px 15px; border-radius: 12px;">
-            <div>
-              <div style="font-size: 12px; font-weight: bold;">Monetag Server</div>
-              <div style="font-size: 10px; color: var(--accent-green);">BDT 10.00 / 30 Sec</div>
-            </div>
-            <!-- Apnar Monetag Direct Link boshabe -->
-            <button class="btn-action" style="width: auto; padding: 6px 14px; font-size: 11px;" onclick="watchNetworkAd('https://your-monetag-link.com', 10.00)">Watch</button>
-          </div>
-        </div>
       </div>
     </div>
 
-    <!-- TAB 2: DEPOSIT & INVESTMENT -->
+    <!-- TAB 2: DEPOSIT -->
     <div id="tab-deposit" class="tab-content">
       <div class="glass-card">
-        <h3 style="font-size: 16px; margin-bottom: 12px;"><i class="fa-solid fa-wallet" style="color: var(--accent-purple);"></i> Add Money / Deposit</h3>
-        <p style="font-size: 11px; color: var(--text-dim); margin-bottom: 12px;">Nicher number-e Send Money kore Transaction ID din:</p>
-        
+        <h3 style="font-size: 15px; margin-bottom: 10px;">Deposit / Add Money</h3>
         <select class="custom-select" id="dep-method">
           <option value="bKash">bKash Personal (01700000000)</option>
           <option value="Nagad">Nagad Personal (01800000000)</option>
-          <option value="Rocket">Rocket Personal (01900000000)</option>
         </select>
-        <input type="number" class="custom-input" placeholder="Deposit Amount (Min BDT 200)" id="dep-amount">
-        <input type="text" class="custom-input" placeholder="Transaction ID (TrxID)" id="dep-trx">
+        <input type="number" class="custom-input" placeholder="Amount (Min ৳200)" id="dep-amount">
+        <input type="text" class="custom-input" placeholder="TrxID" id="dep-trx">
         <button class="btn-action" onclick="submitDeposit()">SUBMIT DEPOSIT</button>
       </div>
     </div>
 
-    <!-- TAB 3: FAST WITHDRAW (30 MIN GUARANTEE) -->
+    <!-- TAB 3: WITHDRAW -->
     <div id="tab-withdraw" class="tab-content">
       <div class="glass-card">
-        <h3 style="font-size: 16px; margin-bottom: 8px;"><i class="fa-solid fa-bolt" style="color: var(--accent-gold);"></i> Instant Withdraw</h3>
-        <p style="font-size: 11px; color: var(--accent-green); margin-bottom: 12px;"><i class="fa-solid fa-clock"></i> 30 Min-er moddhe payment complete hobe!</p>
-
+        <h3 style="font-size: 15px; margin-bottom: 8px;">Easy Withdraw</h3>
         <select class="custom-select" id="wit-method">
-          <option value="bKash">bKash Personal</option>
-          <option value="Nagad">Nagad Personal</option>
-          <option value="Rocket">Rocket Personal</option>
+          <option>bKash Personal</option>
+          <option>Nagad Personal</option>
         </select>
-        <input type="text" class="custom-input" placeholder="Account Number (017XXXXXXXX)" id="wit-num">
-        <input type="number" class="custom-input" placeholder="Amount (Min BDT 200)" id="wit-amount">
+        <input type="text" class="custom-input" placeholder="Account Number" id="wit-num">
+        <input type="number" class="custom-input" placeholder="Amount (Min ৳200)" id="wit-amt">
         <button class="btn-action" style="background: linear-gradient(90deg, #10b981, #059669);" onclick="submitWithdraw()">WITHDRAW NOW</button>
       </div>
     </div>
 
-    <!-- TAB 4: ADMIN & SUPPORT -->
-    <div id="tab-support" class="tab-content">
-      <div class="glass-card" style="text-align: center;">
-        <i class="fa-headset fa-solid" style="font-size: 40px; color: var(--accent-purple); margin-bottom: 10px;"></i>
-        <h3 style="font-size: 18px;">24/7 ADMIN SUPPORT</h3>
-        <p style="font-size: 11px; color: var(--text-dim); margin-top: 5px;">Withdrawal, Deposit ba kono somossha hole admin-er sathe direct kotha bolun.</p>
-        
-        <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
-          <!-- Telegram Group Link -->
-          <a href="https://t.me/your_telegram_group" target="_blank" style="text-decoration: none;">
-            <button class="btn-action" style="background: #0284c7;"><i class="fa-brands fa-telegram"></i> JOIN TELEGRAM GROUP</button>
-          </a>
-          <!-- Direct Admin Contact -->
-          <a href="https://t.me/your_admin_username" target="_blank" style="text-decoration: none;">
-            <button class="btn-action"><i class="fa-paper-plane fa-solid"></i> DIRECT MESSAGE ADMIN</button>
-          </a>
-        </div>
-      </div>
-    </div>
-
   </div>
 
-  <!-- Bottom Nav -->
+  <!-- Bottom Navigation -->
   <div class="bottom-nav">
-    <button class="nav-link active" onclick="switchTab('tab-ads', this)"><i class="fa-solid fa-play"></i>Watch Ads</button>
+    <button class="nav-link active" onclick="switchTab('tab-tasks', this)"><i class="fa-solid fa-list-check"></i>Tasks</button>
     <button class="nav-link" onclick="switchTab('tab-deposit', this)"><i class="fa-solid fa-wallet"></i>Deposit</button>
     <button class="nav-link" onclick="switchTab('tab-withdraw', this)"><i class="fa-solid fa-money-bill-transfer"></i>Withdraw</button>
-    <button class="nav-link" onclick="switchTab('tab-support', this)"><i class="fa-solid fa-headset"></i>Support</button>
   </div>
 
   <script>
-    let balance = 0.00;
+    // ----------------------------------------------------
+    // REPLACE THIS WITH YOUR FIREBASE CONFIG
+    // ----------------------------------------------------
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.app照.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let currentUser = null;
 
     function switchTab(tabId, elem) {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -233,79 +186,147 @@
       elem.classList.add('active');
     }
 
-    function addMoney(amt) {
-      balance += amt;
-      document.getElementById('balance').innerText = balance.toFixed(2);
-    }
+    /* Auth System */
+    async function loginUser() {
+      const phone = document.getElementById('auth-phone').value.trim();
+      const pass = document.getElementById('auth-pass').value.trim();
 
-    /* 30-Second Ad Logic */
-    function start30SecAd() {
-      const btn = document.getElementById('start-ad-btn');
-      btn.disabled = true;
-
-      // Real Ad link open kora (Monetag/Adsterra Link)
-      window.open('https://your-adsterra-link.com', '_blank');
-
-      let timer = 30;
-      document.getElementById('ad-timer').innerText = timer + 's';
-
-      let count = setInterval(() => {
-        timer--;
-        document.getElementById('ad-timer').innerText = timer + 's';
-        if (timer <= 0) {
-          clearInterval(count);
-          addMoney(15.00);
-          alert('Abhinandan! 30 second ad dekhar jonno BDT 15.00 peyechen!');
-          document.getElementById('ad-timer').innerText = '30s';
-          btn.disabled = false;
-        }
-      }, 1000);
-    }
-
-    /* Direct Network Ad */
-    function watchNetworkAd(url, reward) {
-      window.open(url, '_blank');
-      let timer = 30;
-      alert('Ad-ti 30 second dekhar por reward jog hobe!');
-      setTimeout(() => {
-        addMoney(reward);
-        alert('Abhinandan! BDT ' + reward.toFixed(2) + ' apnar account-e jog hoyeche!');
-      }, 30000);
-    }
-
-    /* Deposit Logic */
-    function submitDeposit() {
-      let amt = document.getElementById('dep-amount').value;
-      let trx = document.getElementById('dep-trx').value;
-      if (amt < 200 || !trx) {
-        alert('Sothik amount (Min 200) ebong TrxID din!');
+      if(phone.length < 11 || !pass) {
+        alert('সঠিক ১১ ডিজিটের ফোন নম্বর এবং পাসওয়ার্ড দিন!');
         return;
       }
-      alert('Deposit request safal hoyeche! Admin verify kore 5-10 minute-er moddhe balance add kore dibe.');
+
+      const userRef = db.collection('users').doc(phone);
+      const doc = await userRef.get();
+
+      if (doc.exists) {
+        if(doc.data().password === pass) {
+          currentUser = doc.data();
+        } else {
+          alert('ভুল পাসওয়ার্ড!');
+          return;
+        }
+      } else {
+        // Register New User
+        currentUser = {
+          phone: phone,
+          password: pass,
+          balance: 0.00,
+          tasksCompleted: 0
+        };
+        await userRef.set(currentUser);
+      }
+
+      document.getElementById('auth-screen').style.display = 'none';
+      loadUserData();
+    }
+
+    function loadUserData() {
+      db.collection('users').doc(currentUser.phone).onSnapshot(doc => {
+        if(doc.exists) {
+          const data = doc.data();
+          document.getElementById('balance').innerText = data.balance.toFixed(2);
+          document.getElementById('ad-count').innerText = data.tasksCompleted;
+          document.getElementById('task-completed').innerText = data.tasksCompleted;
+          document.getElementById('user-phone-display').innerText = data.phone;
+        }
+      });
+    }
+
+    /* Ad Task Real Update */
+    async function startAdTask() {
+      if(!currentUser) return;
+      const userRef = db.collection('users').doc(currentUser.phone);
+      const doc = await userRef.get();
+      const data = doc.data();
+
+      if(data.tasksCompleted >= 50) {
+        alert('আজকের ৫০টি টাস্ক শেষ!');
+        return;
+      }
+
+      // Adsterra / Monetag Link Open
+      window.open('https://your-adsterra-link.com', '_blank');
+
+      const btn = document.getElementById('watch-ad-btn');
+      btn.disabled = true;
+
+      setTimeout(async () => {
+        await userRef.update({
+          balance: firebase.firestore.FieldValue.increment(7.00),
+          tasksCompleted: firebase.firestore.FieldValue.increment(1)
+        });
+        alert('BDT 7.00 আপনার অ্যাকাউন্টে রিয়েল-টাইম যোগ হয়েছে!');
+        btn.disabled = false;
+      }, 5000);
+    }
+
+    /* Deposit Request */
+    async function submitDeposit() {
+      const amt = parseFloat(document.getElementById('dep-amount').value);
+      const trx = document.getElementById('dep-trx').value;
+      const method = document.getElementById('dep-method').value;
+
+      if(!amt || !trx) { alert('সব তথ্য পূরণ করুন!'); return; }
+
+      await db.collection('deposits').add({
+        phone: currentUser.phone,
+        amount: amt,
+        trx: trx,
+        method: method,
+        status: 'pending',
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      alert('ডিপোজিট রিকুয়েস্ট এডমিন প্যানেলে জমা হয়েছে!');
       document.getElementById('dep-amount').value = '';
       document.getElementById('dep-trx').value = '';
     }
 
-    /* Withdraw Logic */
-    function submitWithdraw() {
-      let num = document.getElementById('wit-num').value;
-      let amt = parseFloat(document.getElementById('wit-amount').value);
+    /* Withdraw Request */
+    async function submitWithdraw() {
+      const amt = parseFloat(document.getElementById('wit-amt').value);
+      const num = document.getElementById('wit-num').value;
 
-      if (!num || amt < 200) {
-        alert('Sothik number ebong minimum 200 taka withdraw request din!');
+      if(!amt || !num || amt < 200) { alert('কমপক্ষে ২০০ টাকা উইথড্র করতে হবে!'); return; }
+
+      const userRef = db.collection('users').doc(currentUser.phone);
+      const doc = await userRef.get();
+
+      if(doc.data().balance < amt) {
+        alert('পর্যাপ্ত ব্যালেন্স নেই!');
         return;
       }
-      if (amt > balance) {
-        alert('Apnar account-e porjapto balance nei!');
-        return;
-      }
 
-      balance -= amt;
-      document.getElementById('balance').innerText = balance.toFixed(2);
-      alert('Withdrawal Request Submitted! 30 Minute-er moddhe apnar ' + document.getElementById('wit-method').value + ' account-e taka peye jaben.');
+      // Cut balance instantly
+      await userRef.update({
+        balance: firebase.firestore.FieldValue.increment(-amt)
+      });
+
+      await db.collection('withdraws').add({
+        phone: currentUser.phone,
+        amount: amt,
+        number: num,
+        status: 'pending',
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      alert('উইথড্র রিকুয়েস্ট জমা হয়েছে! এডমিন এপ্রুভ করলে পেমেন্ট পেয়ে যাবেন।');
+      document.getElementById('wit-amt').value = '';
       document.getElementById('wit-num').value = '';
-      document.getElementById('wit-amount').value = '';
-    }
+    
+  const firebaseConfig = {
+    apiKey: "AIzaSyCKcM0cypXPxyXXtpdbLj9CKB9H0hPdtTc",
+    authDomain: "pocketearnmoney-b1ae4.firebaseapp.com",
+    projectId: "pocketearnmoney-b1ae4",
+    storageBucket: "pocketearnmoney-b1ae4.firebasestorage.app",
+    messagingSenderId: "407102622154",
+    appId: "1:407102622154:web:ca2e8e32ce663a48362733",
+    measurementId: "G-DDR98BBNDE"
+  };
+      firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
   </script>
+
 </body>
 </html>
