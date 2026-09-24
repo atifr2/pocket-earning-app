@@ -3,17 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pocket Earning Bot</title>
+  <title>Pocket Earning Platform</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
       --bg-dark: #07090e;
       --card-bg: rgba(255, 255, 255, 0.04);
       --card-border: rgba(255, 255, 255, 0.08);
-      --glass-glow: rgba(139, 92, 246, 0.15);
-      --primary-purple: #a855f7;
-      --accent-blue: #3b82f6;
+      --primary-purple: #7c3aed;
+      --primary-btn: #6d28d9;
       --accent-green: #10b981;
       --accent-gold: #f59e0b;
       --text-main: #ffffff;
@@ -23,400 +21,184 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     
     body { 
-      background: radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
-                  radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
-                  #07090e;
+      background: radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.15) 0%, transparent 40%), #07090e;
       color: var(--text-main); 
       padding-bottom: 90px; 
       min-height: 100vh;
-      background-attachment: fixed;
     }
 
-    /* Top Bar */
-    .top-header {
-      background: rgba(15, 23, 42, 0.75); 
-      backdrop-filter: blur(16px);
-      padding: 14px 18px; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center;
-      border-bottom: 1px solid var(--card-border); 
-      position: sticky; 
-      top: 0; 
-      z-index: 100;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    }
-    .brand-logo { 
-      font-size: 18px; 
-      font-weight: 800; 
-      background: linear-gradient(135deg, #a855f7, #3b82f6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: flex; 
-      align-items: center; 
-      gap: 8px; 
-    }
-    .brand-logo i { color: #a855f7; -webkit-text-fill-color: initial; }
-    .user-badge { 
-      font-size: 11px; 
-      background: rgba(168, 85, 247, 0.15); 
-      color: var(--primary-purple); 
-      padding: 5px 12px; 
-      border-radius: 20px; 
-      font-weight: bold; 
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      backdrop-filter: blur(5px);
+    /* Auth Screen (Exact Match to Screenshot) */
+    .auth-container {
+      position: fixed; inset: 0; 
+      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1558441719-670b95752531?q=80&w=1000') center/cover no-repeat;
+      z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;
     }
 
-    /* Navigation Tabs Content */
-    .tab-content { display: none; padding: 16px; animation: fadeIn 0.3s ease-in-out; }
+    .signup-card {
+      background: #ffffff; color: #1e293b; border-radius: 24px; padding: 28px 22px;
+      width: 100%; max-width: 410px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .signup-card h2 { font-size: 22px; font-weight: 800; text-align: center; color: #0f172a; margin-bottom: 6px; }
+    .signup-card p.subtitle { font-size: 11px; text-align: center; color: #64748b; line-height: 1.4; margin-bottom: 22px; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 11px; font-weight: 800; color: #334155; text-transform: uppercase; margin-bottom: 4px; display: block; letter-spacing: 0.5px; }
+    .form-sublabel { font-size: 10px; color: #94a3b8; margin-bottom: 6px; display: block; }
+
+    .phone-input-group { display: flex; gap: 8px; }
+    .country-code {
+      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;
+      padding: 12px 16px; font-size: 13px; font-weight: bold; color: #0f172a;
+      display: flex; align-items: center;
+    }
+
+    .input-wrapper { position: relative; width: 100%; }
+    .form-control {
+      width: 100%; padding: 13px 16px; background: #f8fafc; border: 1px solid #e2e8f0;
+      border-radius: 12px; font-size: 13px; color: #0f172a; outline: none; transition: border 0.2s;
+    }
+    .form-control:focus { border-color: #7c3aed; }
+    .toggle-pass { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; cursor: pointer; }
+
+    /* Security Box Mockup */
+    .security-box {
+      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;
+      padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;
+    }
+    .security-box div { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 600; color: #334155; }
+    .security-box input[type="checkbox"] { width: 18px; height: 18px; accent-color: #059669; cursor: pointer; }
+
+    .btn-create-acc {
+      width: 100%; background: linear-gradient(90deg, #7c3aed, #6366f1); color: white;
+      border: none; padding: 15px; border-radius: 14px; font-size: 14px; font-weight: 700;
+      cursor: pointer; box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3); transition: transform 0.1s;
+    }
+    .btn-create-acc:active { transform: scale(0.98); }
+
+    .terms-text { text-align: center; font-size: 10px; color: #64748b; margin-top: 16px; }
+    .terms-text a { color: #7c3aed; text-decoration: none; font-weight: bold; }
+
+    /* App Styles */
+    .top-header { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 100; }
+    .brand-logo { font-size: 18px; font-weight: 800; color: var(--primary-purple); display: flex; align-items: center; gap: 8px; }
+    .tab-content { display: none; padding: 16px; }
     .tab-content.active { display: block; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Home UI Elements */
-    .banner-card {
-      background: linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(49, 46, 129, 0.8) 100%); 
-      backdrop-filter: blur(12px);
-      border-radius: 20px;
-      padding: 20px; 
-      margin-bottom: 16px; 
-      border: 1px solid rgba(139, 92, 246, 0.3);
-      box-shadow: 0 8px 32px rgba(139, 92, 246, 0.2);
-    }
-    .banner-card h2 { font-size: 20px; margin-bottom: 6px; color: #fff; font-weight: 700; }
-    .banner-card p { font-size: 12px; color: var(--text-sub); }
-
-    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-    .act-btn {
-      padding: 14px; border-radius: 14px; border: none; font-weight: bold; font-size: 13px; color: white;
-      display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: transform 0.2s ease;
-    }
-    .act-btn:active { transform: scale(0.97); }
-    .btn-deposit { background: linear-gradient(135deg, #10b981, #059669); }
-    .btn-withdraw { background: linear-gradient(135deg, #ef4444, #dc2626); }
-
-    .widget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-    .widget-box {
-      background: var(--card-bg); 
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--card-border); 
-      border-radius: 14px; 
-      padding: 14px;
-      display: flex; 
-      align-items: center; 
-      gap: 10px; 
-      font-size: 13px; 
-      font-weight: 600; 
-      cursor: pointer;
-    }
-    .widget-box i { font-size: 22px; color: var(--accent-gold); }
-
-    /* Cards */
-    .station-card {
-      background: var(--card-bg); 
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--card-border); 
-      border-radius: 18px;
-      padding: 16px; 
-      margin-bottom: 16px; 
-      position: relative;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    }
-    .station-header { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 12px; 
-      border-bottom: 1px solid var(--card-border); 
-      padding-bottom: 10px; 
-    }
-    .station-title { font-size: 15px; font-weight: bold; color: #60a5fa; }
-    .station-price { 
-      background: rgba(16, 185, 129, 0.2); 
-      color: #34d399; 
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      font-weight: bold; 
-      padding: 4px 12px; 
-      border-radius: 20px; 
-      font-size: 12px; 
-    }
-
-    .station-info { font-size: 12px; color: var(--text-sub); line-height: 1.7; margin-bottom: 14px; }
-    .station-info b { color: white; }
-
-    .btn-invest {
-      width: 100%; 
-      background: linear-gradient(135deg, #a855f7, #6366f1); 
-      color: white; 
-      border: none;
-      padding: 13px; 
-      border-radius: 12px; 
-      font-weight: bold; 
-      cursor: pointer; 
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
-    }
-
-    /* Account / Profile UI */
-    .profile-card {
-      background: var(--card-bg); 
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--card-border); 
-      border-radius: 18px; 
-      padding: 18px; 
-      margin-bottom: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    }
-    .balance-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 14px; text-align: center; }
-    .bal-item { 
-      background: rgba(255, 255, 255, 0.02); 
-      padding: 12px 6px; 
-      border-radius: 12px; 
-      border: 1px solid var(--card-border); 
-    }
-    .bal-item small { font-size: 10px; color: var(--text-sub); display: block; margin-bottom: 4px; }
-    .bal-item span { font-weight: bold; font-size: 13px; color: var(--accent-green); }
-
-    .menu-list { 
-      background: var(--card-bg); 
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--card-border); 
-      border-radius: 18px; 
-      overflow: hidden; 
-    }
-    .menu-item {
-      padding: 15px 18px; display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid var(--card-border); font-size: 13px; color: white; text-decoration: none; cursor: pointer;
-    }
-    .menu-item:last-child { border-bottom: none; }
-    .menu-item div { display: flex; align-items: center; gap: 12px; }
-    .menu-item i { font-size: 16px; color: var(--primary-purple); width: 20px; text-align: center; }
-
-    /* Bottom Navigation */
-    .bottom-bar {
-      position: fixed; bottom: 0; left: 0; right: 0; 
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(20px);
-      display: flex; justify-content: space-around; 
-      padding: 12px 0 10px; 
-      border-top: 1px solid var(--card-border); 
-      z-index: 1000;
-      box-shadow: 0 -4px 25px rgba(0,0,0,0.5);
-    }
-    .nav-btn {
-      display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-sub);
-      font-size: 10px; font-weight: 600; cursor: pointer; flex: 1; text-align: center;
-      transition: color 0.2s ease;
-    }
-    .nav-btn i { font-size: 18px; }
+    .station-card, .profile-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 16px; margin-bottom: 16px; }
+    .btn-invest { width: 100%; background: linear-gradient(135deg, #a855f7, #6366f1); color: white; border: none; padding: 13px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+    .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px); display: flex; justify-content: space-around; padding: 12px 0 10px; border-top: 1px solid var(--card-border); z-index: 1000; }
+    .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-sub); font-size: 10px; font-weight: 600; cursor: pointer; flex: 1; }
     .nav-btn.active { color: var(--primary-purple); }
-
-    /* Inputs & Deposit Box */
-    .input-box {
-      width: 100%; padding: 13px; margin: 8px 0 14px; background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border); border-radius: 10px; color: white; outline: none;
-      font-size: 13px;
-    }
-    .input-box:focus { border-color: var(--primary-purple); }
-    .deposit-info-box {
-      background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25);
-      border-radius: 14px; padding: 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.6;
-    }
-    .number-highlight {
-      font-weight: bold; font-size: 17px; color: var(--accent-gold); display: inline-block; margin: 4px 0;
-      letter-spacing: 1px;
-    }
   </style>
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-  <div class="top-header">
-    <div class="brand-logo"><i class="fas fa-bolt"></i> Pocket Earning</div>
-    <div class="user-badge" id="top-user-id">ID: ...</div>
-  </div>
+  <!-- SIGN UP SCREEN (EXACT MATCH TO DESIGN) -->
+  <div id="auth-screen" class="auth-container">
+    <div class="signup-card">
+      <h2>Account Registration</h2>
+      <p class="subtitle">Pocket Earning promotes electric mobility and builds a cleaner, smarter and more sustainable future.</p>
 
-  <div id="tab-start" class="tab-content active">
-    <div class="banner-card">
-      <h2>Pocket Earning Platform</h2>
-      <p>Secure EV Charger Investment & Daily Automated Profits.</p>
-    </div>
-
-    <div class="action-grid">
-      <button class="act-btn btn-deposit" onclick="switchTab('tab-deposit')">
-        <i class="fas fa-plus-circle"></i> Recharge
-      </button>
-      <button class="act-btn btn-withdraw" onclick="switchTab('tab-account')">
-        <i class="fas fa-wallet"></i> Withdraw
-      </button>
-    </div>
-
-    <div class="widget-grid">
-      <div class="widget-box" onclick="alert('Lucky Wheel available soon!')">
-        <i class="fas fa-dharmachakra"></i>
-        <span>Lucky Wheel</span>
-      </div>
-      <div class="widget-box" onclick="alert('Enter Promo Code')">
-        <i class="fas fa-gift"></i>
-        <span>Redeem Code</span>
-      </div>
-    </div>
-
-    <h3 style="font-size: 15px; margin-bottom: 12px; color: var(--text-sub);">Popular Stations</h3>
-    <div id="home-station-preview"></div>
-  </div>
-
-  <div id="tab-stations" class="tab-content">
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Investment Plans</h3>
-    <div id="full-station-list"></div>
-  </div>
-
-  <div id="tab-teams" class="tab-content">
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Active Investment & Team</h3>
-    
-    <div class="profile-card">
-      <small style="color: var(--text-sub);">Active Investment</small>
-      <h2 style="color: var(--accent-green); margin: 6px 0;">৳<span id="active-inv-amt">0.00</span></h2>
-      <p style="font-size: 11px; color: var(--text-sub);">Next profit payout in: <b style="color: white;" id="timer">23:59:59</b></p>
-    </div>
-
-    <div class="profile-card">
-      <h4 style="margin-bottom: 10px;">Team Summary</h4>
-      <div class="balance-grid">
-        <div class="bal-item"><small>Team Size</small><span style="color: white;" id="team-size">0</span></div>
-        <div class="bal-item"><small>Commissions</small><span id="team-comm">৳0.00</span></div>
-        <div class="bal-item"><small>VIP Rank</small><span style="color: #f59e0b;">VIP 1</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div id="tab-invite" class="tab-content">
-    <h3 style="font-size: 16px; margin-bottom: 12px;">Invite & Earn Commission</h3>
-    
-    <div class="profile-card">
-      <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 8px;">Share your link and earn 3-level commissions (20% - 2% - 1%)</p>
-      <input type="text" class="input-box" id="ref-link" readonly value="https://t.me/PocketEarningBot">
-      <button class="btn-invest" onclick="copyRefLink()">Copy Invite Link</button>
-    </div>
-  </div>
-
-  <div id="tab-deposit" class="tab-content">
-    <h3 style="font-size: 16px; margin-bottom: 12px;"><i class="fas fa-plus-circle" style="color: var(--accent-green);"></i> Add Funds (Recharge)</h3>
-    
-    <div class="deposit-info-box">
-      Nicher bKash / Nagad Personal number-e "Send Money" korun:<br>
-      <div class="number-highlight">01996710797</div>
-      <br><small style="color: var(--text-sub);">Taka pathanor por TrxID ebong Amount niche submit করুন।</small>
-    </div>
-
-    <div class="profile-card">
-      <label style="font-size: 11px; color: var(--text-sub);">Payment Method</label>
-      <select id="dep-method" class="input-box">
-        <option value="bKash">bKash Personal</option>
-        <option value="Nagad">Nagad Personal</option>
-      </select>
-
-      <label style="font-size: 11px; color: var(--text-sub);">Deposit Amount (BDT)</label>
-      <input type="number" id="dep-amt" class="input-box" placeholder="Min 500 BDT">
-
-      <label style="font-size: 11px; color: var(--text-sub);">Sender Phone Number</label>
-      <input type="text" id="dep-num" class="input-box" placeholder="017XXXXXXXX">
-
-      <label style="font-size: 11px; color: var(--text-sub);">Transaction ID (TrxID)</label>
-      <input type="text" id="dep-trx" class="input-box" placeholder="e.g. 9J82K3M1">
-
-      <button class="btn-invest" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="requestDeposit()">Submit Deposit Request</button>
-    </div>
-  </div>
-
-  <div id="tab-account" class="tab-content">
-    <div class="profile-card">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <div>
-          <h3 id="acc-name">User Name</h3>
-          <small id="acc-id-text" style="color: var(--text-sub);">ID: 0000</small>
+      <!-- Phone Input -->
+      <div class="form-group">
+        <label class="form-label">PHONE NUMBER</label>
+        <span class="form-sublabel">Enter your number with the country code</span>
+        <div class="phone-input-group">
+          <div class="country-code">+880</div>
+          <input type="tel" id="signup-phone" class="form-control" placeholder="1700000000">
         </div>
-        <span style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold;">VIP 1</span>
       </div>
 
-      <div class="balance-grid">
-        <div class="bal-item"><small>Available</small><span id="bal-avail">৳120</span></div>
-        <div class="bal-item"><small>Invested</small><span id="bal-invest">৳0</span></div>
-        <div class="bal-item"><small>Total Earned</small><span id="bal-earned">৳0</span></div>
+      <!-- Password Input -->
+      <div class="form-group">
+        <label class="form-label">PASSWORD</label>
+        <span class="form-sublabel">Create a secure password</span>
+        <div class="input-wrapper">
+          <input type="password" id="signup-pass" class="form-control" placeholder="Minimum 6 characters">
+          <i class="fas fa-eye-slash toggle-pass" onclick="togglePass('signup-pass', this)"></i>
+        </div>
       </div>
-    </div>
 
-    <div class="profile-card">
-      <h4 style="margin-bottom: 10px;"><i class="fas fa-wallet" style="color: #ef4444;"></i> Withdraw Money</h4>
-      
-      <label style="font-size: 11px; color: var(--text-sub);">Select Method</label>
-      <select id="wit-method" class="input-box">
-        <option value="bKash">bKash</option>
-        <option value="Nagad">Nagad</option>
-      </select>
-
-      <label style="font-size: 11px; color: var(--text-sub);">Account Number</label>
-      <input type="text" id="wit-num" class="input-box" placeholder="017XXXXXXXX">
-
-      <label style="font-size: 11px; color: var(--text-sub);">Amount (Min ৳300)</label>
-      <input type="number" id="wit-amt" class="input-box" placeholder="300">
-
-      <button class="btn-invest" style="background: linear-gradient(135deg, #ef4444, #dc2626);" onclick="requestWithdraw()">Submit Withdrawal</button>
-    </div>
-
-    <div class="menu-list">
-      <div class="menu-item" onclick="switchTab('tab-deposit')">
-        <div><i class="fas fa-plus-circle"></i> Deposit Funds</div>
-        <i class="fas fa-chevron-right" style="color: var(--text-sub);"></i>
+      <!-- Confirm Password Input -->
+      <div class="form-group">
+        <label class="form-label">CONFIRM PASSWORD</label>
+        <span class="form-sublabel">Please re-enter your password</span>
+        <div class="input-wrapper">
+          <input type="password" id="confirm-pass" class="form-control" placeholder="Repeat your password">
+          <i class="fas fa-eye-slash toggle-pass" onclick="togglePass('confirm-pass', this)"></i>
+        </div>
       </div>
-      <div class="menu-item" onclick="switchTab('tab-stations')">
-        <div><i class="fas fa-charging-station"></i> My Stations</div>
-        <i class="fas fa-chevron-right" style="color: var(--text-sub);"></i>
+
+      <!-- Invitation Code Input -->
+      <div class="form-group">
+        <label class="form-label">INVITATION CODE <span style="color: #94a3b8; font-weight: normal;">(OPTIONAL)</span></label>
+        <span class="form-sublabel">If you have a code, enter it here</span>
+        <input type="text" id="signup-inv" class="form-control" placeholder="e.g. LJT04">
       </div>
-      <div class="menu-item" onclick="switchTab('tab-teams')">
-        <div><i class="fas fa-users"></i> My Team</div>
-        <i class="fas fa-chevron-right" style="color: var(--text-sub);"></i>
+
+      <!-- Security Checkbox -->
+      <label class="form-label">SECURITY VERIFICATION</label>
+      <div class="security-box">
+        <div>
+          <input type="checkbox" id="captcha-check">
+          <span>Verify that you are human</span>
+        </div>
+        <i class="fas fa-cloud" style="color: #f97316; font-size: 16px;"></i>
       </div>
-      <a href="https://t.me/telegram" target="_blank" class="menu-item">
-        <div><i class="fas fa-headset"></i> Customer Support</div>
-        <i class="fas fa-chevron-right" style="color: var(--text-sub);"></i>
-      </a>
+
+      <button class="btn-create-acc" onclick="handleCustomSignup()">Create Account</button>
+
+      <p class="terms-text">By registering, you agree to Pocket Earning's <a href="#">Terms and Conditions</a>.</p>
+      <p style="text-align: center; font-size: 11px; margin-top: 10px; color: #64748b;">
+        Already registered? <b style="color: #7c3aed; cursor: pointer;" onclick="switchToLogin()">Login Here</b>
+      </p>
     </div>
   </div>
 
-  <div class="bottom-bar">
-    <div class="nav-btn active" id="btn-start" onclick="switchTab('tab-start')">
-      <i class="fas fa-home"></i>
-      <span>Start</span>
+  <!-- MAIN APP INTERFACE -->
+  <div id="app-screen" style="display: none;">
+    <div class="top-header">
+      <div class="brand-logo"><i class="fas fa-bolt"></i> Pocket Earning</div>
+      <div class="user-badge" id="top-user-phone" style="font-size: 11px; color: #a855f7;">User</div>
     </div>
-    <div class="nav-btn" id="btn-stations" onclick="switchTab('tab-stations')">
-      <i class="fas fa-bolt"></i>
-      <span>Stations</span>
+
+    <!-- TAB 1: HOME -->
+    <div id="tab-start" class="tab-content active">
+      <div class="profile-card">
+        <h3>Welcome to Pocket Earning</h3>
+        <p style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Start investing in EV Chargers today!</p>
+      </div>
+      <div id="home-station-preview"></div>
     </div>
-    <div class="nav-btn" id="btn-teams" onclick="switchTab('tab-teams')">
-      <i class="fas fa-users"></i>
-      <span>Teams</span>
+
+    <!-- TAB 2: STATIONS -->
+    <div id="tab-stations" class="tab-content">
+      <h3 style="font-size: 16px; margin-bottom: 12px;">Investment Plans</h3>
+      <div id="full-station-list"></div>
     </div>
-    <div class="nav-btn" id="btn-invite" onclick="switchTab('tab-invite')">
-      <i class="fas fa-user-plus"></i>
-      <span>Invite</span>
+
+    <!-- TAB 3: ACCOUNT -->
+    <div id="tab-account" class="tab-content">
+      <div class="profile-card">
+        <h3 id="acc-phone">01700000000</h3>
+        <button style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); padding: 5px 12px; border-radius: 8px; margin-top: 10px; cursor: pointer;" onclick="handleLogout()">Logout</button>
+      </div>
     </div>
-    <div class="nav-btn" id="btn-account" onclick="switchTab('tab-account')">
-      <i class="fas fa-user"></i>
-      <span>Account</span>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-bar">
+      <div class="nav-btn active" id="btn-start" onclick="switchTab('tab-start')"><i class="fas fa-home"></i><span>Start</span></div>
+      <div class="nav-btn" id="btn-stations" onclick="switchTab('tab-stations')"><i class="fas fa-bolt"></i><span>Stations</span></div>
+      <div class="nav-btn" id="btn-account" onclick="switchTab('tab-account')"><i class="fas fa-user"></i><span>Account</span></div>
     </div>
   </div>
 
   <script>
-    // Firebase Config
+    // Firebase Setup
     const firebaseConfig = {
       apiKey: "AIzaSyCKcM0cypXPxyXXtpdbLj9CKB9H0hPdtTc",
       authDomain: "pocketearnmoney-b1ae4.firebaseapp.com",
@@ -427,171 +209,65 @@
     };
 
     firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // Telegram App Info
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-
-    let tgUser = tg.initDataUnsafe?.user || { id: "900101", first_name: "Demo User" };
-
-    document.getElementById('top-user-id').innerText = "ID: " + tgUser.id;
-    document.getElementById('acc-id-text').innerText = "ID: " + tgUser.id;
-    document.getElementById('acc-name').innerText = tgUser.first_name;
-    document.getElementById('ref-link').value = `https://t.me/PocketEarningBot?start=${tgUser.id}`;
-
-    let userBalance = 120;
-    let investedAmt = 0;
-
-    // Investment Packages Data
-    const packages = [
-      { name: "E1 Compact Charger", price: 500, daily: 70, days: 90, total: 6300 },
-      { name: "E2 Compact Charger", price: 1300, daily: 188, days: 90, total: 16920 },
-      { name: "Residential Charger R1", price: 2500, daily: 375, days: 90, total: 33750 },
-      { name: "Residential Charger R2", price: 6000, daily: 930, days: 90, total: 83700 },
-      { name: "Commercial Charger C2", price: 14000, daily: 2310, days: 90, total: 207900 },
-      { name: "Industrial Charger I1", price: 25000, daily: 4375, days: 90, total: 393750 },
-      { name: "Industrial Charger I2", price: 50000, daily: 9500, days: 90, total: 855000 },
-      { name: "Futuristic EV Charger", price: 100000, daily: 21000, days: 90, total: 1890000 }
-    ];
-
-    // Render Stations
-    function renderPackages() {
-      const fullList = document.getElementById('full-station-list');
-      const homePreview = document.getElementById('home-station-preview');
-      fullList.innerHTML = '';
-      homePreview.innerHTML = '';
-
-      packages.forEach((pkg, index) => {
-        const html = `
-          <div class="station-card">
-            <div class="station-header">
-              <span class="station-title">${pkg.name}</span>
-              <span class="station-price">৳${pkg.price.toLocaleString()}</span>
-            </div>
-            <div class="station-info">
-              • দৈনিক আয়: <b>৳${pkg.daily.toLocaleString()} BDT</b><br>
-              • মেয়াদ: <b>${pkg.days} দিন</b><br>
-              • মোট রিটার্ন: <b>৳${pkg.total.toLocaleString()} BDT</b>
-            </div>
-            <button class="btn-invest" onclick="buyPackage(${pkg.price}, '${pkg.name}')">Invest Now</button>
-          </div>
-        `;
-        fullList.innerHTML += html;
-        if (index < 2) homePreview.innerHTML += html;
-      });
+    // Password Show / Hide
+    function togglePass(id, icon) {
+      const input = document.getElementById(id);
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+      } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+      }
     }
 
-    renderPackages();
+    // Sign Up Function
+    function handleCustomSignup() {
+      const phone = document.getElementById('signup-phone').value;
+      const pass = document.getElementById('signup-pass').value;
+      const confirmPass = document.getElementById('confirm-pass').value;
+      const isHuman = document.getElementById('captcha-check').checked;
 
-    // Sync with Firebase
-    const userRef = db.collection('bot_users').doc(tgUser.id.toString());
-    userRef.get().then((doc) => {
-      if (doc.exists) {
-        userBalance = doc.data().balance || 120;
-        investedAmt = doc.data().invested || 0;
-        updateUI();
-      } else {
-        userRef.set({
-          name: tgUser.first_name,
-          tg_id: tgUser.id,
+      if(!phone || phone.length < 10) return alert('Doyakore sothik Phone Number din!');
+      if(pass.length < 6) return alert('Password nodikpokkhe 6 digit-er hote hobe!');
+      if(pass !== confirmPass) return alert('Password ebong Confirm Password milchena!');
+      if(!isHuman) return alert('Doyakore Security Verification Checkbox-e tick din!');
+
+      const email = `bd${phone}@pocketearning.com`;
+
+      auth.createUserWithEmailAndPassword(email, pass).then((res) => {
+        db.collection('site_users').doc(res.user.uid).set({
+          phone: "+880" + phone,
           balance: 120,
           invested: 0,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
+      }).catch(err => alert(err.message));
+    }
+
+    // Auth State Listener
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('app-screen').style.display = 'block';
+        document.getElementById('top-user-phone').innerText = user.email.split('@')[0];
+        document.getElementById('acc-phone').innerText = user.email.split('@')[0];
+      } else {
+        document.getElementById('auth-screen').style.display = 'flex';
+        document.getElementById('app-screen').style.display = 'none';
       }
     });
 
-    function updateUI() {
-      document.getElementById('bal-avail').innerText = "৳" + userBalance.toLocaleString();
-      document.getElementById('bal-invest').innerText = "৳" + investedAmt.toLocaleString();
-      document.getElementById('active-inv-amt').innerText = investedAmt.toLocaleString();
-    }
+    function handleLogout() { auth.signOut(); }
 
-    // Switch Tabs Logic
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-
       document.getElementById(tabId).classList.add('active');
-      const activeNavBtn = document.getElementById('btn-' + tabId.replace('tab-', ''));
-      if(activeNavBtn) activeNavBtn.classList.add('active');
-    }
-
-    // Deposit Function
-    function requestDeposit() {
-      const method = document.getElementById('dep-method').value;
-      const amt = parseInt(document.getElementById('dep-amt').value);
-      const num = document.getElementById('dep-num').value;
-      const trx = document.getElementById('dep-trx').value;
-
-      if (!num || !trx || isNaN(amt)) return alert('Doyakore shob tathya thikbhabe din!');
-      if (amt < 500) return alert('Sorbomimno Deposit ৳500 BDT!');
-
-      db.collection('deposits').add({
-        tg_id: tgUser.id,
-        name: tgUser.first_name,
-        method: method,
-        amount: amt,
-        sender_number: num,
-        trx_id: trx,
-        status: 'pending',
-        requestedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(() => {
-        alert('Apnar Deposit Request safal bhabe joma hoyeche! Admin verify kore balance add kore dibe.');
-        document.getElementById('dep-amt').value = '';
-        document.getElementById('dep-num').value = '';
-        document.getElementById('dep-trx').value = '';
-        switchTab('tab-start');
-      });
-    }
-
-    // Buy Package
-    function buyPackage(price, pkgName) {
-      if (userBalance < price) {
-        alert(`Porjapto balance nei! ${pkgName} kinte aro ৳${price - userBalance} BDT deposit korun.`);
-        switchTab('tab-deposit');
-      } else {
-        userBalance -= price;
-        investedAmt += price;
-        userRef.update({ balance: userBalance, invested: investedAmt }).then(() => {
-          updateUI();
-          alert(`Safalbhabe ${pkgName} kena hoyeche!`);
-        });
-      }
-    }
-
-    // Withdraw Request
-    function requestWithdraw() {
-      const method = document.getElementById('wit-method').value;
-      const num = document.getElementById('wit-num').value;
-      const amt = parseInt(document.getElementById('wit-amt').value);
-
-      if (!num || isNaN(amt)) return alert('Sothik tathya din!');
-      if (amt < 300) return alert('Sorbomimno Withdraw ৳300!');
-      if (amt > userBalance) return alert('Porjapto balance nei!');
-
-      db.collection('withdraws').add({
-        tg_id: tgUser.id,
-        name: tgUser.first_name,
-        method: method,
-        number: num,
-        amount: amt,
-        status: 'pending',
-        requestedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(() => {
-        userBalance -= amt;
-        userRef.update({ balance: userBalance });
-        updateUI();
-        alert('Withdraw request safalbhabe joma hoyeche!');
-      });
-    }
-
-    function copyRefLink() {
-      const copyText = document.getElementById("ref-link");
-      copyText.select();
-      navigator.clipboard.writeText(copyText.value);
-      alert("Invite link copied!");
+      document.getElementById('btn-' + tabId.replace('tab-', '')).classList.add('active');
     }
   </script>
 </body>
