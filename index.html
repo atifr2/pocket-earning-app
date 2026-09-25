@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Pocket Earning Mini App</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+
   <style>
     :root {
       --bg-color: #f1f5f3;
@@ -210,7 +210,6 @@
       padding: 5px 12px; border-radius: 12px; font-size: 11px; font-weight: 800;
     }
     .status-completed { background: #ecfdf5; color: #059669; }
-    .status-blocked { background: #fef2f2; color: #ef4444; }
 
     /* Form Elements */
     .input-field {
@@ -287,10 +286,10 @@
 
     <div class="top-header">
       <div class="user-profile">
-        <div class="user-avatar">AH</div>
+        <div class="user-avatar" id="header-avatar">U</div>
         <div class="user-info">
-          <h4>Atif Hosen <i class="fas fa-check-circle" style="color: #10b981;"></i></h4>
-          <p>BDT:<span id="top-balance">1470.00</span></p>
+          <h4 id="header-name">New User <i class="fas fa-check-circle" style="color: #10b981;"></i></h4>
+          <p>BDT:<span id="top-balance">0.00</span></p>
         </div>
       </div>
       <div class="active-badge">
@@ -301,14 +300,14 @@
     <div id="tab-earn" class="tab-content active">
       <div class="hero-banner">
         <h2>ADS REWARD CENTER</h2>
-        <p>Complete daily missions to unlock maximum rewards</p>
+        <p>Watch daily ads & earn real money instantly</p>
       </div>
 
       <div class="stats-grid-4">
         <div class="stat-card">
           <i class="fas fa-clock"></i>
           <div class="label">WAIT TIME</div>
-          <div class="value">13 Sec</div>
+          <div class="value">10 Sec</div>
         </div>
         <div class="stat-card">
           <i class="fas fa-bolt"></i>
@@ -316,9 +315,9 @@
           <div class="value">50 Ads</div>
         </div>
         <div class="stat-card">
-          <i class="fas fa-list-check"></i>
-          <div class="label">DAILY MISSION</div>
-          <div class="value">50</div>
+          <i class="fas fa-coins"></i>
+          <div class="label">PER AD REWARD</div>
+          <div class="value">BDT: 2.00</div>
         </div>
         <div class="stat-card">
           <i class="fas fa-chart-line"></i>
@@ -346,42 +345,18 @@
       <div class="hero-banner">
         <i class="fas fa-globe" style="font-size: 28px; margin-bottom: 6px;"></i>
         <h2>Web Task Center</h2>
-        <p>Complete simple website visits and earn huge rewards</p>
-      </div>
-
-      <div class="stats-grid-4">
-        <div class="stat-card">
-          <div class="label">AVAILABLE</div>
-          <div class="value" style="color: var(--primary-green);">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">COMPLETED</div>
-          <div class="value">6</div>
-        </div>
-      </div>
-
-      <h5 style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin: 14px 0 8px;">Active Missions</h5>
-
-      <div class="task-item">
-        <div class="task-left">
-          <div class="task-icon"><i class="fas fa-link"></i></div>
-          <div class="task-info">
-            <h5>Account Create</h5>
-            <p>BDT:50 | <i class="far fa-clock"></i> 20s</p>
-          </div>
-        </div>
-        <span class="badge-status status-blocked"><i class="fas fa-lock"></i> Blocked</span>
+        <p>Visit sponsored sites for 30 seconds & earn rewards</p>
       </div>
 
       <div class="task-item">
         <div class="task-left">
           <div class="task-icon"><i class="fas fa-link"></i></div>
           <div class="task-info">
-            <h5>Account Create</h5>
-            <p>BDT:50 | <i class="far fa-clock"></i> 20s</p>
+            <h5>Visit Sponsor Site 1</h5>
+            <p>BDT: 5.00 | <i class="far fa-clock"></i> 30s</p>
           </div>
         </div>
-        <span class="badge-status status-completed"><i class="fas fa-check"></i> Completed</span>
+        <button class="badge-status status-completed" style="border:none; cursor:pointer;" onclick="alert('Web task starting...')">START</button>
       </div>
     </div>
 
@@ -389,21 +364,18 @@
       <div class="hero-banner">
         <i class="fab fa-telegram-plane" style="font-size: 32px; margin-bottom: 6px;"></i>
         <h2>Telegram Tasks</h2>
-        <p>Complete simple tasks and earn rewards</p>
+        <p>Join official channel to activate instant support</p>
       </div>
 
       <div class="task-item" style="padding: 16px;">
         <div class="task-left">
           <div class="task-icon"><i class="fab fa-telegram"></i></div>
           <div class="task-info">
-            <h5>Apurbo Biswas Channel</h5>
-            <p style="color: var(--primary-green); font-weight: 800;">BDT: 50.00 Reward</p>
+            <h5>Join Support Admin</h5>
+            <p style="color: var(--primary-green); font-weight: 800;">24/7 Active Help</p>
           </div>
         </div>
-        <div style="display: flex; gap: 6px;">
-          <button class="badge-status status-completed" style="border:none; cursor:pointer;" onclick="window.open('https://t.me/Smart_Earning_ADMIN','_blank')">JOIN</button>
-          <button class="badge-status" style="background:#0f172a; color:white; border:none; cursor:pointer;" onclick="alert('Task Verified!')">VERIFY</button>
-        </div>
+        <button class="badge-status status-completed" style="border:none; cursor:pointer;" onclick="openAdmin()">JOIN</button>
       </div>
     </div>
 
@@ -411,122 +383,61 @@
       <div class="hero-banner">
         <i class="fas fa-gift" style="font-size: 32px; margin-bottom: 6px;"></i>
         <h2>Invite & Earn</h2>
-        <p>Expand your network and get lifetime commissions</p>
-      </div>
-
-      <div class="stats-grid-4">
-        <div class="stat-card">
-          <div class="label">TOTAL NETWORK</div>
-          <div class="value">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">BONUS RATE</div>
-          <div class="value" style="color: var(--primary-green);">30%</div>
-        </div>
+        <p>Refer friends & earn commission on every active user</p>
       </div>
 
       <div class="stat-card" style="text-align: left; margin-bottom: 16px;">
-        <div class="label" style="margin-bottom: 6px;"><i class="fas fa-link"></i> YOUR NETWORK LINK</div>
+        <div class="label" style="margin-bottom: 6px;"><i class="fas fa-link"></i> YOUR REFERRAL LINK</div>
         <div style="display: flex; gap: 8px;">
-          <input type="text" id="ref-url" class="input-field" style="margin:0;" readonly value="https://t.me/Smart_Earning_Bot?start=12345">
+          <input type="text" id="ref-url" class="input-field" style="margin:0;" readonly value="https://t.me/Pocket_Earning_Bot?start=user">
           <button style="background: var(--gradient-banner); color: white; border: none; padding: 0 16px; border-radius: 12px; font-weight: 800; cursor: pointer;" onclick="copyRef()">COPY</button>
         </div>
       </div>
-
-      <button class="btn-main" style="background: #0284c7;" onclick="shareTelegram()">
-        <i class="fab fa-telegram-plane"></i> Share on Telegram
-      </button>
     </div>
 
     <div id="tab-wallet" class="tab-content">
       <div class="hero-banner">
-        <div style="font-size: 11px; opacity: 0.8; font-weight: 700;">WITHDRAWABLE PROFIT</div>
-        <div style="font-size: 32px; font-weight: 900; color: var(--accent-yellow); margin: 6px 0;">BDT:<span id="withdraw-balance">1470.00</span></div>
-        <div style="font-size: 11px;"><i class="fas fa-users"></i> Referrals: 0</div>
-      </div>
-
-      <div style="background: #fffbe3; border: 1px solid #fef08a; padding: 12px; border-radius: 14px; font-size: 11px; color: #854d0e; margin-bottom: 14px;">
-        <i class="fas fa-exclamation-triangle"></i> Minimum 0 referrals are required to unlock withdrawal. Please ensure your payment address is correct.
+        <div style="font-size: 11px; opacity: 0.8; font-weight: 700;">CURRENT BALANCE</div>
+        <div style="font-size: 32px; font-weight: 900; color: var(--accent-yellow); margin: 6px 0;">BDT: <span id="withdraw-balance">0.00</span></div>
       </div>
 
       <div class="stat-card" style="text-align: left; margin-bottom: 14px;">
-        <div class="label" style="margin-bottom: 6px;">WITHDRAWAL AMOUNT</div>
-        <input type="number" class="input-field" placeholder="0.00 BDT">
+        <div class="label" style="margin-bottom: 6px;">WITHDRAWAL AMOUNT (MIN BDT 100)</div>
+        <input type="number" id="withdraw-amount" class="input-field" placeholder="Enter amount">
 
-        <div class="label" style="margin-bottom: 6px;">ACCOUNT / WALLET ADDRESS</div>
-        <input type="text" class="input-field" placeholder="Enter your wallet address">
-
-        <div class="label" style="margin-bottom: 6px;">SELECT PAYMENT GATEWAY</div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px;">
-          <div class="stat-card" style="cursor: pointer; border: 2px solid var(--primary-green); background: #ecfdf5;">
-            <i class="fas fa-wallet" style="color: #e11d48;"></i>
-            <div class="label">bKash</div>
-          </div>
-          <div class="stat-card" style="cursor: pointer;">
-            <i class="fas fa-wallet" style="color: #f97316;"></i>
-            <div class="label">Nagad</div>
-          </div>
-        </div>
+        <div class="label" style="margin-bottom: 6px;">BKASH / NAGAD NUMBER</div>
+        <input type="text" class="input-field" placeholder="017xxxxxxxx">
       </div>
 
-      <button class="btn-main" onclick="alert('Withdrawal request submitted successfully!')">
+      <button class="btn-main" onclick="processWithdraw()">
         CONFIRM WITHDRAWAL <i class="fas fa-arrow-right"></i>
       </button>
     </div>
 
     <div id="tab-profile" class="tab-content">
       <div class="hero-banner" style="padding: 28px 18px;">
-        <div class="user-avatar" style="width: 64px; height: 64px; font-size: 24px; margin: 0 auto 10px;">AH</div>
-        <h2 style="font-size: 20px;">Atif Hosen</h2>
-        <p style="font-size: 12px; opacity: 0.9;">User</p>
+        <div class="user-avatar" id="profile-avatar" style="width: 64px; height: 64px; font-size: 24px; margin: 0 auto 10px;">U</div>
+        <h2 style="font-size: 20px;" id="profile-name">User Account</h2>
+        <p style="font-size: 12px; opacity: 0.9;">Verified Member</p>
       </div>
 
       <div class="stats-grid-4">
         <div class="stat-card">
           <div class="label">MAIN BALANCE</div>
-          <div class="value" style="color: var(--primary-green);">BDT:<span id="profile-balance">1470.00</span></div>
-        </div>
-        <div class="stat-card">
-          <div class="label">LIFETIME EARN</div>
-          <div class="value">BDT:1170</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">EARN TODAY</div>
-          <div class="value">BDT:0.00</div>
+          <div class="value" style="color: var(--primary-green);">BDT: <span id="profile-balance">0.00</span></div>
         </div>
         <div class="stat-card">
           <div class="label">ADS VIEWED</div>
-          <div class="value" id="profile-ads">58</div>
+          <div class="value" id="profile-ads">0</div>
         </div>
-      </div>
-
-      <div class="task-item" onclick="switchTab('tab-refer')" style="cursor: pointer;">
-        <div class="task-left">
-          <i class="fas fa-users" style="color: var(--primary-green); font-size: 18px;"></i>
-          <span style="font-size: 13px; font-weight: 700;">Referral Network</span>
-        </div>
-        <span class="badge-status status-completed">0 Ref</span>
-      </div>
-
-      <div class="task-item" onclick="switchTab('tab-wallet')" style="cursor: pointer;">
-        <div class="task-left">
-          <i class="fas fa-wallet" style="color: var(--primary-green); font-size: 18px;"></i>
-          <span style="font-size: 13px; font-weight: 700;">Withdraw Funds</span>
-        </div>
-        <i class="fas fa-chevron-right" style="color: #94a3b8;"></i>
       </div>
 
       <div class="hero-banner" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); margin-top: 14px; text-align: left; display: flex; align-items: center; justify-content: space-between; cursor: pointer;" onclick="openAdmin()">
         <div>
-          <h4 style="font-size: 14px; font-weight: 800;">Customer Support</h4>
-          <p style="font-size: 11px;">Available 24/7 for your help</p>
+          <h4 style="font-size: 14px; font-weight: 800;">Contact Admin Support</h4>
+          <p style="font-size: 11px;">24/7 Live Payment & Help</p>
         </div>
         <i class="fas fa-arrow-right" style="font-size: 18px;"></i>
-      </div>
-
-      <div style="text-align: center; margin-top: 18px; color: var(--text-muted); font-size: 11px; font-weight: 700;">
-        APP VERSION 2.0.1<br>
-        <span style="font-size: 10px; opacity: 0.7;">Managed by Developer A M IMRAN</span>
       </div>
     </div>
 
@@ -543,19 +454,20 @@
 
   <div id="ad-modal" class="modal-overlay">
     <div class="modal-box">
-      <h3 style="font-size: 16px; margin-bottom: 6px;">Sponsored Ad Loading...</h3>
-      <p style="font-size: 12px; color: var(--text-muted);">Please wait until timer finishes.</p>
-      <div id="timer" style="font-size: 42px; font-weight: 900; color: var(--primary-green); margin: 18px 0;">13</div>
-      <button id="claim-btn" class="btn-main" style="display: none;" onclick="claimAdReward()">Claim Reward</button>
+      <h3 style="font-size: 16px; margin-bottom: 6px;">Watching Sponsor Ad...</h3>
+      <p style="font-size: 12px; color: var(--text-muted);">Please stay until the timer finishes.</p>
+      <div id="timer" style="font-size: 42px; font-weight: 900; color: var(--primary-green); margin: 18px 0;">10</div>
+      <button id="claim-btn" class="btn-main" style="display: none;" onclick="claimAdReward()">Claim BDT 2.00 Reward</button>
     </div>
   </div>
 
   <script>
-    // Real Ad Links List
-    const REAL_AD_LINKS = ["https://www.google.com"]; 
+    // Real Ad Links List (Direct Links from Monetag / Adsterra)
+    const REAL_AD_LINKS = [""]; 
 
-    let balance = parseFloat(localStorage.getItem('user_balance')) || 1470.00;
-    let adsCount = parseInt(localStorage.getItem('user_ads')) || 0;
+    // Zero Initial Balance for New Users
+    let balance = parseFloat(localStorage.getItem('pocket_balance')) || 0.00;
+    let adsCount = parseInt(localStorage.getItem('pocket_ads')) || 0;
     const MAX_ADS = 50;
     const REWARD_PER_AD = 2.00;
 
@@ -600,7 +512,7 @@
       document.getElementById('claim-btn').style.display = 'none';
       document.getElementById('timer').style.display = 'block';
 
-      let timeLeft = 13;
+      let timeLeft = 10;
       document.getElementById('timer').innerText = timeLeft;
 
       let countdown = setInterval(() => {
@@ -618,12 +530,28 @@
       adsCount++;
       balance += REWARD_PER_AD;
 
-      localStorage.setItem('user_balance', balance);
-      localStorage.setItem('user_ads', adsCount);
+      localStorage.setItem('pocket_balance', balance);
+      localStorage.setItem('pocket_ads', adsCount);
 
       document.getElementById('ad-modal').style.display = 'none';
       updateAppUI();
-      alert(`BDT ${REWARD_PER_AD.toFixed(2)} added to your balance!`);
+      alert(`Successfully earned BDT ${REWARD_PER_AD.toFixed(2)}!`);
+    }
+
+    function processWithdraw() {
+      const amt = parseFloat(document.getElementById('withdraw-amount').value);
+      if (!amt || amt < 100) {
+        alert("Minimum withdrawal amount is BDT 100.00");
+        return;
+      }
+      if (amt > balance) {
+        alert("Insufficient balance!");
+        return;
+      }
+      balance -= amt;
+      localStorage.setItem('pocket_balance', balance);
+      updateAppUI();
+      alert("Withdrawal request submitted successfully!");
     }
 
     function copyRef() {
@@ -631,10 +559,6 @@
       copyText.select();
       document.execCommand("copy");
       alert("Referral link copied!");
-    }
-
-    function shareTelegram() {
-      window.open("https://t.me/share/url?url=https://t.me/Smart_Earning_Bot?start=12345", "_blank");
     }
 
     function openAdmin() {
