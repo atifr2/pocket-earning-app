@@ -1,492 +1,327 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pocket Earn - Premium Rewards Platform</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --bg-light: #f8fafc;
-      --card-bg: #ffffff;
-      --primary-blue: #2563eb;
-      --primary-hover: #1d4ed8;
-      --accent-green: #10b981;
-      --accent-orange: #f97316;
-      --text-dark: #0f172a;
-      --text-muted: #64748b;
-      --border-color: #e2e8f0;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pocket Earning Mini App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    body { 
-      background: var(--bg-light);
-      color: var(--text-dark); 
-      padding-bottom: 90px; 
-      min-height: 100vh;
-    }
+    <!-- PORE MONETAG SCRIPT EKHANE PASTE KORBEN -->
+    <!-- <script src="monetag-tag.js"></script> -->
 
-    /* Auth Popup Light Style */
-    .auth-container {
-      position: fixed; inset: 0; 
-      background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
-      z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px;
-    }
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    .auth-card {
-      background: var(--card-bg); color: var(--text-dark); border-radius: 24px; padding: 28px 22px;
-      width: 100%; max-width: 400px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); border: 1px solid var(--border-color);
-    }
+        body {
+            background: linear-gradient(135deg, #0f0c20 0%, #1a103c 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    .auth-card h2 { font-size: 24px; font-weight: 800; text-align: center; color: var(--primary-blue); margin-bottom: 6px; }
-    .auth-card p.subtitle { font-size: 12px; text-align: center; color: var(--text-muted); margin-bottom: 20px; }
+        .container {
+            width: 100%;
+            max-width: 420px;
+        }
 
-    .form-group { margin-bottom: 14px; }
-    .form-label { font-size: 11px; font-weight: 800; color: #334155; text-transform: uppercase; margin-bottom: 6px; display: block; }
-    .form-control {
-      width: 100%; padding: 13px 16px; background: #f1f5f9; border: 1px solid var(--border-color);
-      border-radius: 12px; font-size: 14px; color: var(--text-dark); outline: none; transition: 0.2s;
-    }
-    .form-control:focus { border-color: var(--primary-blue); background: #ffffff; }
+        /* Header Card */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
 
-    .btn-primary {
-      width: 100%; background: linear-gradient(135deg, var(--primary-blue), #3b82f6); color: white;
-      border: none; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 700;
-      cursor: pointer; box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
-    }
+        .balance-card {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            text-align: center;
+            border: none;
+        }
 
-    /* Top Navigation Bar */
-    .top-header { 
-      background: #ffffff; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; 
-      border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-    }
-    .brand-logo { font-size: 18px; font-weight: 800; color: var(--primary-blue); display: flex; align-items: center; gap: 8px; }
-    .user-pill { font-size: 11px; font-weight: 700; background: #eff6ff; color: var(--primary-blue); padding: 6px 12px; border-radius: 20px; border: 1px solid #bfdbfe; }
+        .balance-title {
+            font-size: 14px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-    .tab-content { display: none; padding: 16px; animation: fadeIn 0.3s ease; }
-    .tab-content.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .balance-amount {
+            font-size: 36px;
+            font-weight: 800;
+            margin: 10px 0;
+        }
 
-    /* Dashboard Widgets */
-    .hero-card {
-      background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border-radius: 20px;
-      padding: 20px; margin-bottom: 16px; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
-    }
-    .hero-card small { font-size: 12px; opacity: 0.8; font-weight: 600; }
-    .hero-card h1 { font-size: 32px; font-weight: 800; margin: 4px 0 14px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
 
-    .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-    .action-btn {
-      background: #ffffff; border: 1px solid var(--border-color); border-radius: 16px; padding: 12px 6px;
-      display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; font-weight: 700;
-      color: var(--text-dark); cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-    }
-    .action-btn i { font-size: 18px; color: var(--primary-blue); }
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
 
-    /* Feature Cards */
-    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 18px; padding: 16px; margin-bottom: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-    .card-title { font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+        .stat-number {
+            font-size: 20px;
+            font-weight: bold;
+            color: #38bdf8;
+        }
 
-    .task-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
-    .task-item:last-child { border-bottom: none; }
-    .task-info h4 { font-size: 13px; font-weight: 700; color: var(--text-dark); }
-    .task-info p { font-size: 11px; color: var(--text-muted); }
-    .btn-sm { background: var(--accent-green); color: white; border: none; padding: 6px 14px; border-radius: 10px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        /* Ads Section */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    /* Bottom Navigation Bar */
-    .bottom-bar { 
-      position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; 
-      display: flex; justify-content: space-around; padding: 10px 0 8px; 
-      border-top: 1px solid var(--border-color); z-index: 1000; box-shadow: 0 -4px 15px rgba(0,0,0,0.04);
-    }
-    .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--text-muted); font-size: 10px; font-weight: 700; cursor: pointer; flex: 1; }
-    .nav-btn i { font-size: 18px; }
-    .nav-btn.active { color: var(--primary-blue); }
+        .ad-card {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-    .input-box { width: 100%; padding: 12px; margin: 6px 0 12px; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-dark); outline: none; font-size: 13px; }
-  </style>
+        .btn-ad {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
 
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+        .btn-ad:disabled {
+            background: #475569;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Support Admin Card */
+        .support-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #38bdf8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: white;
+        }
+
+        .support-info h4 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .support-info p {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .support-icon {
+            width: 45px;
+            height: 45px;
+            background: #38bdf8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #0f0c20;
+        }
+
+        /* Modal / Popup */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: #1e1b4b;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 320px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .timer-circle {
+            font-size: 40px;
+            font-weight: bold;
+            color: #38bdf8;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- AUTH POPUP (LOGIN & SIGN UP) -->
-  <div id="auth-screen" class="auth-container">
-    
-    <!-- Sign Up Box -->
-    <div id="signup-box" class="auth-card">
-      <h2>Pocket Earn</h2>
-      <p class="subtitle">Sign up now & get Instant ৳100 BDT Welcome Bonus!</p>
-
-      <div class="form-group">
-        <label class="form-label">Phone Number</label>
-        <input type="tel" id="signup-phone" class="form-control" placeholder="017XXXXXXXX">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <input type="password" id="signup-pass" class="form-control" placeholder="Minimum 6 digits">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Referral Code (Optional)</label>
-        <input type="text" id="signup-ref" class="form-control" placeholder="Optional">
-      </div>
-
-      <button class="btn-primary" onclick="handleCustomSignup()">Create Account</button>
-
-      <p style="text-align: center; font-size: 12px; margin-top: 14px; color: var(--text-muted);">
-        Already have an account? <b style="color: var(--primary-blue); cursor: pointer;" onclick="toggleAuth('login')">Login Here</b>
-      </p>
-    </div>
-
-    <!-- Login Box -->
-    <div id="login-box" class="auth-card" style="display: none;">
-      <h2>Welcome Back</h2>
-      <p class="subtitle">Login to access your earning dashboard.</p>
-
-      <div class="form-group">
-        <label class="form-label">Phone Number</label>
-        <input type="tel" id="login-phone" class="form-control" placeholder="017XXXXXXXX">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <input type="password" id="login-pass" class="form-control" placeholder="Enter password">
-      </div>
-
-      <button class="btn-primary" onclick="handleCustomLogin()">Login Now</button>
-
-      <p style="text-align: center; font-size: 12px; margin-top: 14px; color: var(--text-muted);">
-        Don't have an account? <b style="color: var(--primary-blue); cursor: pointer;" onclick="toggleAuth('signup')">Sign Up</b>
-      </p>
-    </div>
-
-  </div>
-
-  <!-- MAIN APP INTERFACE -->
-  <div id="app-screen" style="display: none;">
-    <!-- Top Header -->
-    <div class="top-header">
-      <div class="brand-logo"><i class="fas fa-coins" style="color: var(--accent-orange);"></i> Pocket Earn</div>
-      <div class="user-pill" id="top-user-phone">017XXXXXXXX</div>
-    </div>
-
-    <!-- TAB 1: HOME -->
-    <div id="tab-home" class="tab-content active">
-      <!-- Main Balance Card -->
-      <div class="hero-card">
-        <small>Available Balance</small>
-        <h1 id="user-balance">৳0 BDT</h1>
-        <div style="display: flex; gap: 10px;">
-          <button style="flex: 1; background: #ffffff; color: var(--primary-blue); border: none; padding: 10px; border-radius: 12px; font-weight: bold; cursor: pointer;" onclick="switchTab('tab-deposit')"><i class="fas fa-wallet"></i> Recharge</button>
-          <button style="flex: 1; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 10px; border-radius: 12px; font-weight: bold; cursor: pointer;" onclick="switchTab('tab-withdraw')"><i class="fas fa-arrow-down"></i> Withdraw</button>
-        </div>
-      </div>
-
-      <!-- Quick Action Grid -->
-      <div class="action-grid">
-        <div class="action-btn" onclick="switchTab('tab-tasks')"><i class="fas fa-tasks"></i><span>Tasks</span></div>
-        <div class="action-btn" onclick="switchTab('tab-ads')"><i class="fas fa-play-circle" style="color: var(--accent-orange);"></i><span>Watch Ads</span></div>
-        <div class="action-btn" onclick="claimDailyBonus()"><i class="fas fa-gift" style="color: #ec4899;"></i><span>Bonus</span></div>
-        <div class="action-btn" onclick="contactAdmin()"><i class="fab fa-telegram" style="color: #0284c7;"></i><span>Admin</span></div>
-      </div>
-
-      <!-- Daily Events & Promotions -->
-      <div class="card">
-        <div class="card-title"><span><i class="fas fa-fire" style="color: var(--accent-orange);"></i> Special Event</span> <small style="color: var(--accent-green);">Active</small></div>
-        <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">
-          Invite 5 friends today & earn an extra <b>৳150 BDT Bonus</b>! Share your referral link now to claim your reward.
-        </p>
-      </div>
-    </div>
-
-    <!-- TAB 2: TASKS -->
-    <div id="tab-tasks" class="tab-content">
-      <div class="card">
-        <div class="card-title">Daily Earning Tasks</div>
-        
-        <div class="task-item">
-          <div class="task-info">
-            <h4>Complete Survey #1</h4>
-            <p>Reward: ৳40 BDT</p>
-          </div>
-          <button class="btn-sm" onclick="completeTask(40, 'Survey #1')">Start Task</button>
+    <div class="container">
+        <!-- Main Balance Card -->
+        <div class="card balance-card">
+            <div class="balance-title">Main Earning Balance</div>
+            <div class="balance-amount">৳ <span id="user-balance">0.00</span></div>
+            <p style="font-size: 12px; opacity: 0.8;">Watch daily ads to increase balance</p>
         </div>
 
-        <div class="task-item">
-          <div class="task-info">
-            <h4>Telegram Channel Join</h4>
-            <p>Reward: ৳30 BDT</p>
-          </div>
-          <button class="btn-sm" onclick="completeTask(30, 'Telegram Join')">Start Task</button>
+        <!-- Daily Task Stats -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div style="font-size: 12px; color: #94a3b8;">Daily Limit</div>
+                <div class="stat-number">50 Ads</div>
+            </div>
+            <div class="stat-box">
+                <div style="font-size: 12px; color: #94a3b8;">Ads Watched</div>
+                <div class="stat-number"><span id="ads-count">0</span> / 50</div>
+            </div>
         </div>
 
-        <div class="task-item">
-          <div class="task-info">
-            <h4>App Review & Rating</h4>
-            <p>Reward: ৳50 BDT</p>
-          </div>
-          <button class="btn-sm" onclick="completeTask(50, 'App Review')">Start Task</button>
+        <!-- Watch Ad Work Zone -->
+        <div class="section-title">
+            <i class="fa-solid fa-play-circle" style="color: #22c55e;"></i> Task Zone
         </div>
-      </div>
-    </div>
-
-    <!-- TAB 3: WATCH ADS -->
-    <div id="tab-ads" class="tab-content">
-      <div class="card">
-        <div class="card-title"><i class="fas fa-video" style="color: var(--accent-orange);"></i> Watch & Earn Ads</div>
-        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Watch a 15-second sponsored ad and earn instant cash.</p>
-        
-        <div class="task-item">
-          <div class="task-info">
-            <h4>Sponsor Video Ad 1</h4>
-            <p>Earn: ৳25 BDT</p>
-          </div>
-          <button class="btn-sm" style="background: var(--accent-orange);" onclick="watchAd(25)">Watch Ad</button>
+        <div class="card ad-card">
+            <h3 style="margin-bottom: 10px;">Watch Sponsored Ad</h3>
+            <p style="font-size: 13px; color: #94a3b8; margin-bottom: 18px;">
+                Earn ৳ 2.00 for every completed ad view. Limit resets every 24 hours.
+            </p>
+            <button id="watch-btn" class="btn-ad" onclick="startAdProcess()">
+                <i class="fa-solid fa-film"></i> Watch Ad Now
+            </button>
         </div>
 
-        <div class="task-item">
-          <div class="task-info">
-            <h4>Sponsor Video Ad 2</h4>
-            <p>Earn: ৳25 BDT</p>
-          </div>
-          <button class="btn-sm" style="background: var(--accent-orange);" onclick="watchAd(25)">Watch Ad</button>
+        <!-- Support Admin Section -->
+        <div class="section-title">
+            <i class="fa-solid fa-headset" style="color: #38bdf8;"></i> Help & Support
         </div>
-      </div>
+        <a href="https://t.me/Smart_Earning_ADMIN" target="_blank" class="card support-card">
+            <div class="support-info">
+                <h4>SUPPORT ADMIN</h4>
+                <p>24/7 Live Help & Withdrawal Support</p>
+            </div>
+            <div class="support-icon">
+                <i class="fa-paper-plane"></i>
+            </div>
+        </a>
     </div>
 
-    <!-- TAB 4: RECHARGE / DEPOSIT -->
-    <div id="tab-deposit" class="tab-content">
-      <div class="card">
-        <div class="card-title"><i class="fas fa-wallet" style="color: var(--accent-green);"></i> Account Recharge</div>
-        <p style="font-size: 12px; color: var(--text-muted);">Send Money to bKash/Nagad Personal Number:</p>
-        <h2 style="color: var(--primary-blue); margin: 8px 0;">01996710797</h2>
-        <small style="color: var(--text-muted);">Minimum Recharge: ৳300 BDT</small>
-        
-        <div style="margin-top: 14px;">
-          <select id="dep-method" class="input-box">
-            <option value="bKash">bKash Personal</option>
-            <option value="Nagad">Nagad Personal</option>
-          </select>
-          <input type="number" id="dep-amt" class="input-box" placeholder="Amount (Min ৳300)">
-          <input type="text" id="dep-num" class="input-box" placeholder="Sender Phone Number">
-          <input type="text" id="dep-trx" class="input-box" placeholder="TrxID (Transaction ID)">
-          <button class="btn-primary" onclick="submitDeposit()">Submit Recharge</button>
+    <!-- Ad Watching Modal -->
+    <div id="ad-modal" class="modal">
+        <div class="modal-content">
+            <h3>Watching Advertisement...</h3>
+            <p style="font-size: 13px; color: #94a3b8; margin-top: 5px;">Please wait until timer finishes.</p>
+            <div class="timer-circle" id="timer">10</div>
+            <button id="claim-btn" class="btn-ad" style="display: none;" onclick="claimReward()">
+                <i class="fa-solid fa-gift"></i> Claim Reward
+            </button>
         </div>
-      </div>
     </div>
 
-    <!-- TAB 5: WITHDRAW -->
-    <div id="tab-withdraw" class="tab-content">
-      <div class="card">
-        <div class="card-title"><i class="fas fa-hand-holding-usd" style="color: var(--accent-green);"></i> Withdraw Funds</div>
-        <select id="wit-method" class="input-box">
-          <option value="bKash">bKash Personal</option>
-          <option value="Nagad">Nagad Personal</option>
-        </select>
-        <input type="text" id="wit-num" class="input-box" placeholder="Account Number">
-        <input type="number" id="wit-amt" class="input-box" placeholder="Amount (Min ৳300)">
-        <button class="btn-primary" style="background: var(--accent-green);" onclick="submitWithdraw()">Request Cashout</button>
-      </div>
-    </div>
+    <script>
+        // PORE REAL AD DIRECT LINK EKHANE BOSHABEN
+        const REAL_AD_LINKS = [
+            "" // Monetag / Adsterra link ekhane boshbe
+        ];
 
-    <!-- TAB 6: PROFILE & REFERRAL -->
-    <div id="tab-profile" class="tab-content">
-      <div class="card" style="text-align: center; padding: 24px;">
-        <i class="fas fa-user-circle" style="font-size: 50px; color: var(--primary-blue); margin-bottom: 10px;"></i>
-        <h3 id="profile-phone">017XXXXXXXX</h3>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Verified Member</p>
-        <button style="margin-top: 14px; background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; padding: 6px 16px; border-radius: 10px; font-weight: bold; cursor: pointer;" onclick="handleLogout()">Logout</button>
-      </div>
+        const AD_REWARD = 2.00; // ৳ 2 BDT per ad
+        const MAX_DAILY_ADS = 50;
 
-      <div class="card">
-        <div class="card-title"><i class="fas fa-users" style="color: var(--primary-blue);"></i> Referral Link</div>
-        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Earn ৳50 BDT for every friend who joins using your link.</p>
-        <input type="text" id="ref-link" class="input-box" readonly value="https://pocketearn.com/join?ref=12345">
-        <button class="btn-primary" onclick="copyRefLink()">Copy Referral Link</button>
-      </div>
+        let userBalance = parseFloat(localStorage.getItem('balance')) || 0.00;
+        let adsWatched = parseInt(localStorage.getItem('adsWatched')) || 0;
+        let lastResetDate = localStorage.getItem('lastResetDate') || new Date().toDateString();
 
-      <div class="card">
-        <div class="card-title"><i class="fab fa-telegram" style="color: #0284c7;"></i> Support</div>
-        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Have any problems? Chat with Admin directly.</p>
-        <button class="btn-primary" style="background: #0284c7;" onclick="contactAdmin()">Contact Admin on Telegram</button>
-      </div>
-    </div>
-
-    <!-- Bottom Navigation Bar -->
-    <div class="bottom-bar">
-      <div class="nav-btn active" id="btn-home" onclick="switchTab('tab-home')"><i class="fas fa-home"></i><span>Home</span></div>
-      <div class="nav-btn" id="btn-tasks" onclick="switchTab('tab-tasks')"><i class="fas fa-list-check"></i><span>Tasks</span></div>
-      <div class="nav-btn" id="btn-ads" onclick="switchTab('tab-ads')"><i class="fas fa-play"></i><span>Ads</span></div>
-      <div class="nav-btn" id="btn-deposit" onclick="switchTab('tab-deposit')"><i class="fas fa-wallet"></i><span>Deposit</span></div>
-      <div class="nav-btn" id="btn-profile" onclick="switchTab('tab-profile')"><i class="fas fa-user"></i><span>Profile</span></div>
-    </div>
-  </div>
-
-  <script>
-    // Firebase Config
-    const firebaseConfig = {
-      apiKey: "AIzaSyCKcM0cypXPxyXXtpdbLj9CKB9H0hPdtTc",
-      authDomain: "pocketearnmoney-b1ae4.firebaseapp.com",
-      projectId: "pocketearnmoney-b1ae4",
-      storageBucket: "pocketearnmoney-b1ae4.firebasestorage.app",
-      messagingSenderId: "407102622154",
-      appId: "1:407102622154:web:ca2e8e32ce663a48362733"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    let currentUser = null;
-    let userBalance = 0;
-
-    function toggleAuth(type) {
-      if(type === 'login') {
-        document.getElementById('signup-box').style.display = 'none';
-        document.getElementById('login-box').style.display = 'block';
-      } else {
-        document.getElementById('signup-box').style.display = 'block';
-        document.getElementById('login-box').style.display = 'none';
-      }
-    }
-
-    function handleCustomSignup() {
-      const phone = document.getElementById('signup-phone').value.trim();
-      const pass = document.getElementById('signup-pass').value;
-
-      if(!phone || phone.length < 10) return alert('Doyakore sothik Phone Number din!');
-      if(pass.length < 6) return alert('Password sobchay kom 6 digit-er hote hobe!');
-
-      const email = `bd${phone}@pocketearn.com`;
-
-      auth.createUserWithEmailAndPassword(email, pass).then((res) => {
-        db.collection('site_users').doc(res.user.uid).set({
-          phone: phone,
-          balance: 100, // Instant 100 BDT Welcome Bonus
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      }).catch(err => alert(err.message));
-    }
-
-    function handleCustomLogin() {
-      const phone = document.getElementById('login-phone').value.trim();
-      const pass = document.getElementById('login-pass').value;
-      if(!phone || !pass) return alert('Phone number & password din!');
-
-      const email = `bd${phone}@pocketearn.com`;
-      auth.signInWithEmailAndPassword(email, pass).catch(err => alert(err.message));
-    }
-
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        currentUser = user;
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('app-screen').style.display = 'block';
-        loadUserData(user);
-      } else {
-        document.getElementById('auth-screen').style.display = 'flex';
-        document.getElementById('app-screen').style.display = 'none';
-      }
-    });
-
-    function loadUserData(user) {
-      db.collection('site_users').doc(user.uid).onSnapshot(doc => {
-        if(doc.exists) {
-          const data = doc.data();
-          userBalance = data.balance || 0;
-          
-          document.getElementById('user-balance').innerText = "৳" + userBalance + " BDT";
-          document.getElementById('top-user-phone').innerText = data.phone || "User";
-          document.getElementById('profile-phone').innerText = data.phone || "User";
-          document.getElementById('ref-link').value = window.location.origin + "?ref=" + user.uid;
+        // Daily Reset Check
+        if (new Date().toDateString() !== lastResetDate) {
+            adsWatched = 0;
+            localStorage.setItem('adsWatched', 0);
+            localStorage.setItem('lastResetDate', new Date().toDateString());
         }
-      });
-    }
 
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      
-      const btnKey = tabId.replace('tab-', '');
-      const btn = document.getElementById('btn-' + btnKey);
-      if(btn) btn.classList.add('active');
-    }
+        // Update UI
+        function updateUI() {
+            document.getElementById('user-balance').innerText = userBalance.toFixed(2);
+            document.getElementById('ads-count').innerText = adsWatched;
 
-    function completeTask(reward, name) {
-      userBalance += reward;
-      db.collection('site_users').doc(currentUser.uid).update({ balance: userBalance });
-      alert(`Task Completed! ৳${reward} BDT added to your balance.`);
-    }
+            if (adsWatched >= MAX_DAILY_ADS) {
+                const btn = document.getElementById('watch-btn');
+                btn.disabled = true;
+                btn.innerText = "Daily Limit Reached (50/50)";
+            }
+        }
+        updateUI();
 
-    function watchAd(reward) {
-      alert("Ad is loading... Please wait 5 seconds.");
-      setTimeout(() => {
-        userBalance += reward;
-        db.collection('site_users').doc(currentUser.uid).update({ balance: userBalance });
-        alert(`Ad Watch Complete! ৳${reward} BDT earned.`);
-      }, 5000);
-    }
+        // Start Ad Process
+        function startAdProcess() {
+            if (adsWatched >= MAX_DAILY_ADS) return;
 
-    function claimDailyBonus() {
-      userBalance += 20;
-      db.collection('site_users').doc(currentUser.uid).update({ balance: userBalance });
-      alert("Daily Check-in Bonus ৳20 BDT Claimed!");
-    }
+            // Optional: Open real ad if link exists
+            if (REAL_AD_LINKS[0] !== "") {
+                window.open(REAL_AD_LINKS[0], '_blank');
+            }
 
-    function submitDeposit() {
-      const method = document.getElementById('dep-method').value;
-      const amt = parseInt(document.getElementById('dep-amt').value);
-      const num = document.getElementById('dep-num').value;
-      const trx = document.getElementById('dep-trx').value;
+            document.getElementById('ad-modal').style.display = 'flex';
+            document.getElementById('claim-btn').style.display = 'none';
+            document.getElementById('timer').style.display = 'block';
 
-      if (!num || !trx || isNaN(amt) || amt < 300) return alert('Minimum Recharge ৳300 BDT!');
+            let timeLeft = 10;
+            document.getElementById('timer').innerText = timeLeft;
 
-      db.collection('deposits').add({
-        uid: currentUser.uid, method: method, amount: amt, sender_number: num, trx_id: trx, status: 'pending',
-        requestedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(() => {
-        alert('Recharge Request Submitted Successfully!');
-        switchTab('tab-home');
-      });
-    }
+            let countdown = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    document.getElementById('timer').style.display = 'none';
+                    document.getElementById('claim-btn').style.display = 'flex';
+                }
+            }, 1000);
+        }
 
-    function submitWithdraw() {
-      const method = document.getElementById('wit-method').value;
-      const num = document.getElementById('wit-num').value;
-      const amt = parseInt(document.getElementById('wit-amt').value);
+        // Claim Reward
+        function claimReward() {
+            adsWatched++;
+            userBalance += AD_REWARD;
 
-      if (!num || isNaN(amt) || amt < 300 || amt > userBalance) return alert('Invalid Amount or Low Balance!');
+            localStorage.setItem('balance', userBalance);
+            localStorage.setItem('adsWatched', adsWatched);
 
-      db.collection('withdraws').add({
-        uid: currentUser.uid, method: method, number: num, amount: amt, status: 'pending',
-        requestedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(() => {
-        userBalance -= amt;
-        db.collection('site_users').doc(currentUser.uid).update({ balance: userBalance });
-        alert('Withdrawal Request Submitted!');
-        switchTab('tab-home');
-      });
-    }
-
-    function copyRefLink() {
-      const link = document.getElementById('ref-link');
-      link.select();
-      document.execCommand("copy");
-      alert("Referral link copied!");
-    }
-
-    function contactAdmin() {
-      window.open("https://t.me/your_admin_username", "_blank");
-    }
-
-    function handleLogout() { auth.signOut(); }
-  </script>
+            document.getElementById('ad-modal').style.display = 'none';
+            updateUI();
+            alert(`Succesfully earned ৳ ${AD_REWARD.toFixed(2)}!`);
+        }
+    </script>
 </body>
 </html>
