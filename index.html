@@ -1,327 +1,645 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pocket Earning Mini App</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Pocket Earning Mini App</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-color: #f1f5f3;
+      --card-bg: #ffffff;
+      --primary-green: #047857;
+      --light-green: #10b981;
+      --accent-yellow: #facc15;
+      --gradient-banner: linear-gradient(135deg, #022c22 0%, #047857 100%);
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
     
-    <!-- PORE MONETAG SCRIPT EKHANE PASTE KORBEN -->
-    <!-- <script src="monetag-tag.js"></script> -->
+    body { 
+      background: var(--bg-color);
+      color: var(--text-dark); 
+      padding-bottom: 90px; 
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+    .app-container {
+      width: 100%;
+      max-width: 440px;
+      padding: 14px;
+    }
 
-        body {
-            background: linear-gradient(135deg, #0f0c20 0%, #1a103c 100%);
-            color: #ffffff;
-            min-height: 100vh;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    /* Top User Header Bar */
+    .top-header {
+      background: var(--card-bg);
+      border-radius: 30px;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      margin-bottom: 14px;
+      border: 1px solid var(--border-color);
+    }
 
-        .container {
-            width: 100%;
-            max-width: 420px;
-        }
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-        /* Header Card */
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      border: 2px solid #34d399;
+    }
 
-        .balance-card {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            text-align: center;
-            border: none;
-        }
+    .user-info h4 {
+      font-size: 14px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
 
-        .balance-title {
-            font-size: 14px;
-            opacity: 0.9;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+    .user-info p {
+      font-size: 12px;
+      color: var(--primary-green);
+      font-weight: 800;
+    }
 
-        .balance-amount {
-            font-size: 36px;
-            font-weight: 800;
-            margin: 10px 0;
-        }
+    .active-badge {
+      background: #ecfdf5;
+      color: var(--primary-green);
+      border: 1px solid #a7f3d0;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
+    .dot { width: 6px; height: 6px; background: var(--primary-green); border-radius: 50%; }
 
-        .stat-box {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
+    /* Green Gradient Hero Banner */
+    .hero-banner {
+      background: var(--gradient-banner);
+      color: white;
+      border-radius: 22px;
+      padding: 22px 18px;
+      margin-bottom: 16px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(4, 120, 87, 0.2);
+    }
 
-        .stat-number {
-            font-size: 20px;
-            font-weight: bold;
-            color: #38bdf8;
-        }
+    .hero-banner h2 { font-size: 18px; font-weight: 900; letter-spacing: 0.5px; text-transform: uppercase; }
+    .hero-banner p { font-size: 11px; opacity: 0.85; margin-top: 4px; font-weight: 500; }
 
-        /* Ads Section */
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    /* Grid Stats Box */
+    .stats-grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
 
-        .ad-card {
-            background: rgba(255, 255, 255, 0.07);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+    .stat-card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 14px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
 
-        .btn-ad {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
+    .stat-card i { font-size: 20px; color: var(--primary-green); margin-bottom: 6px; display: block; }
+    .stat-card .label { font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+    .stat-card .value { font-size: 16px; font-weight: 800; color: var(--text-dark); margin-top: 2px; }
 
-        .btn-ad:disabled {
-            background: #475569;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
+    /* Progress Bar */
+    .progress-container {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        /* Support Admin Card */
-        .support-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-left: 4px solid #38bdf8;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            text-decoration: none;
-            color: white;
-        }
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
 
-        .support-info h4 {
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary-green);
+      transition: width 0.3s ease;
+    }
 
-        .support-info p {
-            font-size: 12px;
-            color: #94a3b8;
-        }
+    /* Action Buttons */
+    .btn-main {
+      width: 100%;
+      background: var(--gradient-banner);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 20px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 8px 20px rgba(4, 120, 87, 0.3);
+      transition: transform 0.1s;
+    }
 
-        .support-icon {
-            width: 45px;
-            height: 45px;
-            background: #38bdf8;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: #0f0c20;
-        }
+    .btn-main:active { transform: scale(0.98); }
+    .btn-main:disabled { background: #94a3b8; box-shadow: none; cursor: not-allowed; }
 
-        /* Modal / Popup */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-        }
+    /* Task List Cards */
+    .task-item {
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--border-color);
+    }
 
-        .modal-content {
-            background: #1e1b4b;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 320px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+    .task-left { display: flex; align-items: center; gap: 12px; }
+    .task-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: #ecfdf5; color: var(--primary-green);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
 
-        .timer-circle {
-            font-size: 40px;
-            font-weight: bold;
-            color: #38bdf8;
-            margin: 20px 0;
-        }
-    </style>
+    .task-info h5 { font-size: 13px; font-weight: 700; }
+    .task-info p { font-size: 11px; color: var(--text-muted); }
+
+    .badge-status {
+      padding: 5px 12px; border-radius: 12px; font-size: 11px; font-weight: 800;
+    }
+    .status-completed { background: #ecfdf5; color: #059669; }
+    .status-blocked { background: #fef2f2; color: #ef4444; }
+
+    /* Form Elements */
+    .input-field {
+      width: 100%;
+      padding: 14px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      font-size: 13px;
+      margin-bottom: 12px;
+      outline: none;
+    }
+
+    /* Tabs Controller */
+    .tab-content { display: none; animation: fadeIn 0.25s ease; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Bottom Navigation Bar */
+    .bottom-navbar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #ffffff;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0;
+      border-top: 1px solid var(--border-color);
+      box-shadow: 0 -4px 15px rgba(0,0,0,0.03);
+      z-index: 1000;
+    }
+
+    .nav-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: var(--text-muted);
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .nav-link i { font-size: 18px; }
+    .nav-link.active { color: var(--primary-green); }
+
+    /* Modal Timer Popup */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      padding: 28px;
+      border-radius: 24px;
+      text-align: center;
+      width: 100%;
+      max-width: 320px;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Main Balance Card -->
-        <div class="card balance-card">
-            <div class="balance-title">Main Earning Balance</div>
-            <div class="balance-amount">৳ <span id="user-balance">0.00</span></div>
-            <p style="font-size: 12px; opacity: 0.8;">Watch daily ads to increase balance</p>
-        </div>
+  <div class="app-container">
 
-        <!-- Daily Task Stats -->
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div style="font-size: 12px; color: #94a3b8;">Daily Limit</div>
-                <div class="stat-number">50 Ads</div>
-            </div>
-            <div class="stat-box">
-                <div style="font-size: 12px; color: #94a3b8;">Ads Watched</div>
-                <div class="stat-number"><span id="ads-count">0</span> / 50</div>
-            </div>
+    <div class="top-header">
+      <div class="user-profile">
+        <div class="user-avatar">AH</div>
+        <div class="user-info">
+          <h4>Atif Hosen <i class="fas fa-check-circle" style="color: #10b981;"></i></h4>
+          <p>BDT:<span id="top-balance">1470.00</span></p>
         </div>
-
-        <!-- Watch Ad Work Zone -->
-        <div class="section-title">
-            <i class="fa-solid fa-play-circle" style="color: #22c55e;"></i> Task Zone
-        </div>
-        <div class="card ad-card">
-            <h3 style="margin-bottom: 10px;">Watch Sponsored Ad</h3>
-            <p style="font-size: 13px; color: #94a3b8; margin-bottom: 18px;">
-                Earn ৳ 2.00 for every completed ad view. Limit resets every 24 hours.
-            </p>
-            <button id="watch-btn" class="btn-ad" onclick="startAdProcess()">
-                <i class="fa-solid fa-film"></i> Watch Ad Now
-            </button>
-        </div>
-
-        <!-- Support Admin Section -->
-        <div class="section-title">
-            <i class="fa-solid fa-headset" style="color: #38bdf8;"></i> Help & Support
-        </div>
-        <a href="https://t.me/Smart_Earning_ADMIN" target="_blank" class="card support-card">
-            <div class="support-info">
-                <h4>SUPPORT ADMIN</h4>
-                <p>24/7 Live Help & Withdrawal Support</p>
-            </div>
-            <div class="support-icon">
-                <i class="fa-paper-plane"></i>
-            </div>
-        </a>
+      </div>
+      <div class="active-badge">
+        <div class="dot"></div> ACTIVE
+      </div>
     </div>
 
-    <!-- Ad Watching Modal -->
-    <div id="ad-modal" class="modal">
-        <div class="modal-content">
-            <h3>Watching Advertisement...</h3>
-            <p style="font-size: 13px; color: #94a3b8; margin-top: 5px;">Please wait until timer finishes.</p>
-            <div class="timer-circle" id="timer">10</div>
-            <button id="claim-btn" class="btn-ad" style="display: none;" onclick="claimReward()">
-                <i class="fa-solid fa-gift"></i> Claim Reward
-            </button>
+    <div id="tab-earn" class="tab-content active">
+      <div class="hero-banner">
+        <h2>ADS REWARD CENTER</h2>
+        <p>Complete daily missions to unlock maximum rewards</p>
+      </div>
+
+      <div class="stats-grid-4">
+        <div class="stat-card">
+          <i class="fas fa-clock"></i>
+          <div class="label">WAIT TIME</div>
+          <div class="value">13 Sec</div>
         </div>
+        <div class="stat-card">
+          <i class="fas fa-bolt"></i>
+          <div class="label">DAILY LIMIT</div>
+          <div class="value">50 Ads</div>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-list-check"></i>
+          <div class="label">DAILY MISSION</div>
+          <div class="value">50</div>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-chart-line"></i>
+          <div class="label">COMPLETED</div>
+          <div class="value"><span id="ads-completed">0</span></div>
+        </div>
+      </div>
+
+      <div class="progress-container">
+        <div>
+          <span style="font-size: 12px; font-weight: 800;">Mission Progress</span>
+          <div class="progress-bar-bg" style="width: 180px;">
+            <div id="progress-fill" class="progress-bar-fill"></div>
+          </div>
+        </div>
+        <span style="font-size: 13px; font-weight: 800; color: var(--primary-green);" id="progress-text">0 / 50</span>
+      </div>
+
+      <button id="watch-ad-btn" class="btn-main" onclick="startAdTimer()">
+        WATCH AD & EARN <i class="fas fa-play-circle"></i>
+      </button>
     </div>
 
-    <script>
-        // PORE REAL AD DIRECT LINK EKHANE BOSHABEN
-        const REAL_AD_LINKS = [
-            "" // Monetag / Adsterra link ekhane boshbe
-        ];
+    <div id="tab-web" class="tab-content">
+      <div class="hero-banner">
+        <i class="fas fa-globe" style="font-size: 28px; margin-bottom: 6px;"></i>
+        <h2>Web Task Center</h2>
+        <p>Complete simple website visits and earn huge rewards</p>
+      </div>
 
-        const AD_REWARD = 2.00; // ৳ 2 BDT per ad
-        const MAX_DAILY_ADS = 50;
+      <div class="stats-grid-4">
+        <div class="stat-card">
+          <div class="label">AVAILABLE</div>
+          <div class="value" style="color: var(--primary-green);">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">COMPLETED</div>
+          <div class="value">6</div>
+        </div>
+      </div>
 
-        let userBalance = parseFloat(localStorage.getItem('balance')) || 0.00;
-        let adsWatched = parseInt(localStorage.getItem('adsWatched')) || 0;
-        let lastResetDate = localStorage.getItem('lastResetDate') || new Date().toDateString();
+      <h5 style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin: 14px 0 8px;">Active Missions</h5>
 
-        // Daily Reset Check
-        if (new Date().toDateString() !== lastResetDate) {
-            adsWatched = 0;
-            localStorage.setItem('adsWatched', 0);
-            localStorage.setItem('lastResetDate', new Date().toDateString());
+      <div class="task-item">
+        <div class="task-left">
+          <div class="task-icon"><i class="fas fa-link"></i></div>
+          <div class="task-info">
+            <h5>Account Create</h5>
+            <p>BDT:50 | <i class="far fa-clock"></i> 20s</p>
+          </div>
+        </div>
+        <span class="badge-status status-blocked"><i class="fas fa-lock"></i> Blocked</span>
+      </div>
+
+      <div class="task-item">
+        <div class="task-left">
+          <div class="task-icon"><i class="fas fa-link"></i></div>
+          <div class="task-info">
+            <h5>Account Create</h5>
+            <p>BDT:50 | <i class="far fa-clock"></i> 20s</p>
+          </div>
+        </div>
+        <span class="badge-status status-completed"><i class="fas fa-check"></i> Completed</span>
+      </div>
+    </div>
+
+    <div id="tab-tasks" class="tab-content">
+      <div class="hero-banner">
+        <i class="fab fa-telegram-plane" style="font-size: 32px; margin-bottom: 6px;"></i>
+        <h2>Telegram Tasks</h2>
+        <p>Complete simple tasks and earn rewards</p>
+      </div>
+
+      <div class="task-item" style="padding: 16px;">
+        <div class="task-left">
+          <div class="task-icon"><i class="fab fa-telegram"></i></div>
+          <div class="task-info">
+            <h5>Apurbo Biswas Channel</h5>
+            <p style="color: var(--primary-green); font-weight: 800;">BDT: 50.00 Reward</p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button class="badge-status status-completed" style="border:none; cursor:pointer;" onclick="window.open('https://t.me/Smart_Earning_ADMIN','_blank')">JOIN</button>
+          <button class="badge-status" style="background:#0f172a; color:white; border:none; cursor:pointer;" onclick="alert('Task Verified!')">VERIFY</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-refer" class="tab-content">
+      <div class="hero-banner">
+        <i class="fas fa-gift" style="font-size: 32px; margin-bottom: 6px;"></i>
+        <h2>Invite & Earn</h2>
+        <p>Expand your network and get lifetime commissions</p>
+      </div>
+
+      <div class="stats-grid-4">
+        <div class="stat-card">
+          <div class="label">TOTAL NETWORK</div>
+          <div class="value">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">BONUS RATE</div>
+          <div class="value" style="color: var(--primary-green);">30%</div>
+        </div>
+      </div>
+
+      <div class="stat-card" style="text-align: left; margin-bottom: 16px;">
+        <div class="label" style="margin-bottom: 6px;"><i class="fas fa-link"></i> YOUR NETWORK LINK</div>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="ref-url" class="input-field" style="margin:0;" readonly value="https://t.me/Smart_Earning_Bot?start=12345">
+          <button style="background: var(--gradient-banner); color: white; border: none; padding: 0 16px; border-radius: 12px; font-weight: 800; cursor: pointer;" onclick="copyRef()">COPY</button>
+        </div>
+      </div>
+
+      <button class="btn-main" style="background: #0284c7;" onclick="shareTelegram()">
+        <i class="fab fa-telegram-plane"></i> Share on Telegram
+      </button>
+    </div>
+
+    <div id="tab-wallet" class="tab-content">
+      <div class="hero-banner">
+        <div style="font-size: 11px; opacity: 0.8; font-weight: 700;">WITHDRAWABLE PROFIT</div>
+        <div style="font-size: 32px; font-weight: 900; color: var(--accent-yellow); margin: 6px 0;">BDT:<span id="withdraw-balance">1470.00</span></div>
+        <div style="font-size: 11px;"><i class="fas fa-users"></i> Referrals: 0</div>
+      </div>
+
+      <div style="background: #fffbe3; border: 1px solid #fef08a; padding: 12px; border-radius: 14px; font-size: 11px; color: #854d0e; margin-bottom: 14px;">
+        <i class="fas fa-exclamation-triangle"></i> Minimum 0 referrals are required to unlock withdrawal. Please ensure your payment address is correct.
+      </div>
+
+      <div class="stat-card" style="text-align: left; margin-bottom: 14px;">
+        <div class="label" style="margin-bottom: 6px;">WITHDRAWAL AMOUNT</div>
+        <input type="number" class="input-field" placeholder="0.00 BDT">
+
+        <div class="label" style="margin-bottom: 6px;">ACCOUNT / WALLET ADDRESS</div>
+        <input type="text" class="input-field" placeholder="Enter your wallet address">
+
+        <div class="label" style="margin-bottom: 6px;">SELECT PAYMENT GATEWAY</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px;">
+          <div class="stat-card" style="cursor: pointer; border: 2px solid var(--primary-green); background: #ecfdf5;">
+            <i class="fas fa-wallet" style="color: #e11d48;"></i>
+            <div class="label">bKash</div>
+          </div>
+          <div class="stat-card" style="cursor: pointer;">
+            <i class="fas fa-wallet" style="color: #f97316;"></i>
+            <div class="label">Nagad</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-main" onclick="alert('Withdrawal request submitted successfully!')">
+        CONFIRM WITHDRAWAL <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+
+    <div id="tab-profile" class="tab-content">
+      <div class="hero-banner" style="padding: 28px 18px;">
+        <div class="user-avatar" style="width: 64px; height: 64px; font-size: 24px; margin: 0 auto 10px;">AH</div>
+        <h2 style="font-size: 20px;">Atif Hosen</h2>
+        <p style="font-size: 12px; opacity: 0.9;">User</p>
+      </div>
+
+      <div class="stats-grid-4">
+        <div class="stat-card">
+          <div class="label">MAIN BALANCE</div>
+          <div class="value" style="color: var(--primary-green);">BDT:<span id="profile-balance">1470.00</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="label">LIFETIME EARN</div>
+          <div class="value">BDT:1170</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">EARN TODAY</div>
+          <div class="value">BDT:0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">ADS VIEWED</div>
+          <div class="value" id="profile-ads">58</div>
+        </div>
+      </div>
+
+      <div class="task-item" onclick="switchTab('tab-refer')" style="cursor: pointer;">
+        <div class="task-left">
+          <i class="fas fa-users" style="color: var(--primary-green); font-size: 18px;"></i>
+          <span style="font-size: 13px; font-weight: 700;">Referral Network</span>
+        </div>
+        <span class="badge-status status-completed">0 Ref</span>
+      </div>
+
+      <div class="task-item" onclick="switchTab('tab-wallet')" style="cursor: pointer;">
+        <div class="task-left">
+          <i class="fas fa-wallet" style="color: var(--primary-green); font-size: 18px;"></i>
+          <span style="font-size: 13px; font-weight: 700;">Withdraw Funds</span>
+        </div>
+        <i class="fas fa-chevron-right" style="color: #94a3b8;"></i>
+      </div>
+
+      <div class="hero-banner" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); margin-top: 14px; text-align: left; display: flex; align-items: center; justify-content: space-between; cursor: pointer;" onclick="openAdmin()">
+        <div>
+          <h4 style="font-size: 14px; font-weight: 800;">Customer Support</h4>
+          <p style="font-size: 11px;">Available 24/7 for your help</p>
+        </div>
+        <i class="fas fa-arrow-right" style="font-size: 18px;"></i>
+      </div>
+
+      <div style="text-align: center; margin-top: 18px; color: var(--text-muted); font-size: 11px; font-weight: 700;">
+        APP VERSION 2.0.1<br>
+        <span style="font-size: 10px; opacity: 0.7;">Managed by Developer A M IMRAN</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bottom-navbar">
+    <div class="nav-link active" id="nav-earn" onclick="switchTab('tab-earn')"><i class="fas fa-play-circle"></i><span>Earn</span></div>
+    <div class="nav-link" id="nav-web" onclick="switchTab('tab-web')"><i class="fas fa-globe"></i><span>Web</span></div>
+    <div class="nav-link" id="nav-tasks" onclick="switchTab('tab-tasks')"><i class="fab fa-telegram-plane"></i><span>Tasks</span></div>
+    <div class="nav-link" id="nav-refer" onclick="switchTab('tab-refer')"><i class="fas fa-gift"></i><span>Refer</span></div>
+    <div class="nav-link" id="nav-wallet" onclick="switchTab('tab-wallet')"><i class="fas fa-wallet"></i><span>Wallet</span></div>
+    <div class="nav-link" id="nav-profile" onclick="switchTab('tab-profile')"><i class="fas fa-user"></i><span>Profile</span></div>
+  </div>
+
+  <div id="ad-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h3 style="font-size: 16px; margin-bottom: 6px;">Sponsored Ad Loading...</h3>
+      <p style="font-size: 12px; color: var(--text-muted);">Please wait until timer finishes.</p>
+      <div id="timer" style="font-size: 42px; font-weight: 900; color: var(--primary-green); margin: 18px 0;">13</div>
+      <button id="claim-btn" class="btn-main" style="display: none;" onclick="claimAdReward()">Claim Reward</button>
+    </div>
+  </div>
+
+  <script>
+    // Real Ad Links List
+    const REAL_AD_LINKS = ["https://www.google.com"]; 
+
+    let balance = parseFloat(localStorage.getItem('user_balance')) || 1470.00;
+    let adsCount = parseInt(localStorage.getItem('user_ads')) || 0;
+    const MAX_ADS = 50;
+    const REWARD_PER_AD = 2.00;
+
+    function updateAppUI() {
+      document.getElementById('top-balance').innerText = balance.toFixed(2);
+      document.getElementById('withdraw-balance').innerText = balance.toFixed(2);
+      document.getElementById('profile-balance').innerText = balance.toFixed(2);
+      document.getElementById('ads-completed').innerText = adsCount;
+      document.getElementById('profile-ads').innerText = adsCount;
+
+      let percentage = (adsCount / MAX_ADS) * 100;
+      document.getElementById('progress-fill').style.width = percentage + '%';
+      document.getElementById('progress-text').innerText = `${adsCount} / ${MAX_ADS}`;
+
+      if (adsCount >= MAX_ADS) {
+        const btn = document.getElementById('watch-ad-btn');
+        btn.disabled = true;
+        btn.innerText = "Daily Limit Reached (50/50)";
+      }
+    }
+    updateAppUI();
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+
+      document.getElementById(tabId).classList.add('active');
+
+      const navId = tabId.replace('tab-', 'nav-');
+      const activeNav = document.getElementById(navId);
+      if (activeNav) activeNav.classList.add('active');
+    }
+
+    function startAdTimer() {
+      if (adsCount >= MAX_ADS) return;
+
+      if (REAL_AD_LINKS[0] !== "") {
+        window.open(REAL_AD_LINKS[0], '_blank');
+      }
+
+      document.getElementById('ad-modal').style.display = 'flex';
+      document.getElementById('claim-btn').style.display = 'none';
+      document.getElementById('timer').style.display = 'block';
+
+      let timeLeft = 13;
+      document.getElementById('timer').innerText = timeLeft;
+
+      let countdown = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer').innerText = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          document.getElementById('timer').style.display = 'none';
+          document.getElementById('claim-btn').style.display = 'flex';
         }
+      }, 1000);
+    }
 
-        // Update UI
-        function updateUI() {
-            document.getElementById('user-balance').innerText = userBalance.toFixed(2);
-            document.getElementById('ads-count').innerText = adsWatched;
+    function claimAdReward() {
+      adsCount++;
+      balance += REWARD_PER_AD;
 
-            if (adsWatched >= MAX_DAILY_ADS) {
-                const btn = document.getElementById('watch-btn');
-                btn.disabled = true;
-                btn.innerText = "Daily Limit Reached (50/50)";
-            }
-        }
-        updateUI();
+      localStorage.setItem('user_balance', balance);
+      localStorage.setItem('user_ads', adsCount);
 
-        // Start Ad Process
-        function startAdProcess() {
-            if (adsWatched >= MAX_DAILY_ADS) return;
+      document.getElementById('ad-modal').style.display = 'none';
+      updateAppUI();
+      alert(`BDT ${REWARD_PER_AD.toFixed(2)} added to your balance!`);
+    }
 
-            // Optional: Open real ad if link exists
-            if (REAL_AD_LINKS[0] !== "") {
-                window.open(REAL_AD_LINKS[0], '_blank');
-            }
+    function copyRef() {
+      const copyText = document.getElementById("ref-url");
+      copyText.select();
+      document.execCommand("copy");
+      alert("Referral link copied!");
+    }
 
-            document.getElementById('ad-modal').style.display = 'flex';
-            document.getElementById('claim-btn').style.display = 'none';
-            document.getElementById('timer').style.display = 'block';
+    function shareTelegram() {
+      window.open("https://t.me/share/url?url=https://t.me/Smart_Earning_Bot?start=12345", "_blank");
+    }
 
-            let timeLeft = 10;
-            document.getElementById('timer').innerText = timeLeft;
-
-            let countdown = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer').innerText = timeLeft;
-                
-                if (timeLeft <= 0) {
-                    clearInterval(countdown);
-                    document.getElementById('timer').style.display = 'none';
-                    document.getElementById('claim-btn').style.display = 'flex';
-                }
-            }, 1000);
-        }
-
-        // Claim Reward
-        function claimReward() {
-            adsWatched++;
-            userBalance += AD_REWARD;
-
-            localStorage.setItem('balance', userBalance);
-            localStorage.setItem('adsWatched', adsWatched);
-
-            document.getElementById('ad-modal').style.display = 'none';
-            updateUI();
-            alert(`Succesfully earned ৳ ${AD_REWARD.toFixed(2)}!`);
-        }
-    </script>
+    function openAdmin() {
+      window.open("https://t.me/Smart_Earning_ADMIN", "_blank");
+    }
+  </script>
 </body>
 </html>
