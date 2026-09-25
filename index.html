@@ -4,7 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Pocket Earning Mini App</title>
+  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Monetag SDK Tag -->
+  <script src='//libtl.com/sdk.js' data-zone='11874598' data-sdk='show_11874598'></script>
 
   <style>
     :root {
@@ -284,6 +288,7 @@
 
   <div class="app-container">
 
+    <!-- Top Profile Bar -->
     <div class="top-header">
       <div class="user-profile">
         <div class="user-avatar" id="header-avatar">U</div>
@@ -297,6 +302,7 @@
       </div>
     </div>
 
+    <!-- TAB 1: ADS REWARD CENTER -->
     <div id="tab-earn" class="tab-content active">
       <div class="hero-banner">
         <h2>ADS REWARD CENTER</h2>
@@ -341,6 +347,7 @@
       </button>
     </div>
 
+    <!-- TAB 2: WEB TASK CENTER -->
     <div id="tab-web" class="tab-content">
       <div class="hero-banner">
         <i class="fas fa-globe" style="font-size: 28px; margin-bottom: 6px;"></i>
@@ -360,6 +367,7 @@
       </div>
     </div>
 
+    <!-- TAB 3: TELEGRAM TASKS -->
     <div id="tab-tasks" class="tab-content">
       <div class="hero-banner">
         <i class="fab fa-telegram-plane" style="font-size: 32px; margin-bottom: 6px;"></i>
@@ -379,6 +387,7 @@
       </div>
     </div>
 
+    <!-- TAB 4: INVITE & EARN -->
     <div id="tab-refer" class="tab-content">
       <div class="hero-banner">
         <i class="fas fa-gift" style="font-size: 32px; margin-bottom: 6px;"></i>
@@ -395,6 +404,7 @@
       </div>
     </div>
 
+    <!-- TAB 5: WITHDRAWAL -->
     <div id="tab-wallet" class="tab-content">
       <div class="hero-banner">
         <div style="font-size: 11px; opacity: 0.8; font-weight: 700;">CURRENT BALANCE</div>
@@ -414,6 +424,7 @@
       </button>
     </div>
 
+    <!-- TAB 6: PROFILE PAGE -->
     <div id="tab-profile" class="tab-content">
       <div class="hero-banner" style="padding: 28px 18px;">
         <div class="user-avatar" id="profile-avatar" style="width: 64px; height: 64px; font-size: 24px; margin: 0 auto 10px;">U</div>
@@ -443,6 +454,7 @@
 
   </div>
 
+  <!-- Bottom Navigation Bar -->
   <div class="bottom-navbar">
     <div class="nav-link active" id="nav-earn" onclick="switchTab('tab-earn')"><i class="fas fa-play-circle"></i><span>Earn</span></div>
     <div class="nav-link" id="nav-web" onclick="switchTab('tab-web')"><i class="fas fa-globe"></i><span>Web</span></div>
@@ -452,6 +464,7 @@
     <div class="nav-link" id="nav-profile" onclick="switchTab('tab-profile')"><i class="fas fa-user"></i><span>Profile</span></div>
   </div>
 
+  <!-- Timer Modal -->
   <div id="ad-modal" class="modal-overlay">
     <div class="modal-box">
       <h3 style="font-size: 16px; margin-bottom: 6px;">Watching Sponsor Ad...</h3>
@@ -462,10 +475,6 @@
   </div>
 
   <script>
-    // Real Ad Links List (Direct Links from Monetag / Adsterra)
-    const REAL_AD_LINKS = [""]; 
-
-    // Zero Initial Balance for New Users
     let balance = parseFloat(localStorage.getItem('pocket_balance')) || 0.00;
     let adsCount = parseInt(localStorage.getItem('pocket_ads')) || 0;
     const MAX_ADS = 50;
@@ -501,29 +510,39 @@
       if (activeNav) activeNav.classList.add('active');
     }
 
+    // Monetag Rewarded Interstitial Call
     function startAdTimer() {
-      if (adsCount >= MAX_ADS) return;
-
-      if (REAL_AD_LINKS[0] !== "") {
-        window.open(REAL_AD_LINKS[0], '_blank');
+      if (adsCount >= MAX_ADS) {
+        alert("Daily limit reached!");
+        return;
       }
 
-      document.getElementById('ad-modal').style.display = 'flex';
-      document.getElementById('claim-btn').style.display = 'none';
-      document.getElementById('timer').style.display = 'block';
+      if (typeof show_11874598 === 'function') {
+        show_11874598().then(() => {
+          claimAdReward();
+        }).catch((err) => {
+          console.log("Ad show error:", err);
+          alert("Ad load hote pareni, abar chesta korun.");
+        });
+      } else {
+        // Fallback Timer
+        document.getElementById('ad-modal').style.display = 'flex';
+        document.getElementById('claim-btn').style.display = 'none';
+        document.getElementById('timer').style.display = 'block';
 
-      let timeLeft = 10;
-      document.getElementById('timer').innerText = timeLeft;
-
-      let countdown = setInterval(() => {
-        timeLeft--;
+        let timeLeft = 10;
         document.getElementById('timer').innerText = timeLeft;
-        if (timeLeft <= 0) {
-          clearInterval(countdown);
-          document.getElementById('timer').style.display = 'none';
-          document.getElementById('claim-btn').style.display = 'flex';
-        }
-      }, 1000);
+
+        let countdown = setInterval(() => {
+          timeLeft--;
+          document.getElementById('timer').innerText = timeLeft;
+          if (timeLeft <= 0) {
+            clearInterval(countdown);
+            document.getElementById('timer').style.display = 'none';
+            document.getElementById('claim-btn').style.display = 'flex';
+          }
+        }, 1000);
+      }
     }
 
     function claimAdReward() {
@@ -535,7 +554,7 @@
 
       document.getElementById('ad-modal').style.display = 'none';
       updateAppUI();
-      alert(`Successfully earned BDT ${REWARD_PER_AD.toFixed(2)}!`);
+      alert(`You have seen an ad! BDT ${REWARD_PER_AD.toFixed(2)} added to your balance.`);
     }
 
     function processWithdraw() {
